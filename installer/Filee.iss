@@ -126,8 +126,8 @@ Filename: "{app}\{#AppExe}"; Parameters: "--uninstall-cleanup"; Flags: runhidden
 [Code]
 const
   // ExplorerMenuPackage in src/Filee.Platform.Windows (InstallerScriptTests keeps these in sync).
-  ExplorerMenuName = 'Filee.ExplorerMenu';
-  ExplorerMenuFamily = 'Filee.ExplorerMenu_c73vxh346rtay';
+  ExplorerMenuName = 'TheoDrop.ExplorerMenu';
+  ExplorerMenuFamily = 'TheoDrop.ExplorerMenu_2nt1a7szyqdpg';
   ExplorerMenuDll = 'FileeExplorerMenu.dll';
   ExplorerMenuPackageFile = 'FileeExplorerMenu.msix';
   ExplorerMenuMinimumBuild = 22000;

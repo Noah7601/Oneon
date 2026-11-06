@@ -14,19 +14,19 @@ namespace Filee.Platform.Windows;
 public static class ExplorerMenuPackage
 {
     /// <summary>Package name (the <c>Identity/@Name</c>); also used to find and remove the registration.</summary>
-    public const string PackageName = "Filee.ExplorerMenu";
+    public const string PackageName = "TheoDrop.ExplorerMenu";
 
     /// <summary>
     /// Publisher of the unsigned package. Windows 11 only registers unsigned packages whose publisher contains this
     /// special OID, so they can never collide with (or spoof) a signed package.
     /// </summary>
-    public const string Publisher = "CN=Filee, OID.2.25.311729368913984317654407730594956997722=1";
+    public const string Publisher = "CN=TheoDrop, OID.2.25.311729368913984317654407730594956997722=1";
 
     /// <summary>
     /// Package family name = name + "_" + a hash of <see cref="Publisher"/> (checked by a test against
     /// <c>PackageFamilyNameFromId</c>). Used to look the registration up without PowerShell.
     /// </summary>
-    public const string FamilyName = "Filee.ExplorerMenu_c73vxh346rtay";
+    public const string FamilyName = "TheoDrop.ExplorerMenu_2nt1a7szyqdpg";
 
     /// <summary>
     /// Version of the manifest, deliberately independent of the app version: registering an unsigned package with a
@@ -37,7 +37,7 @@ public static class ExplorerMenuPackage
     public static readonly Version ManifestVersion = new(1, 0, 0, 0);
 
     /// <summary>CLSID of the IExplorerCommand in FileeExplorerMenu.dll (kClsidCommand in FileeExplorerMenu.c).</summary>
-    public static readonly Guid ClassId = new("6DB0E670-807F-4D22-BE3F-20492D0F4AB1");
+    public static readonly Guid ClassId = new("A6ED5ACB-F5E3-47C2-9E63-62982368F7A6");
 
     /// <summary>The native COM server next to Filee.exe.</summary>
     public const string DllFileName = "FileeExplorerMenu.dll";
@@ -46,7 +46,7 @@ public static class ExplorerMenuPackage
     public const string PackageFileName = "FileeExplorerMenu.msix";
 
     /// <summary>
-    /// File in the data folder (%APPDATA%\Filee, TITLE_FILE in FileeExplorerMenu.c) whose first line is the menu title
+    /// File in the data folder (%APPDATA%\TheoDrop, TITLE_FILE in FileeExplorerMenu.c) whose first line is the menu title
     /// in the UI language. It exists while the Explorer menu setting is on; without it the DLL hides the entry.
     /// </summary>
     public const string TitleFileName = "explorer-menu.txt";
