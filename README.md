@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://filee.sh"><b>Website</b></a> ·
-  <a href="https://github.com/KnifeLemon/Filee/releases/latest"><b>Download</b></a> ·
+  <a href="https://github.com/Noah7601/theodrop/releases/latest"><b>Download TheoDrop</b></a> ·
   <a href="#install">Install</a> ·
   <a href="#command-line">Command line</a> ·
   <a href="#development">Development</a>
@@ -45,16 +45,23 @@
 
 ## Install
 
-Download from [Releases](https://github.com/KnifeLemon/Filee/releases/latest).
+Download TheoDrop from [Releases](https://github.com/Noah7601/theodrop/releases/latest).
 
-- **Windows 10/11**: run `Filee-<version>-win-Setup.exe`, or unzip the `win-Portable.zip` and run `Filee.exe`.
-  Setup can add the Explorer menu, start at sign-in, the `filee` command and optional engines.
-- **macOS 14+** (preview): unpack the `osx-arm64` or `osx-x64` package and run `./install.sh`.
-  The build isn't notarized yet, so allow the first start in System Settings → Privacy & Security → **Open Anyway**.
-- **Linux x64/ARM64** (preview): unpack the package and run `./install.sh` (no root, needs Python 3).
-  Drag gestures need X11. On Wayland, use the drop zone and the file manager's right-click menu.
+| Your computer | File |
+|---|---|
+| Mac with Apple Silicon (M1 or later) | `TheoDrop-<version>-osx-arm64.dmg` |
+| Mac with Intel | `TheoDrop-<version>-osx-x64.dmg` |
+| Windows 10/11 | `TheoDrop-<version>-win-Setup.exe` (or `win-Portable.zip`) |
 
-Filee shows new releases in its menu and updates itself, keeping your settings and engines.
+- **macOS 14+**: open the `.dmg` and drag TheoDrop into Applications. TheoDrop is not notarized by Apple, so the
+  first start is blocked once: click **Done**, then System Settings → Privacy & Security → **Open Anyway**.
+  The `.tar.gz` package with `./install.sh` also installs the `theodrop` command line.
+- **Windows 10/11**: run `TheoDrop-<version>-win-Setup.exe`. It is not code-signed, so SmartScreen may show
+  "Windows protected your PC": click **More info** → **Run anyway**. Setup can add the Explorer menu, start at
+  sign-in and optional engines.
+- Every file's SHA-256 hash is in `TheoDrop-<version>-SHA256SUMS.txt`.
+
+TheoDrop checks this repository's releases for updates and keeps your settings and engines.
 
 ## Features
 

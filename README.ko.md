@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://filee.sh/ko/"><b>웹사이트</b></a> ·
-  <a href="https://github.com/KnifeLemon/Filee/releases/latest"><b>다운로드</b></a> ·
+  <a href="https://github.com/Noah7601/theodrop/releases/latest"><b>TheoDrop 다운로드</b></a> ·
   <a href="#설치">설치</a> ·
   <a href="#명령줄">명령줄</a> ·
   <a href="#개발">개발</a>
@@ -43,16 +43,23 @@
 
 ## 설치
 
-[릴리스](https://github.com/KnifeLemon/Filee/releases/latest)에서 내려받으세요.
+[릴리스](https://github.com/Noah7601/theodrop/releases/latest)에서 TheoDrop을 내려받으세요.
 
-- **Windows 10/11**: `Filee-<version>-win-Setup.exe`를 실행하거나, `win-Portable.zip`을 풀고 `Filee.exe`를 실행해요.
-  설치할 때 탐색기 메뉴, 로그인 시 자동 실행, `filee` 명령, 추가 엔진을 고를 수 있어요.
-- **macOS 14 이상** (미리보기): `osx-arm64` 또는 `osx-x64` 패키지를 풀고 `./install.sh`를 실행해요.
-  아직 공증 전이라, 처음 실행할 때 시스템 설정 → 개인정보 보호 및 보안 → **그래도 열기**로 허용해 주세요.
-- **Linux x64·ARM64** (미리보기): 패키지를 풀고 `./install.sh`를 실행해요(root 불필요, Python 3 필요).
-  드래그 제스처는 X11에서 돼요. Wayland에서는 드롭 영역과 파일 관리자 우클릭 메뉴를 써 주세요.
+| 내 컴퓨터 | 파일 |
+|---|---|
+| Apple Silicon 맥 (M1 이상) | `TheoDrop-<version>-osx-arm64.dmg` |
+| Intel 맥 | `TheoDrop-<version>-osx-x64.dmg` |
+| Windows 10/11 | `TheoDrop-<version>-win-Setup.exe` (또는 `win-Portable.zip`) |
 
-새 버전이 나오면 메뉴에 표시되고, 설정과 엔진은 그대로 둔 채 업데이트돼요.
+- **macOS 14 이상**: `.dmg`를 열고 TheoDrop을 응용 프로그램 폴더로 끌어다 놓으세요. Apple 공증을 받지 않은
+  앱이라 처음 한 번은 실행이 막혀요. **완료**를 누른 뒤 시스템 설정 → 개인정보 보호 및 보안 → **그래도 열기**로
+  허용해 주세요. `theodrop` 명령줄까지 쓰려면 `.tar.gz` 패키지를 풀고 `./install.sh`를 실행하세요.
+- **Windows 10/11**: `TheoDrop-<version>-win-Setup.exe`를 실행하세요. 코드 서명이 없어서 "Windows의 PC 보호"
+  창이 뜰 수 있어요. **추가 정보** → **실행**을 누르면 돼요. 설치할 때 탐색기 메뉴, 로그인 시 자동 실행, 추가
+  엔진을 고를 수 있어요.
+- 모든 파일의 SHA-256 해시는 `TheoDrop-<version>-SHA256SUMS.txt`에 있어요.
+
+TheoDrop은 이 저장소의 릴리스로 업데이트를 확인하고, 설정과 엔진은 그대로 둬요.
 
 ## 기능
 

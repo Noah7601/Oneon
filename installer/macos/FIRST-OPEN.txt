@@ -1,0 +1,26 @@
+TheoDrop 설치와 처음 실행
+
+1. TheoDrop을 옆의 Applications(응용 프로그램) 폴더로 끌어다 놓으세요.
+2. 응용 프로그램 폴더에서 TheoDrop을 더블클릭하세요.
+3. "확인할 수 없음" 경고가 뜨면 [완료]를 누르세요.
+4. 시스템 설정 → 개인정보 보호 및 보안으로 가서, 아래쪽 "TheoDrop" 항목의 [그래도 열기]를 누르고 암호를 입력하세요.
+5. 이 과정은 처음 한 번만 하면 됩니다.
+
+경고가 뜨는 이유: TheoDrop은 Apple 유료 개발자 인증(공증)을 받지 않은 무료 오픈소스 앱이라서, macOS가 처음 실행할 때 한 번 확인을 요청합니다.
+
+그래도 열리지 않으면 터미널에서 다음 한 줄을 실행한 뒤 다시 여세요:
+  xattr -dr com.apple.quarantine /Applications/TheoDrop.app
+
+
+Installing and opening TheoDrop for the first time
+
+1. Drag TheoDrop into the Applications folder next to it.
+2. Double-click TheoDrop in Applications.
+3. If macOS says it cannot verify TheoDrop, click Done.
+4. Open System Settings > Privacy & Security, click "Open Anyway" next to TheoDrop and enter your password.
+5. You only need to do this once.
+
+Why: TheoDrop is free open-source software that is not notarized by Apple, so macOS asks once before the first start.
+
+If it still does not open, run this in Terminal and open it again:
+  xattr -dr com.apple.quarantine /Applications/TheoDrop.app
