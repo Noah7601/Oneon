@@ -63,7 +63,7 @@ Every file's SHA-256 hash is in `theOdrop-<version>-SHA256SUMS.txt`.
 - **Many files at once**, with presets for quality, size, PDF pages, output folder and file names.
 - **Watch folders** that convert every file dropped into them.
 - **Other ways in**: right-click menu (Finder Services, Windows 11 Explorer), keyboard shortcut, drop zone and a
-  command line (`theodrop` on macOS via `install.sh`, `filee` on Windows).
+  `theodrop` command line (Windows Setup option; macOS via `install.sh` from the `.tar.gz`).
 - Light and dark themes; English, 한국어 and 简体中文.
 
 ## Privacy

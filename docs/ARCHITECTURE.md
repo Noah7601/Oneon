@@ -69,7 +69,7 @@ Bump `AppSettings.CurrentSchemaVersion` and add a step to `SettingsMigrations` w
 
 ## Command line and watch folders
 
-- `Filee.Cli` (`filee-cli.exe`, run as `filee` through `cli\filee.cmd`, which Setup can put on PATH) composes the same
+- `Filee.Cli` (`filee-cli.exe`, run as `theodrop` through `cli\theodrop.cmd`, which Setup can put on PATH) composes the same
   pipeline as the app without any UI (`CliHost`: `UserDataStore`, `EngineRegistry`, `ConverterCatalog`, `JobQueue`)
   and reads the app's presets and engine order. It is published into the app folder, so both share one runtime and
   the bundled engines; its name can't be `filee.exe` next to `Filee.exe` on a case-insensitive file system.
