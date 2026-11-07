@@ -127,7 +127,15 @@ jobs:
           codesign --verify --deep --strict "$stage/theOdrop.app"
           ln -s /Applications "$stage/Applications"
           cp installer/macos/FIRST-OPEN.txt "$stage/처음 실행 방법 (How to open).txt"
-          hdiutil create -volname "theOdrop" -srcfolder "$stage" -fs HFS+ -format UDZO -ov "Releases/$name.dmg"
+          # hdiutil on GitHub's macOS runners sometimes fails with "Resource busy" (a known runner issue): retry.
+          for attempt in 1 2 3 4 5; do
+            if hdiutil create -volname "theOdrop" -srcfolder "$stage" -fs HFS+ -format UDZO -ov "Releases/$name.dmg"; then
+              break
+            fi
+            [ "$attempt" = 5 ] && exit 1
+            echo "hdiutil failed (attempt $attempt), retrying"
+            sleep $((attempt * 10))
+          done
           hdiutil verify "Releases/$name.dmg"
           (cd Releases && shasum -a 256 "$name.dmg" >> "$name-SHA256SUMS.txt")
           cat "Releases/$name-SHA256SUMS.txt"
