@@ -48,7 +48,7 @@ public sealed class MacOSPlatformServices : IPlatformServices
         {
             LastSelectionError = ex.Message;
             Trace.TraceWarning($"Reading Finder selection failed: {ex.Message}");
-            throw new InvalidOperationException($"Could not read Finder selection. Allow TheoDrop to control Finder in System Settings > Privacy & Security > Automation. {ex.Message}", ex);
+            throw new InvalidOperationException($"Could not read Finder selection. Allow theOdrop to control Finder in System Settings > Privacy & Security > Automation. {ex.Message}", ex);
         }
     }
 
@@ -85,7 +85,7 @@ public sealed class MacOSPlatformServices : IPlatformServices
 
     private static void RemoveLegacyWorkflow()
     {
-        var workflow = Path.Combine(UserLibrary, "Services", "TheoDrop.workflow");
+        var workflow = Path.Combine(UserLibrary, "Services", "theOdrop.workflow");
         if (Directory.Exists(workflow))
             Directory.Delete(workflow, recursive: true);
     }
@@ -120,7 +120,7 @@ public sealed class MacOSPlatformServices : IPlatformServices
     private static void RequireExecutable(string path)
     {
         if (!Path.IsPathFullyQualified(path) || !File.Exists(path))
-            throw new FileNotFoundException("TheoDrop's executable must have an existing absolute path.", path);
+            throw new FileNotFoundException("theOdrop's executable must have an existing absolute path.", path);
     }
 
     private static string Run(string executable, IReadOnlyList<string> arguments, int timeoutMs)

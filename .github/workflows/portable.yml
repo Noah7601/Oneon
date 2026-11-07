@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # TheoDrop ships for macOS and Windows only (Windows is built by release.yml).
+          # theOdrop ships for macOS and Windows only (Windows is built by release.yml).
           - runner: macos-15
             rid: osx-arm64
           - runner: macos-15-intel
@@ -92,10 +92,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Archive extraction failed.' }
           $package = Join-Path $smoke ($archive.Name.Replace('.tar.gz', ''))
           if ($IsMacOS) {
-            codesign --verify --deep --strict (Join-Path $package 'TheoDrop.app')
+            codesign --verify --deep --strict (Join-Path $package 'theOdrop.app')
             if ($LASTEXITCODE -ne 0) { throw 'Extracted app signature did not verify.' }
           }
-          $bin = if ($IsMacOS) { Join-Path $package 'TheoDrop.app/Contents/MacOS' } else { $package }
+          $bin = if ($IsMacOS) { Join-Path $package 'theOdrop.app/Contents/MacOS' } else { $package }
           $cli = Join-Path $bin 'filee-cli'
           & $cli version
           if ($LASTEXITCODE -ne 0) { throw 'CLI did not start.' }
@@ -109,7 +109,7 @@ jobs:
           if ($LASTEXITCODE -ne 0 -or -not (Test-Path (Join-Path $smoke 'converted/sample.hwpx'))) { throw 'Published CLI conversion failed.' }
           "FILEE_SMOKE_APP=$(Join-Path $bin 'Filee')" >> $env:GITHUB_ENV
 
-      # Drag-to-install disk image: TheoDrop.app, a shortcut to Applications and how to open it the first time
+      # Drag-to-install disk image: theOdrop.app, a shortcut to Applications and how to open it the first time
       # (the build is ad-hoc signed, not notarized). Its hash goes into the package's checksum file.
       - name: Build disk image
         if: runner.os == 'macOS'
@@ -123,11 +123,11 @@ jobs:
           rm -rf "$source" "$stage"
           mkdir -p "$source" "$stage"
           tar -xzf "$archive" -C "$source"
-          ditto "$source/$name/TheoDrop.app" "$stage/TheoDrop.app"
-          codesign --verify --deep --strict "$stage/TheoDrop.app"
+          ditto "$source/$name/theOdrop.app" "$stage/theOdrop.app"
+          codesign --verify --deep --strict "$stage/theOdrop.app"
           ln -s /Applications "$stage/Applications"
           cp installer/macos/FIRST-OPEN.txt "$stage/처음 실행 방법 (How to open).txt"
-          hdiutil create -volname "TheoDrop" -srcfolder "$stage" -fs HFS+ -format UDZO -ov "Releases/$name.dmg"
+          hdiutil create -volname "theOdrop" -srcfolder "$stage" -fs HFS+ -format UDZO -ov "Releases/$name.dmg"
           hdiutil verify "Releases/$name.dmg"
           (cd Releases && shasum -a 256 "$name.dmg" >> "$name-SHA256SUMS.txt")
           cat "Releases/$name-SHA256SUMS.txt"

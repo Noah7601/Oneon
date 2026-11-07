@@ -123,9 +123,9 @@ applied by `WindowsPlatformServices.SetContextMenu` at start-up and whenever set
     Output: `build/.cache/explorer-menu`; CI builds it for the tests, `build/build-installer.ps1` builds it into the
     publish folder.
 
-Debugging: `Get-AppxPackage TheoDrop.ExplorerMenu` shows the registration (`InstallLocation` is the external location);
+Debugging: `Get-AppxPackage theOdrop.ExplorerMenu` shows the registration (`InstallLocation` is the external location);
 `Get-AppPackageLog -ActivityID <id>` explains a failed deployment. To try a local build, copy
 `FileeExplorerMenu.dll` + `.msix` next to an installed Filee.exe and use the button, or run elevated:
 `Add-AppxPackage -Path FileeExplorerMenu.msix -ExternalLocation <folder with Filee.exe> -AllowUnsigned`. Explorer picks
 the entry up for new menus; if not, restart Explorer. To remove it by hand:
-`Get-AppxPackage TheoDrop.ExplorerMenu | Remove-AppxPackage`.
+`Get-AppxPackage theOdrop.ExplorerMenu | Remove-AppxPackage`.

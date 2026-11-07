@@ -23,13 +23,13 @@ BEGIN
     BEGIN
         BLOCK "040904B0"
         BEGIN
-            VALUE "CompanyName", "TheoDrop contributors"
-            VALUE "FileDescription", "TheoDrop File Explorer context menu"
+            VALUE "CompanyName", "theOdrop contributors"
+            VALUE "FileDescription", "theOdrop File Explorer context menu"
             VALUE "FileVersion", FILEE_VERSION_TEXT
             VALUE "InternalName", "FileeExplorerMenu"
             VALUE "LegalCopyright", "Copyright (c) Filee contributors. MIT License."
             VALUE "OriginalFilename", "FileeExplorerMenu.dll"
-            VALUE "ProductName", "TheoDrop"
+            VALUE "ProductName", "theOdrop"
             VALUE "ProductVersion", FILEE_VERSION_TEXT
         END
     END

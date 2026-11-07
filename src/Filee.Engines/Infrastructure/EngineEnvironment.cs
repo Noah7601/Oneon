@@ -21,7 +21,7 @@ public sealed class EngineEnvironment(string dataDirectory)
     /// install root, so uninstalling removes it.
     /// </summary>
     public static string DownloadRoot { get; set; } =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TheoDrop", "engines");
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "theOdrop", "engines");
 
     /// <summary>
     /// Finds an engine directory (<c>engines/&lt;name&gt;</c>): next to the executable (bundled with the installer),

@@ -23,7 +23,7 @@ public static class ExplorerMenuRegistration
     private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(3);
 
     /// <summary>A registered copy of the package.</summary>
-    /// <param name="FullName">Package full name, e.g. <c>TheoDrop.ExplorerMenu_1.0.0.0_x64__2nt1a7szyqdpg</c>.</param>
+    /// <param name="FullName">Package full name, e.g. <c>theOdrop.ExplorerMenu_1.0.0.0_x64__c72ya42m4p620</c>.</param>
     /// <param name="Version">Identity version from the full name.</param>
     /// <param name="ExternalLocation">Folder the package points at (null when Windows does not say).</param>
     public sealed record RegisteredPackage(string FullName, Version Version, string? ExternalLocation);

@@ -1,190 +1,94 @@
-> **TheoDrop** is a macOS-focused custom fork of [Filee](https://github.com/KnifeLemon/Filee). It keeps Filee's MIT-licensed conversion engine and adds a distinct glass UI, bundle identity, and app icon. Internal namespaces remain `Filee` for upstream compatibility.
+<p align="center">
+  <img src="src/Filee.App/Assets/Icons/theodrop.png" alt="theOdrop" width="128">
+</p>
+
+<h1 align="center">theOdrop</h1>
 
 <p align="center">
-  <a href="https://filee.sh"><img src="docs/media/banner-en.jpg" alt="Filee: Drag. Drop. Converted." width="100%"></a>
+  <b>Drag a file, drop it on a format, done.</b><br>
+  A free file converter for macOS and Windows that works offline.
 </p>
 
 <p align="center">
-  <b>A free, open-source file converter you use by dragging.</b><br>
-  On macOS, drag with <kbd>Shift</kbd> for conversions, <kbd>Command</kbd> for tools, or <kbd>Command</kbd>+<kbd>Control</kbd> for AirDrop.
-</p>
-
-<p align="center">
-  <a href="https://filee.sh"><b>Website</b></a> ·
-  <a href="https://github.com/Noah7601/theodrop/releases/latest"><b>Download TheoDrop</b></a> ·
+  <a href="https://github.com/Noah7601/theodrop/releases/latest"><b>Download</b></a> ·
   <a href="#install">Install</a> ·
-  <a href="#command-line">Command line</a> ·
-  <a href="#development">Development</a>
+  <a href="#features">Features</a> ·
+  <a href="#license-and-credits">License</a>
 </p>
 
-<p align="center">
-  <a href="https://github.com/KnifeLemon/Filee/actions/workflows/ci.yml"><img src="https://github.com/KnifeLemon/Filee/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://github.com/KnifeLemon/Filee/releases/latest"><img src="https://img.shields.io/github/v/release/KnifeLemon/Filee?color=7F77DD&label=release" alt="Latest release"></a>
-  <a href="https://github.com/KnifeLemon/Filee/releases"><img src="https://img.shields.io/github/downloads/KnifeLemon/Filee/total?color=1D9E75" alt="Downloads"></a>
-  <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-3C3489" alt="Windows 10 | 11">
-  <img src="https://img.shields.io/badge/macOS%20%7C%20Linux-preview-534AB7" alt="macOS | Linux preview">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-6A62C9" alt="MIT license"></a>
-</p>
+<p align="center"><b>English</b> · <a href="README.ko.md">한국어</a></p>
 
-<p align="center"><b>English</b> · <a href="README.ko.md">한국어</a> · <a href="README.zh-CN.md">简体中文</a></p>
+## What it does
 
-<table>
-  <tr>
-    <td width="33%" valign="top"><b>Right at your cursor</b><br>No app window to open. The formats appear where you already are, only the ones that make sense for the files you drag.</td>
-    <td width="33%" valign="top"><b>244 formats, no other software</b><br>Images, PDF, Word, Excel, PowerPoint, HWP, e-books, archives, fonts, CAD and 3D models work without Office, Hancom Office or LibreOffice.</td>
-    <td width="33%" valign="top"><b>Stays on your computer</b><br>Nothing is uploaded. Filee works offline and saves the result next to the original.</td>
-  </tr>
-</table>
+Hold a key while you drag files. A ring of formats opens at the cursor, showing only the ones that fit those files.
+Drop on one and the converted file appears next to the original. Nothing is uploaded.
 
-## See it in action
+| | macOS | Windows |
+|---|---|---|
+| Convert | <kbd>Shift</kbd> + drag | <kbd>Ctrl</kbd> + drag |
+| Tools (resize, merge, …) | <kbd>Command</kbd> + drag | <kbd>Alt</kbd> + drag |
 
-<p align="center">
-  <a href="https://filee.sh"><img src="docs/media/demo-en.webp" alt="Dragging trip.jpg with Ctrl held: a donut of formats opens at the cursor, the file is dropped on PNG, a progress ring completes and trip.png appears" width="820"></a><br>
-  <sub>Watch the 27-second video and try the interactive demo on <a href="https://filee.sh">filee.sh</a></sub>
-</p>
+You can change the keys in Settings.
 
 ## Install
 
-Download TheoDrop from [Releases](https://github.com/Noah7601/theodrop/releases/latest).
+Download from [Releases](https://github.com/Noah7601/theodrop/releases/latest).
 
 | Your computer | File |
 |---|---|
-| Mac with Apple Silicon (M1 or later) | `TheoDrop-<version>-osx-arm64.dmg` |
-| Mac with Intel | `TheoDrop-<version>-osx-x64.dmg` |
-| Windows 10/11 | `TheoDrop-<version>-win-Setup.exe` (or `win-Portable.zip`) |
+| Mac with Apple Silicon (M1 or later) | `theOdrop-<version>-osx-arm64.dmg` |
+| Mac with Intel | `theOdrop-<version>-osx-x64.dmg` |
+| Windows 10/11 (Intel/AMD) | `theOdrop-<version>-win-Setup.exe` (or `win-Portable.zip`) |
 
-- **macOS 14+**: open the `.dmg` and drag TheoDrop into Applications. TheoDrop is not notarized by Apple, so the
-  first start is blocked once: click **Done**, then System Settings → Privacy & Security → **Open Anyway**.
-  The `.tar.gz` package with `./install.sh` also installs the `theodrop` command line.
-- **Windows 10/11**: run `TheoDrop-<version>-win-Setup.exe`. It is not code-signed, so SmartScreen may show
-  "Windows protected your PC": click **More info** → **Run anyway**. Setup can add the Explorer menu, start at
-  sign-in and optional engines.
-- Every file's SHA-256 hash is in `TheoDrop-<version>-SHA256SUMS.txt`.
+**macOS 14 or later**
+1. Open the `.dmg` and drag theOdrop into Applications.
+2. theOdrop is not notarized by Apple, so the first start is blocked once. Click **Done**, then go to
+   System Settings → Privacy & Security and click **Open Anyway**.
 
-TheoDrop checks this repository's releases for updates and keeps your settings and engines.
+**Windows 10/11**
+1. Run `theOdrop-<version>-win-Setup.exe`.
+2. It is not code-signed, so "Windows protected your PC" may appear. Click **More info** → **Run anyway**.
+3. Setup can add the right-click menu (Windows 11), start at sign-in and optional engines.
+
+theOdrop checks this repository for updates and keeps your settings when it updates.
+Every file's SHA-256 hash is in `theOdrop-<version>-SHA256SUMS.txt`.
 
 ## Features
 
-- **A donut at the cursor**: hold a key, drag files and drop them on a format. Only formats that fit the files appear.
-- **One toolbar per file type**, arranged by drag and drop, with presets for quality, size, DPI, PDF pages,
-  video and audio, output folder and file names.
-- **Many files at once**, in parallel. Routes with several steps (HWP → HWPX → DOCX) are found automatically.
-- **Watch folders** convert every file that lands in them.
-- **Other ways in**: the right-click menu, a keyboard shortcut, the drop zone and the [`filee` command](#command-line).
-- Light and dark themes, in English, 한국어 and 简体中文.
+- **Format ring at the cursor**: only the formats that make sense for the files you drag.
+- **Many file types without other software**: images, PDF, Word, Excel, PowerPoint, HWP, e-books, archives,
+  fonts, CAD and 3D models, with no Office, Hancom Office or LibreOffice needed.
+- **Optional engines** for more (FFmpeg for video and audio, LibreOffice, Pandoc, calibre, Ghostscript),
+  downloaded only when you choose them. See [ENGINES.md](docs/ENGINES.md).
+- **Many files at once**, with presets for quality, size, PDF pages, output folder and file names.
+- **Watch folders** that convert every file dropped into them.
+- **Other ways in**: right-click menu (Finder Services, Windows 11 Explorer), keyboard shortcut, drop zone and a
+  command line (`theodrop` on macOS via `install.sh`, `filee` on Windows).
+- Light and dark themes; English, 한국어 and 简体中文.
 
-## Screenshots
+## Privacy
 
-<table>
-  <tr>
-    <td width="50%"><img src="docs/media/page-toolbar-en.png" alt="Donut toolbar editor with profiles and presets"></td>
-    <td width="50%"><img src="docs/media/page-home-en.png" alt="Home screen with the drop zone and recent conversions"></td>
-  </tr>
-  <tr>
-    <td align="center"><sub>Arrange the donut by drag and drop, one profile per file type</sub></td>
-    <td align="center"><sub>Home: drop zone and recent conversions</sub></td>
-  </tr>
-</table>
+Files are converted on your computer and never uploaded. theOdrop collects no usage data. It connects to the
+internet only to check GitHub for a newer release (can be turned off in Settings → About), to download engines
+you choose, and when you click a link.
 
-## Formats
-
-| From | To |
-|---|---|
-| **Images**: JPG, PNG, WEBP, AVIF, TIFF, BMP, GIF, APNG, ICO, ICNS, JPEG XL, JPEG 2000, PSD/PSB, TGA, PPM, HEIC, QOI, DDS, PCX, MNG, CUR, …; GIMP XCF, camera RAW (CR2, CR3, NEF, ARW, DNG, …), DICOM, OpenEXR, HDR read | any of these (HEIC⁵), PDF, SVG (traced), resized, grayscale |
-| **Vector**: SVG, SVGZ, EMF, WMF, AI · EPS, PS¹ · CDR, VSD, CGM, ODG, FODG² | PDF (vector), PNG and other images, SVG ↔ SVGZ, SVG → DXF/DWG, PDF → EPS/PS¹, SVG → EMF, WMF, ODG² |
-| **PDF** | DOCX, HWPX, TXT, PNG, JPG, TIFF, CBZ, SVG²; merge, split, page ranges |
-| **Documents**: DOCX, DOCM, DOTX, EML, Outlook MSG · DOC, ODT, FODT, OTT, RTF, WPS, WPD, Pages, ClarisWorks, MacWrite, T602, …² | PDF, DOCX, HWPX, EPUB, TXT, HTML; MSG → EML · ODT, FODT, OTT² |
-| **Spreadsheets**: XLSX, XLSM, XLS, XLT, ODS, CSV, TSV · OTS, FODS, Numbers, ET² | PDF, XLSX, ODS, CSV, TSV, JSON, HWPX, HTML · XLT, OTS² |
-| **Presentations**: PPTX, PPTM, POTX, PPSX · PPT, ODP, OTP, FODP, Keynote² | PDF, PNG, JPG, DOCX, HWPX · OTP² |
-| **HWP**: HWP, HWPX | PDF, PNG, DOCX, HWPX ↔ HWP, TXT, Markdown, HTML |
-| **Text**: TXT, Markdown, HTML · reStructuredText, LaTeX, Org, AsciiDoc, Typst, MediaWiki, DocBook, Jupyter, Textile, man, OPML³ | PDF, DOCX, HWPX, EPUB · each other, PPTX slides³ |
-| **E-books**: EPUB, KEPUB, MOBI, AZW3, AZW, AZW4, FB2, CBZ, CBR, CB7, HTMLZ, TXTZ · LIT, LRF, CHM, PDB, …⁴ | PDF, EPUB, KEPUB (Kobo), DOCX, TXT, HTML, HWPX · MOBI, AZW3⁴ |
-| **Video**⁵: MP4, MOV, MKV, WEBM, AVI, WMV, FLV, MPEG, TS, M2TS, 3GP, OGV, VOB, … | MP4 (H.264, HEVC, AV1), WEBM, MOV, MKV, AVI, GIF, APNG, MP3, M4A, 720p, subtitles (SRT, ASS, WebVTT) |
-| **Audio**⁵: MP3, M4A, AAC, WAV, FLAC, OGG, OPUS, WMA, AIFF, AMR, APE, WavPack, TTA, DSD (DSF, DFF), DTS, AC3, E-AC3, … | MP3, M4A (AAC, ALAC), WAV, FLAC, OGG, OPUS, AAC, WavPack, TTA, W64, AC3, E-AC3 |
-| **Subtitles**: SRT, ASS/SSA, WebVTT, SAMI (SMI), LRC, TTML, MicroDVD, SCC | each other as UTF-8 (Korean CP949 files read correctly) |
-| **Archives**: ZIP, 7Z, RAR, TAR, TAR.GZ, TAR.BZ2, TAR.XZ, GZ, ISO, CAB, DMG, ALZ, EGG, … | extract, ZIP, 7Z, TAR, TAR.GZ; any files → one ZIP |
-| **CAD**: DWG, DXF | PDF, SVG, PNG, DWG ↔ DXF |
-| **Fonts**: TTF, OTF, WOFF, WOFF2, EOT | each other |
-| **Data**: JSON, JSON Lines, YAML, TOML, XML · vCard | each other, CSV and XLSX (tables); vCard ↔ CSV |
-| **3D models**: GLB, glTF, STL, OBJ (+ MTL), 3MF, PLY | each other, PNG preview |
-
-Unmarked formats work out of the box, without Office, Hancom Office or LibreOffice.
-Marked ones need an optional engine, downloaded only when needed: ¹ Ghostscript, ² LibreOffice, ³ Pandoc, ⁴ calibre,
-⁵ FFmpeg ([details](docs/ENGINES.md)).
-
-## Command line
-
-The `filee` command uses the same engines and presets as the app (Setup or `install.sh` adds it).
-
-```
-filee convert photo.heic --to jpg
-filee convert *.png --to webp --quality 80 -o converted
-filee watch D:\Inbox --to pdf --move-originals
-```
-
-Every command and option: [filee.sh/cli](https://filee.sh/cli/) or `filee help`.
-
-## Development
-
-Build with the .NET 10 SDK on Windows, macOS or Linux:
+## Build from source
 
 ```bash
-git clone https://github.com/KnifeLemon/Filee.git
-cd Filee
-pwsh build/fetch-engines.ps1 -Only rhwp,pandoc   # optional engines
-dotnet run --project src/Filee.App
+git clone https://github.com/Noah7601/theodrop.git
+cd theodrop
+dotnet run --project src/Filee.App   # .NET 10 SDK
 dotnet test
 ```
 
-[Architecture](docs/ARCHITECTURE.md) · [Engines](docs/ENGINES.md) · [Adding a converter](docs/ADDING-A-CONVERTER.md) ·
-[Adding a language](docs/ADDING-A-LANGUAGE.md) · [Contributing](CONTRIBUTING.md)
+Internal project names stay `Filee` so changes from the original project can still be merged.
+[Architecture](docs/ARCHITECTURE.md) · [Adding a converter](docs/ADDING-A-CONVERTER.md)
 
-Pull requests are welcome. If Filee saves you some clicks, a ⭐ helps other people find it.
+## License and credits
 
-## Code signing policy
+theOdrop is a fork of [Filee](https://github.com/KnifeLemon/Filee) by Myeonggu Kim (KnifeLemon) and contributors,
+which provides the conversion engine. theOdrop adds its own design, icon and macOS/Windows packaging.
 
-Filee is developed and published by **Myeonggu Kim** ([KnifeLemon](https://github.com/KnifeLemon)).
-
-Windows releases will be signed with a [Certum](https://www.certum.eu/) open source code signing certificate issued
-to Myeonggu Kim. The certificate is being issued; until then, releases are not code-signed and Windows SmartScreen
-may warn when you run the installer ("More info" → "Run anyway"). macOS packages are ad-hoc signed and not notarized.
-
-Only the installer and files built by this repository's GitHub Actions release workflow are signed, and every release
-is approved by hand. Bundled third-party programs (rhwp, 7-Zip) keep their own publishers' files.
-
-### Privacy policy
-
-Filee converts files on your own computer and never uploads them. It collects no usage data and sends no telemetry.
-It connects to the internet only:
-
-- to ask GitHub (`api.github.com`) whether a newer release exists, shortly after start and then every few hours.
-  Turn this off in Settings → About ("Check for updates automatically").
-- to download the conversion engines you choose to install, from the official locations pinned in
-  [`engines.json`](src/Filee.Engines/Infrastructure/engines.json).
-- when you click a link, which opens your web browser.
-
-## Sponsor
-
-Filee is free and stays free. If you'd like to support it, pick whichever way suits you
-([Fairy](https://fairy.hada.io/@filee) takes Korean cards and easy-pay).
-
-**Your name or logo here.** Monthly backers are listed here by name, and sponsors get their logo here and on
-Filee's About page. One-time supporters can ask to be listed too.
-
-<!-- sponsors: src/Filee.App/Assets/Sponsors/sponsors.json -->
-
-<p align="center">
-  <a href="https://github.com/sponsors/KnifeLemon"><img src="https://img.shields.io/badge/GitHub%20Sponsors-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="GitHub Sponsors"></a>
-  <a href="https://patreon.com/KnifeLemon"><img src="https://img.shields.io/badge/Patreon-000000?style=for-the-badge&logo=patreon&logoColor=white" alt="Patreon"></a>
-  <a href="https://ko-fi.com/knifelemon"><img src="https://img.shields.io/badge/Ko--fi-FF6433?style=for-the-badge&logo=kofi&logoColor=white" alt="Ko-fi"></a>
-  <a href="https://paypal.me/knifelemon"><img src="https://img.shields.io/badge/PayPal-002991?style=for-the-badge&logo=paypal&logoColor=white" alt="PayPal"></a>
-  <a href="https://fairy.hada.io/@filee"><img src="https://img.shields.io/badge/Fairy-2E9E6B?style=for-the-badge" alt="Fairy"></a>
-</p>
-
-## License
-
-MIT, © 2026 Myeonggu Kim (KnifeLemon) and Filee contributors. Bundled third-party components keep their own licenses, listed in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
-
-<p align="center">
-  <a href="https://star-history.com/#KnifeLemon/Filee&Date"><img src="https://api.star-history.com/svg?repos=KnifeLemon/Filee&type=Date" alt="Star history" width="600"></a>
-</p>
+MIT license, © 2026 Myeonggu Kim (KnifeLemon), Filee contributors and theOdrop contributors. See [LICENSE](LICENSE)
+and [NOTICE.md](NOTICE.md). Bundled third-party components keep their own licenses:
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).

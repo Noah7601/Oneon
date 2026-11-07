@@ -41,10 +41,10 @@ public class SupportersTests
         var folder = Path.Combine(RepoRoot, "src", "Filee.App", "Assets", "Sponsors");
         var list = Supporters.Parse(File.ReadAllText(Path.Combine(folder, "sponsors.json")));
 
-        foreach (var readme in new[] { "README.md", "README.ko.md", "README.zh-CN.md" })
+        // theOdrop's READMEs have no sponsor section (the sponsors are Filee's); a listed supporter still has to appear.
+        foreach (var readme in new[] { "README.md", "README.ko.md" })
         {
             var text = File.ReadAllText(Path.Combine(RepoRoot, readme));
-            Assert.Contains("<!-- sponsors: src/Filee.App/Assets/Sponsors/sponsors.json -->", text);
             Assert.All(list.Sponsors.Concat(list.Backers), s => Assert.Contains(s.Name, text));
         }
         Assert.All(list.Sponsors.SelectMany(s => new[] { s.Logo, s.LogoDark }).OfType<string>(),

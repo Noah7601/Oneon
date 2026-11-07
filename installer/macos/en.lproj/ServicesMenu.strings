@@ -1,2 +1,2 @@
-/* Finder's right-click menu: the title of TheoDrop's service (NSServices in Info.plist). */
-"Convert with TheoDrop" = "Convert with TheoDrop";
+/* Finder's right-click menu: the title of theOdrop's service (NSServices in Info.plist). */
+"Convert with theOdrop" = "Convert with theOdrop";

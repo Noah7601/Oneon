@@ -81,7 +81,7 @@ public class ExplorerMenuTests
         Assert.Equal(ExplorerMenuPackage.ClassId, fromSource);
 
         Assert.Contains($"#define LIST_PREFIX L\"{CommandLine.ListFilePrefix}\"", source);
-        // The DLL reads the title from the app's data folder (%APPDATA%\TheoDrop), so the folder names must match.
+        // The DLL reads the title from the app's data folder (%APPDATA%\theOdrop), so the folder names must match.
         var dataFolder = Path.GetFileName(UserDataStore.DefaultDirectory);
         Assert.Contains($"#define TITLE_FILE L\"{dataFolder}\\\\{ExplorerMenuPackage.TitleFileName}\"", source);
     }
@@ -141,7 +141,7 @@ public class ExplorerMenuTests
         Assert.DoesNotContain("\"", script);
 
         var remove = ExplorerMenuRegistration.BuildRemoveScript(@"C:\Temp\err.txt");
-        Assert.Contains("Get-AppxPackage -Name 'TheoDrop.ExplorerMenu' | Remove-AppxPackage", remove);
+        Assert.Contains("Get-AppxPackage -Name 'theOdrop.ExplorerMenu' | Remove-AppxPackage", remove);
     }
 
     [Fact]
@@ -229,7 +229,7 @@ public class ExplorerMenuTests
         using var command = NativeCommand.Create(dll);
         // The title comes from the file the app writes into its data folder; without it the English default is used.
         var expectedTitle = ExplorerMenuRegistration.ReadTitle();
-        Assert.Equal(expectedTitle ?? "Convert with TheoDrop", command.GetTitle());
+        Assert.Equal(expectedTitle ?? "Convert with theOdrop", command.GetTitle());
         Assert.Equal(Path.Combine(BuiltFolder, "Filee.exe") + ",0", command.GetIcon(), ignoreCase: true);
         Assert.Equal(ExplorerMenuPackage.ClassId, command.GetCanonicalName());
 

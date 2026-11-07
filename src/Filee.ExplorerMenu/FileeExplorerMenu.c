@@ -15,7 +15,7 @@
 #include <shlobj.h>
 #include <shlwapi.h>
 
-// {A6ED5ACB-F5E3-47C2-9E63-62982368F7A6} (TheoDrop's own, not Filee's); must match ExplorerMenuPackage.ClassId (C#) and the package manifest.
+// {A6ED5ACB-F5E3-47C2-9E63-62982368F7A6} (theOdrop's own, not Filee's); must match ExplorerMenuPackage.ClassId (C#) and the package manifest.
 static const CLSID kClsidCommand = {0xa6ed5acb, 0xf5e3, 0x47c2, {0x9e, 0x63, 0x62, 0x98, 0x23, 0x68, 0xf7, 0xa6}};
 // Local copies of the interface and folder ids, so the DLL does not need libuuid.
 static const IID kIidUnknown = {0x00000000, 0x0000, 0x0000, {0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46}};
@@ -23,12 +23,12 @@ static const IID kIidClassFactory = {0x00000001, 0x0000, 0x0000, {0xc0, 0x00, 0x
 static const IID kIidExplorerCommand = {0xa08ce4d0, 0xfa25, 0x44ab, {0xb5, 0x7c, 0xc7, 0xb1, 0xc3, 0x23, 0xe0, 0xb9}};
 static const KNOWNFOLDERID kFolderRoamingAppData = {0x3eb685db, 0x65f9, 0x4cf6, {0xa0, 0x3a, 0xe3, 0xef, 0x65, 0x72, 0x9f, 0x3d}};
 
-#define DEFAULT_TITLE L"Convert with TheoDrop"
-// Written by the app into its data folder (%APPDATA%\TheoDrop, which survives app updates) while the Explorer menu
+#define DEFAULT_TITLE L"Convert with theOdrop"
+// Written by the app into its data folder (%APPDATA%\theOdrop, which survives app updates) while the Explorer menu
 // setting is on; first line = the title in the UI language. No file = the entry is hidden, so the setting can switch
 // the entry off and on again without re-registering the package (which needs administrator rights).
 // Must match ExplorerMenuPackage.TitleFileName.
-#define TITLE_FILE L"TheoDrop\\explorer-menu.txt"
+#define TITLE_FILE L"theOdrop\\explorer-menu.txt"
 #define APP_EXE L"Filee.exe"
 #define LIST_PREFIX L"Filee-convert-"       // CommandLine.ListFilePrefix in the app
 // CreateProcess accepts at most 32767 characters; longer selections go through a list file.

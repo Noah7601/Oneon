@@ -14,19 +14,19 @@ namespace Filee.Platform.Windows;
 public static class ExplorerMenuPackage
 {
     /// <summary>Package name (the <c>Identity/@Name</c>); also used to find and remove the registration.</summary>
-    public const string PackageName = "TheoDrop.ExplorerMenu";
+    public const string PackageName = "theOdrop.ExplorerMenu";
 
     /// <summary>
     /// Publisher of the unsigned package. Windows 11 only registers unsigned packages whose publisher contains this
     /// special OID, so they can never collide with (or spoof) a signed package.
     /// </summary>
-    public const string Publisher = "CN=TheoDrop, OID.2.25.311729368913984317654407730594956997722=1";
+    public const string Publisher = "CN=theOdrop, OID.2.25.311729368913984317654407730594956997722=1";
 
     /// <summary>
     /// Package family name = name + "_" + a hash of <see cref="Publisher"/> (checked by a test against
     /// <c>PackageFamilyNameFromId</c>). Used to look the registration up without PowerShell.
     /// </summary>
-    public const string FamilyName = "TheoDrop.ExplorerMenu_2nt1a7szyqdpg";
+    public const string FamilyName = "theOdrop.ExplorerMenu_c72ya42m4p620";
 
     /// <summary>
     /// Version of the manifest, deliberately independent of the app version: registering an unsigned package with a
@@ -46,7 +46,7 @@ public static class ExplorerMenuPackage
     public const string PackageFileName = "FileeExplorerMenu.msix";
 
     /// <summary>
-    /// File in the data folder (%APPDATA%\TheoDrop, TITLE_FILE in FileeExplorerMenu.c) whose first line is the menu title
+    /// File in the data folder (%APPDATA%\theOdrop, TITLE_FILE in FileeExplorerMenu.c) whose first line is the menu title
     /// in the UI language. It exists while the Explorer menu setting is on; without it the DLL hides the entry.
     /// </summary>
     public const string TitleFileName = "explorer-menu.txt";

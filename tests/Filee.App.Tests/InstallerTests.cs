@@ -88,8 +88,8 @@ public class InstallerTests
         var marker = typeof(EngineInstaller).GetField("MarkerName", BindingFlags.NonPublic | BindingFlags.Static)?.GetRawConstantValue();
         Assert.Contains($"EngineMarker = '{marker}';", Script);
         Assert.Equal(
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TheoDrop", "engines"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "theOdrop", "engines"),
             EngineEnvironment.DownloadRoot);
-        Assert.Contains(@"ExpandConstant('{localappdata}\TheoDrop\engines\')", Script);
+        Assert.Contains(@"ExpandConstant('{localappdata}\theOdrop\engines\')", Script);
     }
 }

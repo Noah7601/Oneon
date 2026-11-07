@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds a macOS portable package (TheoDrop.app + CLI) without PowerShell.
+# Builds a macOS portable package (theOdrop.app + CLI) without PowerShell.
 # Mirrors build/build-portable.ps1 for the osx-* runtimes.
 #
 # Usage: build/build-portable.sh [osx-arm64|osx-x64] [--version X.Y.Z] [--output DIR] [--sign IDENTITY]
@@ -37,7 +37,7 @@ version="${version#v}"
 [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z][0-9A-Za-z.-]*)?$ ]] || { echo "Version must be X.Y.Z[-pre]." >&2; exit 1; }
 bundle_version="${version%%-*}"
 
-package_name="TheoDrop-$version-$runtime"
+package_name="theOdrop-$version-$runtime"
 mkdir -p "$output"
 output="$(cd "$output" && pwd)"
 archive="$output/$package_name.tar.gz"
@@ -49,7 +49,7 @@ fi
 
 stage="$root/build/.cache/portable/$(uuidgen | tr -d -)"
 package="$stage/$package_name"
-app="$package/TheoDrop.app"
+app="$package/theOdrop.app"
 publish="$app/Contents/MacOS"
 mkdir -p "$publish"
 

@@ -1,4 +1,4 @@
-// Minimal file logger: %APPDATA%\TheoDrop\logs\theodrop-yyyyMMdd.log, keeps the last 7 days.
+// Minimal file logger: %APPDATA%\theOdrop\logs\theodrop-yyyyMMdd.log, keeps the last 7 days.
 
 using Microsoft.Extensions.Logging;
 
