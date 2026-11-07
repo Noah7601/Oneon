@@ -13,7 +13,7 @@
         <StackPanel VerticalAlignment="Center" Spacing="4">
           <TextBlock Text="theOdrop" FontSize="24" FontWeight="Bold" />
           <TextBlock Classes="muted" Text="{Binding Version}" />
-          <TextBlock Classes="muted" Text="Based on Filee · MIT License" />
+          <TextBlock Classes="muted" Text="{DynamicResource about.license}" TextWrapping="Wrap" />
           <Button Classes="ghost" Padding="0" Click="OnOpenRepository" Margin="0,4,0,0">
             <StackPanel Orientation="Horizontal" Spacing="6">
               <PathIcon Width="13" Height="13" Data="{StaticResource Icon.Link}" Foreground="{DynamicResource AccentBrush}" />
@@ -25,18 +25,11 @@
     </Border>
     <Border Classes="card">
       <StackPanel Spacing="10">
-        <TextBlock Classes="h2" Text="Original Filee project" />
-        <TextBlock Classes="muted" TextWrapping="Wrap"
-                   Text="theOdrop keeps Filee's MIT license and credits. Source, issues and sponsorship below go to the upstream project." />
+        <TextBlock Classes="h2" Text="{DynamicResource about.credits_title}" />
+        <TextBlock Classes="muted" TextWrapping="Wrap" Text="{DynamicResource about.credits_text}" />
         <WrapPanel>
-          <Button Classes="accent" Click="OnStar" Margin="0,0,8,0" Content="Star Filee" />
-          <Button Click="OnIssue" Content="Filee issues" Margin="0,0,8,0" />
-          <Button Click="OnSponsor">
-            <StackPanel Orientation="Horizontal" Spacing="6">
-              <PathIcon Width="13" Height="13" Data="{StaticResource Icon.Heart}" Foreground="#D4537E" />
-              <TextBlock Text="Sponsor Filee" />
-            </StackPanel>
-          </Button>
+          <Button Classes="accent" Click="OnIssue" Margin="0,0,8,0" Content="{DynamicResource about.report_issue}" />
+          <Button Click="OnOriginalProject" Content="{DynamicResource about.original_project}" />
         </WrapPanel>
       </StackPanel>
     </Border>

@@ -17,12 +17,11 @@ public partial class AboutPage : UserControl
     }
 
     // A star is given on the repository page itself.
-    private void OnStar(object? sender, RoutedEventArgs e) => OnOpenRepository(sender, e);
-
-    private async void OnSponsor(object? sender, RoutedEventArgs e)
+    // The project theOdrop is based on (credited under its MIT license).
+    private async void OnOriginalProject(object? sender, RoutedEventArgs e)
     {
-        if (TopLevel.GetTopLevel(this) is Window owner)
-            await SponsorWindow.Create(AppHost.Get<ILocalizer>()).ShowDialog(owner);
+        if (TopLevel.GetTopLevel(this) is { } top)
+            await top.Launcher.LaunchUriAsync(new Uri("https://github.com/KnifeLemon/Filee"));
     }
 
     private async void OnIssue(object? sender, RoutedEventArgs e)
