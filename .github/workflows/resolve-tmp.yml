@@ -1,0 +1,18 @@
+# Temporary: resolves the pinned URL, size and SHA-256 of macOS FFmpeg builds. Removed before merging.
+name: Resolve macOS FFmpeg
+on:
+  push:
+    branches: ['release/v1.11.6']
+    paths: ['.github/workflows/resolve-tmp.yml']
+jobs:
+  resolve:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          for arch in arm64 amd64; do for prog in ffmpeg ffprobe; do
+            u="https://ffmpeg.martin-riedl.de/redirect/latest/macos/$arch/release/$prog.zip"
+            final=$(curl -sSL -o /tmp/f.zip -w '%{url_effective}' "$u") || { echo "FAIL $u"; continue; }
+            echo "RESOLVED $arch $prog $final $(stat -c %s /tmp/f.zip) $(sha256sum /tmp/f.zip | cut -d' ' -f1 | tr a-f A-F)"
+            unzip -l /tmp/f.zip | tail -n +4 | head -3
+          done; done
+          curl -sSL "https://ffmpeg.martin-riedl.de/redirect/latest/macos/arm64/release/ffmpeg.zip" -o /tmp/a.zip && cd /tmp && unzip -o -q a.zip && file /tmp/ffmpeg
