@@ -122,7 +122,7 @@ jobs:
           python3 - in <<'PY'
           import struct, sys, zlib
           def png(path, w, h, seed):
-              rows = b"".join(b"\x00" + bytes(((x * 4 + seed) % 256, (y * 5) % 256, (x + y + seed * 3) % 256) for x in range(w)) for y in range(h))
+              rows = b"".join(b"\x00" + bytes(v for x in range(w) for v in ((x * 4 + seed) % 256, (y * 5) % 256, (x + y + seed * 3) % 256)) for y in range(h))
               chunk = lambda t, d: struct.pack(">I", len(d)) + t + d + struct.pack(">I", zlib.crc32(t + d) & 0xFFFFFFFF)
               open(path, "wb").write(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0))
                                      + chunk(b"IDAT", zlib.compress(rows)) + chunk(b"IEND", b""))
