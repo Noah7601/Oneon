@@ -138,7 +138,7 @@ jobs:
           run() {
             local name="$1"; shift
             local out="out/$name"; mkdir -p "$out"
-            if "$cli" convert "$@" -o "$out" --quiet > "out/$name.log" 2>&1 && [ -n "$(find "$out" -type f | head -1)" ]; then
+            if "$cli" convert "$@" -o "$out" > "out/$name.log" 2>&1 && [ -n "$(find "$out" -type f | head -1)" ]; then
               echo "OK   $name: $(cd "$out" && find . -type f | sed 's#^\./##' | tr '\n' ' ')"
             else
               failed=$((failed + 1)); echo "FAIL $name"; sed 's/^/     /' "out/$name.log"
@@ -157,8 +157,9 @@ jobs:
           run merge-pdf          in/photo.pdf in/photo2.pdf --preset merge-pdf
           run zip-all            in/photo.png in/note.txt --preset zip-all
           run extract            in/archive.zip --preset extract
-          for format in jpg webp avif heic gif tiff bmp ico pdf; do run "png-to-$format" in/photo.png --to "$format"; done
-          for format in docx hwpx pdf odt; do run "txt-to-$format" in/note.txt --to "$format"; done
+          # Not here: HEIC output needs FFmpeg and ODT needs Pandoc or LibreOffice (downloadable engines, checked below).
+          for format in jpg webp avif gif tiff bmp ico pdf; do run "png-to-$format" in/photo.png --to "$format"; done
+          for format in docx hwpx pdf; do run "txt-to-$format" in/note.txt --to "$format"; done
           if [ "$failed" -gt 0 ]; then echo "$failed check(s) failed"; exit 1; fi
           echo "All end-to-end checks passed"
 
