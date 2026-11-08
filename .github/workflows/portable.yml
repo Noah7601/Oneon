@@ -162,6 +162,17 @@ jobs:
           if [ "$failed" -gt 0 ]; then echo "$failed check(s) failed"; exit 1; fi
           echo "All end-to-end checks passed"
 
+      # The downloadable engines (calibre, Pandoc, LibreOffice on macOS) installed the way the app's Engines page does,
+      # then run once: a moved download or a changed disk image fails here instead of in the app.
+      - name: Install and run downloadable engines
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          THEODROP_INSTALL_ENGINES: '1'
+        run: |
+          dotnet test tests/Filee.Engines.Tests/Filee.Engines.Tests.csproj --no-build -c Release \
+            --filter "FullyQualifiedName~EngineInstallTests" --logger "console;verbosity=normal"
+
       # Drag-to-install disk image: theOdrop.app, a shortcut to Applications and how to open it the first time
       # (the build is ad-hoc signed, not notarized). Its hash goes into the package's checksum file.
       - name: Build disk image
