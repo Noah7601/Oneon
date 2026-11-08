@@ -95,7 +95,11 @@ public sealed class EngineInstaller
             _logger.LogInformation("Installed engine component {Component} {Version}", component.Id, component.Version);
         }
         if (pending.Count > 0)
+        {
             CopyRuntime(package);
+            if (package.Components.Contains(Companion.Program) && Directory.Exists(FolderOf(Companion.Host)))
+                CopyCompanionPrograms(Companion.Host, FolderOf(Companion.Host));
+        }
     }
 
     /// <summary>Removes the package's folders. Fails if an engine is running (its files are locked).</summary>
@@ -184,6 +188,7 @@ public sealed class EngineInstaller
             {
                 case "zip":
                     ZipFile.ExtractToDirectory(file, staging);
+                    CopyCompanionPrograms(component.Id, SingleRoot(staging));
                     EnsureExecutablePrograms(component.Id, SingleRoot(staging));
                     Replace(component.Id, SingleRoot(staging));
                     break;
@@ -418,6 +423,28 @@ public sealed class EngineInstaller
     /// to the programs of the package's other conda components. Windows looks for DLLs in a program's folder before
     /// System32, so the runtime a program was built for is used even when the PC has none or an older one.
     /// </summary>
+    /// <summary>
+    /// A program downloaded as its own component that has to sit next to another one: macOS FFmpeg builds are one zip
+    /// per program, and FFmpeg needs ffprobe in its folder.
+    /// </summary>
+    private static readonly (string Program, string Host) Companion = ("ffprobe", "ffmpeg");
+
+    /// <summary>Copies the companion program (installed first) into <paramref name="folder"/>, the host's new folder.</summary>
+    private void CopyCompanionPrograms(string id, string folder)
+    {
+        if (id != Companion.Host || !_components.ContainsKey(Companion.Program))
+            return;
+        var name = EngineEnvironment.ProgramName(Companion.Program + ".exe");
+        var source = Path.Combine(FolderOf(Companion.Program), name);
+        if (!File.Exists(source))
+            return;
+        var target = Path.Combine(folder, name);
+        File.Copy(source, target, overwrite: true);
+        if (!OperatingSystem.IsWindows())
+            File.SetUnixFileMode(target, File.GetUnixFileMode(target)
+                | UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
+    }
+
     private void CopyRuntime(EnginePackage package)
     {
         const string runtime = "vcruntime";
