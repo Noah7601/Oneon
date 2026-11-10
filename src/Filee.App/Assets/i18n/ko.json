@@ -683,5 +683,6 @@
   "transfer.no_folder": "보낼 폴더가 정해지지 않았어요. 설정 → 전송에서 폴더를 골라 주세요.",
   "transfer.failed": "보내지 못했어요: {0}",
   "transfer.unsupported": "이 기기에서는 쓸 수 없는 전송 방식이에요.",
-  "transfer.nothing": "보낼 파일이 없어요."
+  "transfer.nothing": "보낼 파일이 없어요.",
+  "donut.send_to": "놓으면 {0} → {1}(으)로 보내기"
 }

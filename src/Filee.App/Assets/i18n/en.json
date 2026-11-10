@@ -683,5 +683,6 @@
   "transfer.no_folder": "No folder chosen for this transfer. Pick one in Settings → Transfer.",
   "transfer.failed": "Could not send: {0}",
   "transfer.unsupported": "This transfer is not available on this device.",
-  "transfer.nothing": "There are no files to send."
+  "transfer.nothing": "There are no files to send.",
+  "donut.send_to": "Drop → {0}, send to {1}"
 }

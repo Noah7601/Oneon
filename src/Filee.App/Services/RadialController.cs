@@ -27,6 +27,7 @@ namespace Filee.App.Services;
 public sealed class RadialController(
     RadialViewModel viewModel,
     ConversionService conversions,
+    TransferService transfers,
     WindowService windows,
     UserDataStore store,
     IPlatformServices platform,
@@ -164,7 +165,9 @@ public sealed class RadialController(
         window.Dropped += (hit, files) =>
         {
             _dropped = true;
-            if (hit.Kind is DonutHitKind.Segment or DonutHitKind.SubSegment)
+            if (hit.Kind == DonutHitKind.SubSegment && donut.IsTransferFan(hit.Index))
+                ConvertAndSend(hit.Index, hit.Sub, files.Count > 0 ? files : viewModel.Files);
+            else if (hit.Kind is DonutHitKind.Segment or DonutHitKind.SubSegment)
                 Convert(hit.Index, hit.Sub, files.Count > 0 ? files : viewModel.Files);
             else
                 Close();
@@ -185,6 +188,7 @@ public sealed class RadialController(
         donut.Ticked += (_, _) => platform.PerformTick();
         donut.SegmentInvoked += (_, index) => Convert(index, -1, viewModel.Files);
         donut.SubSegmentInvoked += (_, hit) => Convert(hit.Group, hit.Sub, viewModel.Files);
+        donut.TransferInvoked += (_, hit) => ConvertAndSend(hit.Index, hit.Transfer, viewModel.Files);
         donut.CenterInvoked += (_, _) => Close();
         donut.SegmentContextRequested += async (_, index) => await EditPresetAsync(index);
         donut.SubSegmentContextRequested += async (_, hit) => await EditPresetAsync(hit.Group, hit.Sub);
@@ -233,6 +237,33 @@ public sealed class RadialController(
             return;
         }
         ShowProgress(job);
+    }
+
+    /// <summary>
+    /// Transfer zone: converts with preset slice <paramref name="index"/> as usual (progress ring, toast), then sends
+    /// the result to transfer slice <paramref name="transfer"/>. The "send?" question comes after the conversion, when
+    /// there is something to send.
+    /// </summary>
+    private void ConvertAndSend(int index, int transfer, IReadOnlyList<string> files)
+    {
+        if (viewModel.TransferAt(transfer) is not { } target || viewModel.PresetAt(index, -1) is not { } preset || files.Count == 0)
+        {
+            Close();
+            return;
+        }
+        log.LogInformation("Converting {Count} file(s) with preset {Preset}, then sending to {Kind}",
+            files.Count, preset.Id, target.Kind);
+        var job = conversions.Start(files, preset, showInToast: false);
+        if (job is null)
+        {
+            Close();
+            return;
+        }
+        if (_window is null)
+            Close();
+        else
+            ShowProgress(job);
+        _ = transfers.SendAfterAsync(job, target);
     }
 
     // ───────── Progress ring ─────────

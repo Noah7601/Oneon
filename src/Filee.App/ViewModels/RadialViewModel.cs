@@ -15,6 +15,9 @@ public sealed partial class RadialViewModel(UserDataStore store, ILocalizer loc,
 {
     public const string AirDropAction = "airdrop";
     [ObservableProperty] private IReadOnlyList<DonutItem> _items = [];
+
+    /// <summary>Transfer zone slices (Settings → Transfers), shown beyond a preset slice on the conversion wheel only.</summary>
+    [ObservableProperty] private IReadOnlyList<DonutItem>? _transferItems;
     [ObservableProperty] private string _centerTitle = "";
     [ObservableProperty] private string? _centerSubtitle;
     [ObservableProperty] private double _outerRadius = 150;
@@ -114,6 +117,7 @@ public sealed partial class RadialViewModel(UserDataStore store, ILocalizer loc,
         {
             Presets = [];
             _subPresets = [];
+            TransferItems = null;
             Items = OperatingSystem.IsMacOS()
                 ? [new DonutItem { Id = AirDropAction, Label = loc["actions.airdrop"], Caption = loc["actions.share"] }]
                 : [];
@@ -123,6 +127,7 @@ public sealed partial class RadialViewModel(UserDataStore store, ILocalizer loc,
             CenterSubtitle = clickMode ? loc["donut.close_hint"] : null;
             return;
         }
+        TransferItems = _wheel == WheelMode.Convert ? LoadTransfers() : null;
         var toolIds = BuiltInData.ToolPresetIds.ToHashSet();
         var presetIds = _wheel == WheelMode.Tools ? BuiltInData.ToolPresetIds : (profile?.PresetIds ?? []).Where(id => !toolIds.Contains(id));
         Presets = presetIds
@@ -185,6 +190,9 @@ public sealed partial class RadialViewModel(UserDataStore store, ILocalizer loc,
     {
         if (centerHot)
             CenterSubtitle = loc["donut.cancel"];
+        else if (index >= 0 && index < Items.Count && !Items[index].IsGroup && sub >= 0 &&
+                 TransferItems is { } transfers && sub < transfers.Count)
+            CenterSubtitle = loc.Format("donut.send_to", Items[index].Label, transfers[sub].Label);
         else if (index >= 0 && index < Items.Count && Items[index].Children is { Count: > 0 } children &&
                  (sub >= 0 || Items[index].IsEnabled))
             CenterSubtitle = sub >= 0 && sub < children.Count
@@ -201,7 +209,33 @@ public sealed partial class RadialViewModel(UserDataStore store, ILocalizer loc,
     }
 
     /// <summary>Click mode, before the window is placed: room for a group's ring only if this donut has a group.</summary>
-    public void FitToThisDonut() => ReserveSubRing = Items.Any(item => item.IsGroup);
+    public void FitToThisDonut() => ReserveSubRing = Items.Any(item => item.IsGroup) || TransferItems is { Count: > 0 };
+
+    /// <summary>The enabled transfer targets as donut slices, in order; "Google Drive" is greyed when it isn't set up.</summary>
+    private IReadOnlyList<DonutItem>? LoadTransfers()
+    {
+        var targets = store.Settings.Transfers.Where(t => t.Enabled).ToList();
+        if (targets.Count == 0)
+            return null;
+        return targets.Select(t =>
+        {
+            var missing = t.Kind == TransferKind.GoogleDrive && Filee.Core.Transfer.TransferFiles.FindMyDrive() is null;
+            return new DonutItem
+            {
+                Id = t.Id,
+                Label = !string.IsNullOrWhiteSpace(t.Name) ? t.Name : loc[$"transfer.kind.{t.Kind}"],
+                IsEnabled = !missing,
+                DisabledReason = missing ? loc["transfer.no_drive"] : null,
+            };
+        }).ToList();
+    }
+
+    /// <summary>The transfer target behind slice <paramref name="sub"/> of the transfer zone, or null.</summary>
+    public TransferTarget? TransferAt(int sub)
+    {
+        var targets = store.Settings.Transfers.Where(t => t.Enabled).ToList();
+        return sub >= 0 && sub < targets.Count ? targets[sub] : null;
+    }
 
     private void ApplyAppearance()
     {

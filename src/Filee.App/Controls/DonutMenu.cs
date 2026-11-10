@@ -65,6 +65,14 @@ public sealed partial class DonutMenu : Control
         AvaloniaProperty.Register<DonutMenu, bool>(nameof(IsEditMode));
     public static readonly StyledProperty<bool> AllowContextEditProperty =
         AvaloniaProperty.Register<DonutMenu, bool>(nameof(AllowContextEdit));
+    /// <summary>
+    /// Transfer zone: the places a converted file can be sent (Google Drive, a folder, the clipboard…). Resting on (or
+    /// heading outward from) a preset slice fans these out beyond it, drawn as a neon ring; dropping there converts with
+    /// that slice and then sends the result. Null or empty: no transfer zone.
+    /// </summary>
+    public static readonly StyledProperty<IReadOnlyList<DonutItem>?> TransferItemsProperty =
+        AvaloniaProperty.Register<DonutMenu, IReadOnlyList<DonutItem>?>(nameof(TransferItems));
+
     public static readonly StyledProperty<bool> ReserveSubRingProperty =
         AvaloniaProperty.Register<DonutMenu, bool>(nameof(ReserveSubRing));
 
@@ -124,7 +132,7 @@ public sealed partial class DonutMenu : Control
 
     static DonutMenu()
     {
-        AffectsMeasure<DonutMenu>(OuterRadiusProperty, ReserveSubRingProperty);
+        AffectsMeasure<DonutMenu>(OuterRadiusProperty, ReserveSubRingProperty, TransferItemsProperty);
         AffectsRender<DonutMenu>(HoleRatioProperty, SliceOpacityProperty, CenterTitleProperty, CenterSubtitleProperty,
             IsEditModeProperty, SliceBrushProperty, SliceBorderBrushProperty, CenterBrushProperty, AccentBrushProperty,
             OnAccentBrushProperty, ForegroundProperty, SecondaryForegroundProperty, SuccessBrushProperty);
@@ -155,6 +163,7 @@ public sealed partial class DonutMenu : Control
     /// so the window doesn't grow, and the donut move, when they do.
     /// </summary>
     public bool ReserveSubRing { get => GetValue(ReserveSubRingProperty); set => SetValue(ReserveSubRingProperty, value); }
+    public IReadOnlyList<DonutItem>? TransferItems { get => GetValue(TransferItemsProperty); set => SetValue(TransferItemsProperty, value); }
 
     public IBrush? SliceBrush { get => GetValue(SliceBrushProperty); set => SetValue(SliceBrushProperty, value); }
     public IBrush? SliceBorderBrush { get => GetValue(SliceBorderBrushProperty); set => SetValue(SliceBorderBrushProperty, value); }
@@ -176,6 +185,9 @@ public sealed partial class DonutMenu : Control
 
     /// <summary>A slice of a group's ring was clicked: (group, slice in the group).</summary>
     public event EventHandler<(int Group, int Sub)>? SubSegmentInvoked;
+
+    /// <summary>A slice of the transfer zone was clicked or chosen: convert with preset slice Index, then send to Transfer.</summary>
+    public event EventHandler<(int Index, int Transfer)>? TransferInvoked;
 
     /// <summary>The hovered slice of a group's ring, or -1. <see cref="ActiveIndexChanged"/> is raised when it changes.</summary>
     public int ActiveSubIndex => _subHover;
@@ -394,7 +406,8 @@ public sealed partial class DonutMenu : Control
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        var side = SideFor(OuterRadius, ReserveSubRing || (!IsEditMode && Items?.Any(i => i.IsGroup) == true));
+        var side = SideFor(OuterRadius, ReserveSubRing ||
+            (!IsEditMode && (Items?.Any(i => i.IsGroup) == true || TransferItems is { Count: > 0 })));
         return new Size(side, side);
     }
 
@@ -460,7 +473,7 @@ public sealed partial class DonutMenu : Control
             _ => -1,
         });
         // On a group's ring, why that slice (not the group) is disabled.
-        var hovered = hit.Kind == DonutHitKind.SubSegment ? Items![hit.Index].Children![hit.Sub]
+        var hovered = hit.Kind == DonutHitKind.SubSegment ? FanOf(hit.Index)![hit.Sub]
             : _hoverIndex >= 0 ? Items![_hoverIndex] : null;
         ToolTip.SetTip(this, hovered is { IsEnabled: false } ? hovered.DisabledReason : null);
     }
@@ -547,8 +560,8 @@ public sealed partial class DonutMenu : Control
             case DonutHitKind.Outside when !IsEditMode && _expanded >= 0:
                 CollapseGroup(); // clicked past the ring
                 break;
-            case DonutHitKind.SubSegment when !IsEditMode && Items![hit.Index].Children![hit.Sub].IsEnabled:
-                SubSegmentInvoked?.Invoke(this, (hit.Index, hit.Sub));
+            case DonutHitKind.SubSegment when !IsEditMode && FanOf(hit.Index)![hit.Sub].IsEnabled:
+                InvokeFan(hit.Index, hit.Sub);
                 break;
             case DonutHitKind.Center when !IsEditMode:
                 CenterInvoked?.Invoke(this, EventArgs.Empty);
@@ -870,7 +883,7 @@ public sealed partial class DonutMenu : Control
             DrawPreview(context, center, r1, r2, typeface, typefaceRegular);
 
         var reaching = _expanded >= 0 ? _expanded : _pendingGroup;
-        if (!IsEditMode && reaching >= 0 && reaching < n && Items![reaching].Children is { Count: > 0 } reachable)
+        if (!IsEditMode && reaching >= 0 && reaching < n && FanOf(reaching) is { Count: > 0 } reachable)
             DrawHitBackdrop(context, center, reaching, reachable.Count);
         if (!IsEditMode && _shownExpanded >= 0 && _shownExpanded < n && _expand.Value > 0.01)
             DrawSubRing(context, center, typeface, typefaceRegular);
@@ -920,15 +933,15 @@ public sealed partial class DonutMenu : Control
     }
 
     private void DrawLabel(DrawingContext context, DonutItem item, Point center, double radius, double angle,
-        double maxWidth, double maxHeight, Typeface bold, Typeface regular, bool hot)
+        double maxWidth, double maxHeight, Typeface bold, Typeface regular, bool hot, IBrush? hotForeground = null)
     {
-        var foreground = hot ? OnAccentBrush : item.IsEnabled ? Foreground : SecondaryForeground;
+        var foreground = hot ? hotForeground ?? OnAccentBrush : item.IsEnabled ? Foreground : SecondaryForeground;
         var width = Math.Clamp(maxWidth, 30, 120);
         var label = MakeText(item.Label, bold, 13, foreground, width, maxLines: 2);
         var showCaption = !string.IsNullOrEmpty(item.Caption) &&
                           !string.Equals(item.Caption, item.Label, StringComparison.OrdinalIgnoreCase) &&
                           label.Height + 14 < maxHeight;
-        var caption = showCaption ? MakeText(item.Caption!, regular, 10.5, hot ? OnAccentBrush : SecondaryForeground, width) : null;
+        var caption = showCaption ? MakeText(item.Caption!, regular, 10.5, hot ? hotForeground ?? OnAccentBrush : SecondaryForeground, width) : null;
 
         var total = label.Height + (caption?.Height ?? 0);
         var anchor = DonutGeometry.PointAt(center, radius, angle);
