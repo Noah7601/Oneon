@@ -153,6 +153,26 @@ internal static class NativeMethods
         return true;
     }
 
+    /// <summary>Writes the files to the general pasteboard as file URLs, like ⌘C in Finder.</summary>
+    internal static bool CopyFilesToPasteboard(IReadOnlyList<string> files)
+    {
+        using var pool = new AutoreleasePool();
+        var items = Send(objc_getClass("NSMutableArray"), sel_registerName("arrayWithCapacity:"), files.Count);
+        foreach (var path in files.Where(File.Exists))
+        {
+            var value = SendString(objc_getClass("NSString"), sel_registerName("stringWithUTF8String:"), path);
+            var url = Send(objc_getClass("NSURL"), sel_registerName("fileURLWithPath:"), value);
+            SendVoid(items, sel_registerName("addObject:"), url);
+        }
+        if (Send(items, sel_registerName("count")) == 0)
+            return false;
+        var pasteboard = Send(objc_getClass("NSPasteboard"), sel_registerName("generalPasteboard"));
+        if (pasteboard == 0)
+            return false;
+        Send(pasteboard, sel_registerName("clearContents"));
+        return SendBool(pasteboard, sel_registerName("writeObjects:"), items);
+    }
+
     private readonly struct AutoreleasePool : IDisposable
     {
         private readonly nint _pool = Send(Send(objc_getClass("NSAutoreleasePool"), sel_registerName("alloc")), sel_registerName("init"));

@@ -103,6 +103,8 @@ public sealed class MacOSPlatformServices : IPlatformServices
 
     public bool ShareFilesViaAirDrop(IReadOnlyList<string> files) => NativeMethods.ShareFilesViaAirDrop(files);
 
+    public bool CopyFilesToClipboard(IReadOnlyList<string> files) => NativeMethods.CopyFilesToPasteboard(files);
+
     /// <summary>Set once the tick failed: it is a nicety, so it switches itself off instead of crashing the app.</summary>
     private bool _tickBroken;
 

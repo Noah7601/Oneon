@@ -82,6 +82,9 @@ public sealed class AppSettings
 
     public List<TriggerGesture> Triggers { get; set; } = TriggerGesture.Defaults();
 
+    /// <summary>Slices of the transfer ring (outer ring of the donut), in order.</summary>
+    public List<TransferTarget> Transfers { get; set; } = TransferTarget.Defaults();
+
     /// <summary>Process names (without .exe) in which gestures never trigger.</summary>
     public List<string> ExcludedProcesses { get; set; } = [];
 
