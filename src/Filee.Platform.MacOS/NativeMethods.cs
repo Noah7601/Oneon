@@ -261,4 +261,21 @@ internal static class NativeMethods
 
     [DllImport(ObjC, EntryPoint = "objc_msgSend")]
     private static extern void SendInteger(nint receiver, nint selector, nint value);
+
+    [DllImport(ObjC, EntryPoint = "objc_msgSend")]
+    private static extern void SendInteger2(nint receiver, nint selector, nint first, nint second);
+
+    /// <summary>
+    /// One "alignment" tap on a Force Touch trackpad (NSHapticFeedbackPatternAlignment = 1,
+    /// NSHapticFeedbackPerformanceTimeNow = 1). Silent on Macs or mice without haptics.
+    /// </summary>
+    internal static void PerformHapticTick()
+    {
+        var manager = objc_getClass("NSHapticFeedbackManager");
+        if (manager == 0)
+            return;
+        var performer = Send(manager, sel_registerName("defaultPerformer"));
+        if (performer != 0)
+            SendInteger2(performer, sel_registerName("performFeedbackPattern:performanceTime:"), 1, 1);
+    }
 }

@@ -59,6 +59,12 @@ public interface IPlatformServices
     bool ShareFilesViaAirDrop(IReadOnlyList<string> files) => false;
 
     /// <summary>
+    /// A short "tick" when the highlight moves to another slice, like an iPod click wheel. macOS plays it on a
+    /// Force Touch trackpad; elsewhere it does nothing.
+    /// </summary>
+    void PerformTick() { }
+
+    /// <summary>
     /// Puts an always-on-top window back at the top of the z-order without activating it. Windows can push such a
     /// window below normal ones (seen after the Photos app opened) while it still reports itself as topmost.
     /// </summary>

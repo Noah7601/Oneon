@@ -195,6 +195,21 @@ public sealed partial class DonutMenu : Control
     /// <summary>The emphasised slice changed (-1 = none). Useful to update the centre text.</summary>
     public event EventHandler<int>? ActiveIndexChanged;
 
+    /// <summary>Raised when the highlight lands on another slice (not when it leaves the ring): one click-wheel "tick".</summary>
+    public event EventHandler? Ticked;
+
+    /// <summary>Extra pop-out speed given to a slice as the highlight lands on it, so each step snaps like a detent.</summary>
+    private const double TickKick = 5;
+
+    private void Tick(int index)
+    {
+        if (index < 0)
+            return;
+        if (Motion.Enabled && index < _hover.Length)
+            _hover[index].Velocity += TickKick;
+        Ticked?.Invoke(this, EventArgs.Empty);
+    }
+
     private int Count => Items?.Count ?? 0;
     private Point Center => new(Bounds.Width / 2, Bounds.Height / 2);
     private double InnerRadius => OuterRadius * Math.Clamp(HoleRatio, 0.2, 0.75);
@@ -548,6 +563,7 @@ public sealed partial class DonutMenu : Control
             return;
         _hoverIndex = index;
         ActiveIndexChanged?.Invoke(this, ActiveIndex);
+        Tick(index);
         StartAnimation();
     }
 

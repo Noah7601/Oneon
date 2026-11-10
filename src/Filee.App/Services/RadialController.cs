@@ -182,6 +182,7 @@ public sealed class RadialController(
         };
 
         donut.ActiveIndexChanged += (_, index) => viewModel.ShowHint(index, donut.ActiveSubIndex, donut.IsCenterHot);
+        donut.Ticked += (_, _) => platform.PerformTick();
         donut.SegmentInvoked += (_, index) => Convert(index, -1, viewModel.Files);
         donut.SubSegmentInvoked += (_, hit) => Convert(hit.Group, hit.Sub, viewModel.Files);
         donut.CenterInvoked += (_, _) => Close();

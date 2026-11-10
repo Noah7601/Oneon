@@ -195,6 +195,8 @@ public sealed partial class DonutMenu
             return;
         _subHover = sub;
         ActiveIndexChanged?.Invoke(this, ActiveIndex);
+        if (sub >= 0)
+            Ticked?.Invoke(this, EventArgs.Empty); // no pop-out kick: the sub-ring has no per-slice springs
         StartAnimation();
     }
 
