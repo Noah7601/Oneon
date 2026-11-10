@@ -103,7 +103,11 @@ public sealed class MacOSPlatformServices : IPlatformServices
 
     public bool ShareFilesViaAirDrop(IReadOnlyList<string> files) => NativeMethods.ShareFilesViaAirDrop(files);
 
-    public void PerformTick() => NativeMethods.PerformHapticTick();
+    public void PerformTick()
+    {
+        NativeMethods.PerformHapticTick();
+        NativeMethods.PlayTickSound();
+    }
 
     public void OpenAccessibilitySettings() =>
         Run("/usr/bin/open", ["x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"], 10_000);

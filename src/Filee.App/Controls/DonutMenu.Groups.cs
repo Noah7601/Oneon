@@ -216,6 +216,36 @@ public sealed partial class DonutMenu
         return true;
     }
 
+    /// <summary>Scroll amount (in wheel notches) that moves the highlight by one slice.</summary>
+    private const double WheelStep = 1.0;
+
+    private double _wheelRest;
+
+    /// <summary>
+    /// Click wheel: scrolling (mouse wheel or two fingers on a trackpad) turns the highlight around the donut, or
+    /// around an open group's ring, one slice per notch. Down/right is clockwise. Enter or a click converts.
+    /// </summary>
+    protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
+    {
+        base.OnPointerWheelChanged(e);
+        if (IsEditMode || _progressMode || Count == 0)
+            return;
+        var delta = Math.Abs(e.Delta.Y) >= Math.Abs(e.Delta.X) ? -e.Delta.Y : e.Delta.X;
+        if (Math.Sign(delta) != Math.Sign(_wheelRest))
+            _wheelRest = 0; // changing direction starts a fresh notch
+        _wheelRest += delta;
+        while (Math.Abs(_wheelRest) >= WheelStep)
+        {
+            var clockwise = _wheelRest > 0;
+            _wheelRest -= clockwise ? WheelStep : -WheelStep;
+            if (ActiveIndex < 0 && ExpandedChildren is null)
+                SetHover(clockwise ? 0 : Count - 1); // first notch picks a slice
+            else
+                HandleKey(clockwise ? Key.Down : Key.Up);
+        }
+        e.Handled = true;
+    }
+
     private bool HandleKeyCore(Key key, KeyModifiers modifiers)
     {
         if (IsEditMode || _progressMode || Count == 0)

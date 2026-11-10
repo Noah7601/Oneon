@@ -269,6 +269,40 @@ internal static class NativeMethods
     /// One "alignment" tap on a Force Touch trackpad (NSHapticFeedbackPatternAlignment = 1,
     /// NSHapticFeedbackPerformanceTimeNow = 1). Silent on Macs or mice without haptics.
     /// </summary>
+    [DllImport(ObjC, EntryPoint = "objc_msgSend")]
+    private static extern void SendFloat(nint receiver, nint selector, float value);
+
+    /// <summary>System sound used for the tick (any name in /System/Library/Sounds) and its volume (0..1).</summary>
+    private const string TickSoundName = "Tink";
+    private const float TickVolume = 0.25f;
+
+    /// <summary>Shortest gap between two tick sounds, so a fast spin doesn't turn into a buzz.</summary>
+    private static readonly TimeSpan TickSoundGap = TimeSpan.FromMilliseconds(35);
+
+    private static nint _tickSound;
+    private static readonly Stopwatch TickClock = Stopwatch.StartNew();
+    private static TimeSpan _lastTickSound = TimeSpan.MinValue;
+
+    /// <summary>A short, quiet click from the system sounds, restarted on every tick.</summary>
+    internal static void PlayTickSound()
+    {
+        var now = TickClock.Elapsed;
+        if (now - _lastTickSound < TickSoundGap)
+            return;
+        _lastTickSound = now;
+        if (_tickSound == 0)
+        {
+            var name = SendString(objc_getClass("NSString"), sel_registerName("stringWithUTF8String:"), TickSoundName);
+            var sound = Send(objc_getClass("NSSound"), sel_registerName("soundNamed:"), name);
+            if (sound == 0)
+                return;
+            _tickSound = Send(sound, sel_registerName("retain")); // kept for the life of the app
+            SendFloat(_tickSound, sel_registerName("setVolume:"), TickVolume);
+        }
+        SendVoid(_tickSound, sel_registerName("stop")); // restart instead of skipping when still playing
+        SendBool(_tickSound, sel_registerName("play"));
+    }
+
     internal static void PerformHapticTick()
     {
         var manager = objc_getClass("NSHapticFeedbackManager");

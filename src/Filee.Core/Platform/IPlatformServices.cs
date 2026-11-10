@@ -59,8 +59,8 @@ public interface IPlatformServices
     bool ShareFilesViaAirDrop(IReadOnlyList<string> files) => false;
 
     /// <summary>
-    /// A short "tick" when the highlight moves to another slice, like an iPod click wheel. macOS plays it on a
-    /// Force Touch trackpad; elsewhere it does nothing.
+    /// A short "tick" when the highlight moves to another slice, like an iPod click wheel. macOS plays a quiet
+    /// click sound and, on a Force Touch trackpad, a haptic tap; elsewhere it does nothing.
     /// </summary>
     void PerformTick() { }
 
