@@ -11,7 +11,7 @@ namespace Filee.Platform.MacOS;
 public static class MacOSServicesProvider
 {
     /// <summary>The service's menu title in Info.plist; ServicesMenu.strings in each .lproj translates it.</summary>
-    public const string MenuItem = "Convert with theOdrop";
+    public const string MenuItem = "Convert with Oneon";
 
     /// <summary>The selector macOS sends, without its argument labels (NSMessage in Info.plist).</summary>
     public const string Message = "convertFiles";
@@ -37,10 +37,10 @@ public static class MacOSServicesProvider
         if (_provider != 0)
             return;
         NativeLibrary.Load(AppKit);
-        var type = objc_getClass("theOdropServicesProvider");
+        var type = objc_getClass("OneonServicesProvider");
         if (type == 0)
         {
-            type = objc_allocateClassPair(objc_getClass("NSObject"), "theOdropServicesProvider", 0);
+            type = objc_allocateClassPair(objc_getClass("NSObject"), "OneonServicesProvider", 0);
             class_addMethod(type, sel_registerName(Message + ":userData:error:"), Marshal.GetFunctionPointerForDelegate(Method), "v@:@@^@");
             objc_registerClassPair(type);
         }

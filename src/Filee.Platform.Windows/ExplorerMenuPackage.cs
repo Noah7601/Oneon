@@ -46,7 +46,7 @@ public static class ExplorerMenuPackage
     public const string PackageFileName = "FileeExplorerMenu.msix";
 
     /// <summary>
-    /// File in the data folder (%APPDATA%\theOdrop, TITLE_FILE in FileeExplorerMenu.c) whose first line is the menu title
+    /// File in the data folder (%APPDATA%\Oneon, TITLE_FILE in FileeExplorerMenu.c) whose first line is the menu title
     /// in the UI language. It exists while the Explorer menu setting is on; without it the DLL hides the entry.
     /// </summary>
     public const string TitleFileName = "explorer-menu.txt";

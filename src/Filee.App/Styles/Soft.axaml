@@ -1,5 +1,5 @@
 <!--
-  theOdrop Apple-like look: neutral system greys, system blue, calm motion, macOS type scale.
+  Oneon Apple-like look: neutral system greys, system blue, calm motion, macOS type scale.
   Colours that depend on light/dark live in ThemeDictionaries below; the accent colour, corner radii and
   the UI font are written at runtime by ThemeService (so users can customise them).
 -->

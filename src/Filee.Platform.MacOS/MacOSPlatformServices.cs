@@ -48,7 +48,7 @@ public sealed class MacOSPlatformServices : IPlatformServices
         {
             LastSelectionError = ex.Message;
             Trace.TraceWarning($"Reading Finder selection failed: {ex.Message}");
-            throw new InvalidOperationException($"Could not read Finder selection. Allow theOdrop to control Finder in System Settings > Privacy & Security > Automation. {ex.Message}", ex);
+            throw new InvalidOperationException($"Could not read Finder selection. Allow Oneon to control Finder in System Settings > Privacy & Security > Automation. {ex.Message}", ex);
         }
     }
 
@@ -154,7 +154,7 @@ public sealed class MacOSPlatformServices : IPlatformServices
         catch (Exception ex)
         {
             _tickBroken = true;
-            Console.Error.WriteLine($"theOdrop: tick feedback turned off: {ex.GetType().Name}: {ex.Message}");
+            Console.Error.WriteLine($"Oneon: tick feedback turned off: {ex.GetType().Name}: {ex.Message}");
         }
     }
 
@@ -175,7 +175,7 @@ public sealed class MacOSPlatformServices : IPlatformServices
     private static void RequireExecutable(string path)
     {
         if (!Path.IsPathFullyQualified(path) || !File.Exists(path))
-            throw new FileNotFoundException("theOdrop's executable must have an existing absolute path.", path);
+            throw new FileNotFoundException("Oneon's executable must have an existing absolute path.", path);
     }
 
     private static string Run(string executable, IReadOnlyList<string> arguments, int timeoutMs)

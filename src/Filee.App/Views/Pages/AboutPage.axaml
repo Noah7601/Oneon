@@ -11,7 +11,7 @@
       <StackPanel Orientation="Horizontal" Spacing="18">
         <Image Source="avares://Filee/Assets/Icons/theodrop.png" Width="72" Height="72" />
         <StackPanel VerticalAlignment="Center" Spacing="4">
-          <TextBlock Text="theOdrop" FontSize="24" FontWeight="Bold" />
+          <TextBlock Text="Oneon" FontSize="24" FontWeight="Bold" />
           <TextBlock Classes="muted" Text="{Binding Version}" />
           <TextBlock Classes="muted" Text="Based on Filee · MIT License" />
           <Button Classes="ghost" Padding="0" Click="OnOpenRepository" Margin="0,4,0,0">
@@ -27,7 +27,7 @@
       <StackPanel Spacing="10">
         <TextBlock Classes="h2" Text="Original Filee project" />
         <TextBlock Classes="muted" TextWrapping="Wrap"
-                   Text="theOdrop keeps Filee's MIT license and credits. Source, issues and sponsorship below go to the upstream project." />
+                   Text="Oneon keeps Filee's MIT license and credits. Source, issues and sponsorship below go to the upstream project." />
         <WrapPanel>
           <Button Classes="accent" Click="OnStar" Margin="0,0,8,0" Content="Star Filee" />
           <Button Click="OnIssue" Content="Filee issues" Margin="0,0,8,0" />

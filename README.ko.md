@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="src/Filee.App/Assets/Icons/theodrop.png" alt="theOdrop" width="128">
+  <img src="src/Filee.App/Assets/Icons/theodrop.png" alt="Oneon" width="128">
 </p>
 
-<h1 align="center">theOdrop</h1>
+<h1 align="center">Oneon</h1>
 
 <p align="center">
   <b>파일을 끌어서 원하는 형식에 놓으면 변환 끝.</b><br>
@@ -36,22 +36,22 @@
 
 | 내 컴퓨터 | 파일 |
 |---|---|
-| Apple Silicon 맥 (M1 이상) | `theOdrop-<version>-osx-arm64.dmg` |
-| Intel 맥 | `theOdrop-<version>-osx-x64.dmg` |
-| Windows 10/11 (Intel/AMD) | `theOdrop-<version>-win-Setup.exe` (또는 `win-Portable.zip`) |
+| Apple Silicon 맥 (M1 이상) | `Oneon-<version>-osx-arm64.dmg` |
+| Intel 맥 | `Oneon-<version>-osx-x64.dmg` |
+| Windows 10/11 (Intel/AMD) | `Oneon-<version>-win-Setup.exe` (또는 `win-Portable.zip`) |
 
 **macOS 14 이상**
-1. `.dmg`를 열고 theOdrop을 응용 프로그램 폴더로 끌어다 놓으세요.
+1. `.dmg`를 열고 Oneon을 응용 프로그램 폴더로 끌어다 놓으세요.
 2. Apple 공증을 받지 않은 앱이라 처음 한 번은 실행이 막혀요. **완료**를 누른 뒤
    시스템 설정 → 개인정보 보호 및 보안에서 **그래도 열기**를 누르세요.
 
 **Windows 10/11**
-1. `theOdrop-<version>-win-Setup.exe`를 실행하세요.
+1. `Oneon-<version>-win-Setup.exe`를 실행하세요.
 2. 코드 서명이 없어서 "Windows의 PC 보호" 창이 뜰 수 있어요. **추가 정보** → **실행**을 누르세요.
 3. 설치할 때 우클릭 메뉴(Windows 11), 로그인 시 자동 실행, 추가 엔진을 고를 수 있어요.
 
-theOdrop은 이 저장소에서 업데이트를 확인하고, 업데이트해도 설정은 그대로 유지돼요.
-모든 파일의 SHA-256 해시는 `theOdrop-<version>-SHA256SUMS.txt`에 있어요.
+Oneon은 이 저장소에서 업데이트를 확인하고, 업데이트해도 설정은 그대로 유지돼요.
+모든 파일의 SHA-256 해시는 `Oneon-<version>-SHA256SUMS.txt`에 있어요.
 
 ## 기능
 
@@ -85,9 +85,9 @@ dotnet test
 
 ## 라이선스와 출처
 
-theOdrop은 김명구(KnifeLemon)와 기여자들이 만든 [Filee](https://github.com/KnifeLemon/Filee)의 포크예요.
-변환 엔진은 Filee의 것이고, theOdrop은 디자인, 아이콘, macOS·Windows 배포 방식을 따로 만들었어요.
+Oneon은 김명구(KnifeLemon)와 기여자들이 만든 [Filee](https://github.com/KnifeLemon/Filee)의 포크예요.
+변환 엔진은 Filee의 것이고, Oneon은 디자인, 아이콘, macOS·Windows 배포 방식을 따로 만들었어요.
 
-MIT 라이선스, © 2026 Myeonggu Kim (KnifeLemon), Filee 기여자, theOdrop 기여자. [LICENSE](LICENSE)와
+MIT 라이선스, © 2026 Myeonggu Kim (KnifeLemon), Filee 기여자, Oneon 기여자. [LICENSE](LICENSE)와
 [NOTICE.md](NOTICE.md)를 참고하세요. 함께 들어 있는 외부 구성 요소는 각자의 라이선스를 따라요:
 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).

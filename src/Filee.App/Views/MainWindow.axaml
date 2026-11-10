@@ -4,7 +4,7 @@
         xmlns:vm="using:Filee.App.ViewModels"
         x:Class="Filee.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Title="theOdrop"
+        Title="Oneon"
         Icon="avares://Filee/Assets/Icons/theodrop.ico"
         Width="1080" Height="760" MinWidth="820" MinHeight="560"
         Background="Transparent"
@@ -19,7 +19,7 @@
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="12" Margin="8,0,8,24">
           <Image Source="avares://Filee/Assets/Icons/theodrop.png" Width="36" Height="36" />
           <StackPanel VerticalAlignment="Center">
-            <TextBlock Text="theOdrop" FontSize="18" FontWeight="SemiBold" />
+            <TextBlock Text="Oneon" FontSize="18" FontWeight="SemiBold" />
             <TextBlock Classes="caption" Text="{DynamicResource app.tagline}" />
           </StackPanel>
         </StackPanel>

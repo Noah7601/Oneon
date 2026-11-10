@@ -1,2 +1,2 @@
-/* Finder's right-click menu: the title of theOdrop's service (NSServices in Info.plist). */
-"Convert with theOdrop" = "用 theOdrop 转换";
+/* Finder's right-click menu: the title of Oneon's service (NSServices in Info.plist). */
+"Convert with Oneon" = "用 Oneon 转换";

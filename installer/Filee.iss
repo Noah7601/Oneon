@@ -22,11 +22,11 @@
   #error PublishDir is not defined: build with build/build-installer.ps1
 #endif
 
-#define AppName "theOdrop"
+#define AppName "Oneon"
 #define AppExe "Filee.exe"
 #define RepositoryUrl "https://github.com/Noah7601/theodrop"
-; Never change: Windows finds the installed theOdrop by this id (uninstall key "{<id>}_is1").
-; theOdrop has its own id, so installing it never replaces or uninstalls an installed Filee.
+; Never change: Windows finds the installed Oneon by this id (uninstall key "{<id>}_is1").
+; Oneon has its own id, so installing it never replaces or uninstalls an installed Filee.
 #define AppGuid "B41C2496-6A0E-4D52-8F88-969463EF2B1C"
 
 [Setup]
@@ -34,11 +34,11 @@ AppId={{{#AppGuid}}
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
-AppPublisher=theOdrop contributors
+AppPublisher=Oneon contributors
 AppPublisherURL={#RepositoryUrl}
 AppSupportURL={#RepositoryUrl}/issues
 AppUpdatesURL={#RepositoryUrl}/releases
-AppCopyright=Copyright (c) theOdrop contributors; Filee portions copyright their contributors
+AppCopyright=Copyright (c) Oneon contributors; Filee portions copyright their contributors
 VersionInfoVersion={#AppVersion}
 VersionInfoProductName={#AppName}
 SetupArchitecture=x64
@@ -56,7 +56,7 @@ WizardStyle=modern dynamic
 WizardImageFile=wizard-light.png
 WizardImageFileDynamicDark=wizard-dark.png
 WizardSmallImageFile=..\src\Filee.App\Assets\Icons\theodrop.png
-OutputBaseFilename=theOdrop-{#AppVersion}-win-Setup
+OutputBaseFilename=Oneon-{#AppVersion}-win-Setup
 Compression=lzma2/ultra64
 SolidCompression=yes
 ; Filee is closed by PrepareToInstall; Restart Manager is only the fallback, and only for Filee.exe: with DLLs in the
@@ -86,24 +86,24 @@ zhcn.TaskModernMenu=也显示在 Windows 11 主菜单中，而不仅是“显示
 en.StatusRemovingOld=Removing the previous version (settings and engines are kept)...
 ko.StatusRemovingOld=이전 버전을 정리하는 중 (설정과 엔진은 그대로 둬요)...
 zhcn.StatusRemovingOld=正在移除旧版本（保留设置和引擎）...
-en.StatusExplorerMenu=Adding theOdrop to the File Explorer menu...
-ko.StatusExplorerMenu=탐색기 메뉴에 theOdrop을 추가하는 중...
-zhcn.StatusExplorerMenu=正在将 theOdrop 添加到资源管理器菜单...
-en.ExplorerMenuFailed=Windows did not add theOdrop to the top of the File Explorer menu:%n%n%1%n%ntheOdrop still appears under “Show more options”. You can try again in theOdrop under Settings → General.
-ko.ExplorerMenuFailed=Windows가 탐색기 기본 메뉴에 theOdrop을 추가하지 못했어요:%n%n%1%n%ntheOdrop은 “추가 옵션 표시” 안에는 계속 나타나요. theOdrop의 설정 → 일반에서 다시 시도할 수 있어요.
-zhcn.ExplorerMenuFailed=Windows 未能将 theOdrop 添加到资源管理器主菜单：%n%n%1%n%ntheOdrop 仍会出现在“显示更多选项”中。你可以在 theOdrop 的 设置 → 常规 中重试。
-en.ReadyEngines=Conversion engines (theOdrop downloads them when it starts):
-ko.ReadyEngines=변환 엔진 (theOdrop이 시작하면서 내려받아요):
-zhcn.ReadyEngines=转换引擎（theOdrop 启动后下载）：
-en.FinishedRunning=theOdrop is installed and running in the notification area of the taskbar.%n%nTo convert files, drag them while holding the trigger key, or right-click them in File Explorer.
-ko.FinishedRunning=theOdrop이 설치되어 작업 표시줄 알림 영역에서 실행 중이에요.%n%n파일을 변환하려면 지정한 키를 누른 채 파일을 끌거나, 탐색기에서 파일을 우클릭하세요.
-zhcn.FinishedRunning=theOdrop 已安装，正在任务栏通知区域运行。%n%n要转换文件，请按住触发键拖动文件，或在资源管理器中右键单击文件。
+en.StatusExplorerMenu=Adding Oneon to the File Explorer menu...
+ko.StatusExplorerMenu=탐색기 메뉴에 Oneon을 추가하는 중...
+zhcn.StatusExplorerMenu=正在将 Oneon 添加到资源管理器菜单...
+en.ExplorerMenuFailed=Windows did not add Oneon to the top of the File Explorer menu:%n%n%1%n%nOneon still appears under “Show more options”. You can try again in Oneon under Settings → General.
+ko.ExplorerMenuFailed=Windows가 탐색기 기본 메뉴에 Oneon을 추가하지 못했어요:%n%n%1%n%nOneon은 “추가 옵션 표시” 안에는 계속 나타나요. Oneon의 설정 → 일반에서 다시 시도할 수 있어요.
+zhcn.ExplorerMenuFailed=Windows 未能将 Oneon 添加到资源管理器主菜单：%n%n%1%n%nOneon 仍会出现在“显示更多选项”中。你可以在 Oneon 的 设置 → 常规 中重试。
+en.ReadyEngines=Conversion engines (Oneon downloads them when it starts):
+ko.ReadyEngines=변환 엔진 (Oneon이 시작하면서 내려받아요):
+zhcn.ReadyEngines=转换引擎（Oneon 启动后下载）：
+en.FinishedRunning=Oneon is installed and running in the notification area of the taskbar.%n%nTo convert files, drag them while holding the trigger key, or right-click them in File Explorer.
+ko.FinishedRunning=Oneon이 설치되어 작업 표시줄 알림 영역에서 실행 중이에요.%n%n파일을 변환하려면 지정한 키를 누른 채 파일을 끌거나, 탐색기에서 파일을 우클릭하세요.
+zhcn.FinishedRunning=Oneon 已安装，正在任务栏通知区域运行。%n%n要转换文件，请按住触发键拖动文件，或在资源管理器中右键单击文件。
 en.TaskCli=Add the "theodrop" command to PATH (convert from the command line)
 ko.TaskCli="theodrop" 명령어를 PATH에 추가 (명령줄에서 변환)
 zhcn.TaskCli=将 "theodrop" 命令添加到 PATH（在命令行中转换）
-en.FinishedEngines=The conversion engines you picked are downloading in the theOdrop window.
-ko.FinishedEngines=선택한 변환 엔진은 theOdrop 창에서 내려받고 있어요.
-zhcn.FinishedEngines=你选择的转换引擎正在 theOdrop 窗口中下载。
+en.FinishedEngines=The conversion engines you picked are downloading in the Oneon window.
+ko.FinishedEngines=선택한 변환 엔진은 Oneon 창에서 내려받고 있어요.
+zhcn.FinishedEngines=你选择的转换引擎正在 Oneon 窗口中下载。
 
 [Tasks]
 Name: "contextmenu"; Description: "{cm:TaskContextMenu}"; GroupDescription: "{cm:GroupOptions}"; Check: IsFreshInstall
@@ -403,7 +403,7 @@ begin
       Folder := Copy(Rest, 1, Comma - 1);
       Rest := Copy(Rest, Comma + 1, MaxInt);
     end;
-    if not FileExists(ExpandConstant('{localappdata}\theOdrop\engines\') + Folder + '\' + EngineMarker) then
+    if not FileExists(ExpandConstant('{localappdata}\Oneon\engines\') + Folder + '\' + EngineMarker) then
     begin
       Result := False;
       Exit;
@@ -478,7 +478,7 @@ end;
 function InitializeSetup: Boolean;
 begin
   WasInstalled := RegKeyExists(HKA, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{' + '{#AppGuid}' + '}_is1');
-  // That old Velopack copy is Filee itself, not theOdrop: never remove it.
+  // That old Velopack copy is Filee itself, not Oneon: never remove it.
   HadVelopackInstall := False;
   ExplorerMenuWasRegistered := IsExplorerMenuSupported and IsExplorerMenuRegistered;
   // (A line must not start with "[" in [Code]: the compiler would take it for a section.)

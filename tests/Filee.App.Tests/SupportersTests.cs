@@ -41,7 +41,7 @@ public class SupportersTests
         var folder = Path.Combine(RepoRoot, "src", "Filee.App", "Assets", "Sponsors");
         var list = Supporters.Parse(File.ReadAllText(Path.Combine(folder, "sponsors.json")));
 
-        // theOdrop's READMEs have no sponsor section (the sponsors are Filee's); a listed supporter still has to appear.
+        // Oneon's READMEs have no sponsor section (the sponsors are Filee's); a listed supporter still has to appear.
         foreach (var readme in new[] { "README.md", "README.ko.md" })
         {
             var text = File.ReadAllText(Path.Combine(RepoRoot, readme));

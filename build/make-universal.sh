@@ -22,8 +22,8 @@ while [ $# -gt 0 ]; do
 done
 
 if [ "$(uname -s)" != "Darwin" ]; then echo "Run this script on macOS." >&2; exit 1; fi
-arm_app="$arm_package/theOdrop.app"
-x64_app="$x64_package/theOdrop.app"
+arm_app="$arm_package/Oneon.app"
+x64_app="$x64_package/Oneon.app"
 for app in "$arm_app" "$x64_app"; do
   if [ ! -d "$app/Contents/MacOS" ]; then echo "Not a package folder: $app" >&2; exit 1; fi
 done
@@ -40,7 +40,7 @@ PY
 fi
 version="${version#v}"
 
-package_name="theOdrop-$version-osx-universal"
+package_name="Oneon-$version-osx-universal"
 mkdir -p "$output"
 output="$(cd "$output" && pwd)"
 archive="$output/$package_name.tar.gz"
@@ -52,7 +52,7 @@ fi
 
 stage="$root/build/.cache/universal/$(uuidgen | tr -d -)"
 package="$stage/$package_name"
-app="$package/theOdrop.app"
+app="$package/Oneon.app"
 macos="$app/Contents/MacOS"
 mkdir -p "$macos"
 
