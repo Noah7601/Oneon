@@ -1,0 +1,28 @@
+# Temporary: runs installer/macos/update.sh on fresh macOS runners. Removed before merging.
+name: Test macOS update script
+on:
+  push:
+    branches: ['release/update-script']
+jobs:
+  test:
+    strategy:
+      matrix:
+        runner: [macos-15, macos-15-intel]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fresh install
+        run: bash installer/macos/update.sh
+      - name: Already up to date
+        run: bash installer/macos/update.sh | tee out.txt && grep -q "already installed" out.txt
+      - name: Update over an older copy (version changed in Info.plist)
+        run: |
+          pkill -f "odrop.app/Contents/MacOS/Filee" || true
+          plutil -replace CFBundleShortVersionString -string 1.0.0 /Applications/theOdrop.app/Contents/Info.plist
+          bash installer/macos/update.sh
+          v=$(defaults read /Applications/theOdrop.app/Contents/Info.plist CFBundleShortVersionString); echo "installed $v"; [ "$v" != 1.0.0 ]
+          codesign --verify --deep --strict /Applications/theOdrop.app && echo signature-ok
+          ls ~/.Trash | grep -i odrop
+          /Applications/theOdrop.app/Contents/MacOS/filee-cli version
+      - name: Piped from curl like users run it
+        run: cat installer/macos/update.sh | bash -s -- --force
