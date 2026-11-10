@@ -157,10 +157,26 @@
   </Style>
   <!-- Small links at the bottom of the navigation (GitHub, Sponsor) -->
   <Style Selector="Button.navlink">
-    <Setter Property="Padding" Value="8" />
+    <Setter Property="Padding" Value="6,4" />
     <Setter Property="FontSize" Value="12" />
-    <Setter Property="Background" Value="{DynamicResource GlassSurfaceBrush}" />
-    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+  </Style>
+  <Style Selector="Button.navlink:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+  </Style>
+  <!-- Text-only accent button (e.g. "Clear"), like macOS/iOS plain buttons -->
+  <Style Selector="Button.link">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="4,2" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+  </Style>
+  <Style Selector="Button.link:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
   </Style>
   <Style Selector="Button.icon">
     <Setter Property="Padding" Value="8" />
@@ -185,8 +201,9 @@
   </Style>
   <Style Selector="ListBox.nav ListBoxItem">
     <Setter Property="CornerRadius" Value="{DynamicResource SoftRadiusSmall}" />
-    <Setter Property="Padding" Value="10,7" />
+    <Setter Property="Padding" Value="8,5" />
     <Setter Property="Margin" Value="0,1" />
+    <Setter Property="MinHeight" Value="28" />
     <Setter Property="RenderTransform" Value="none" />
     <Setter Property="Transitions">
       <Transitions>
@@ -216,6 +233,23 @@
   </Style>
   <Style Selector="ListBox.soft ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
     <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+  </Style>
+
+  <!-- ───────── Grouped list (macOS Settings style): one rounded box, hairline between rows ───────── -->
+  <Style Selector="Border.group">
+    <Setter Property="Background" Value="{DynamicResource GlassSurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SubtleBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{DynamicResource SoftRadius}" />
+    <Setter Property="ClipToBounds" Value="True" />
+  </Style>
+  <Style Selector="Border.row">
+    <Setter Property="Padding" Value="14,10" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SubtleBorderBrush}" />
+    <Setter Property="BorderThickness" Value="0,1,0,0" />
+  </Style>
+  <Style Selector="ItemsControl.grouped ContentPresenter:nth-child(1) > Border.row">
+    <Setter Property="BorderThickness" Value="0" />
   </Style>
 
   <!-- ───────── Donut control colours ───────── -->

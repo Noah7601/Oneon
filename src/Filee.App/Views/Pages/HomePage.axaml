@@ -58,22 +58,23 @@
     <!-- Recent conversions -->
     <StackPanel Spacing="12">
       <DockPanel>
-        <Button DockPanel.Dock="Right" Classes="ghost" Content="{DynamicResource home.clear_history}" Command="{Binding ClearHistoryCommand}" />
+        <Button DockPanel.Dock="Right" Classes="link" Content="{DynamicResource home.clear_history}" Command="{Binding ClearHistoryCommand}" />
         <TextBlock Classes="h2" VerticalAlignment="Center" Text="{DynamicResource home.recent}" />
       </DockPanel>
       <Border Classes="card" IsVisible="{Binding IsEmpty}" Padding="16,14">
         <TextBlock Classes="muted" Text="{DynamicResource home.recent_empty}" />
       </Border>
-      <ItemsControl ItemsSource="{Binding History}">
+      <Border Classes="group" IsVisible="{Binding !IsEmpty}">
+      <ItemsControl Classes="grouped" ItemsSource="{Binding History}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
-            <StackPanel Spacing="12" />
+            <StackPanel Spacing="0" />
           </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
           <DataTemplate x:DataType="vm:HistoryItemViewModel">
-            <Border Classes="card" Padding="16,12">
-              <StackPanel Spacing="12">
+            <Border Classes="row">
+              <StackPanel Spacing="8">
                 <DockPanel>
                   <Button DockPanel.Dock="Right" Command="{Binding OpenFolderCommand}" IsVisible="{Binding HasOutputs}" Padding="10,5">
                     <StackPanel Orientation="Horizontal" Spacing="6">
@@ -81,10 +82,9 @@
                       <TextBlock Text="{DynamicResource home.open_folder}" />
                     </StackPanel>
                   </Button>
-                  <Border DockPanel.Dock="Left" Width="36" Height="36" CornerRadius="999" Margin="0,0,12,0"
-                          Background="{DynamicResource AccentSoftBrush}">
+                  <Border DockPanel.Dock="Left" Width="24" Height="24" Margin="0,0,12,0">
                     <Panel>
-                      <PathIcon Width="15" Height="15" Data="{StaticResource Icon.Check}" Foreground="{DynamicResource AccentStrongBrush}" IsVisible="{Binding !HasErrors}" />
+                      <PathIcon Width="16" Height="16" Data="{StaticResource Icon.Check}" Foreground="{DynamicResource SuccessBrush}" IsVisible="{Binding !HasErrors}" />
                       <PathIcon Width="15" Height="15" Data="{StaticResource Icon.Alert}" Foreground="{DynamicResource DangerBrush}" IsVisible="{Binding HasErrors}" />
                     </Panel>
                   </Border>
@@ -99,7 +99,7 @@
                 </DockPanel>
 
                 <!-- Failed files: the list on demand, and converting them again -->
-                <DockPanel IsVisible="{Binding HasFailures}" Margin="44,0,0,0">
+                <DockPanel IsVisible="{Binding HasFailures}" Margin="36,0,0,0">
                   <Button DockPanel.Dock="Right" Command="{Binding RetryCommand}" IsVisible="{Binding CanRetry}" Padding="10,5">
                     <StackPanel Orientation="Horizontal" Spacing="6">
                       <PathIcon Width="13" Height="13" Data="{StaticResource Icon.Refresh}" />
@@ -114,7 +114,7 @@
                     </StackPanel>
                   </Button>
                 </DockPanel>
-                <ItemsControl ItemsSource="{Binding Failures}" IsVisible="{Binding ShowFailures}" Margin="50,0,0,2">
+                <ItemsControl ItemsSource="{Binding Failures}" IsVisible="{Binding ShowFailures}" Margin="42,0,0,2">
                   <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                       <StackPanel Spacing="4" />
@@ -134,6 +134,7 @@
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>
+      </Border>
     </StackPanel>
   </StackPanel>
 </UserControl>
