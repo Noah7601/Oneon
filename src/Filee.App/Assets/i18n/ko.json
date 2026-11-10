@@ -219,7 +219,7 @@
 
   "triggers.title": "단축키",
   "triggers.description": "원형 툴바를 여는 방법을 정하세요. 제스처는 원하는 만큼 추가할 수 있어요.",
-  "triggers.macos_permissions": "시스템 설정 > 개인정보 보호 및 보안 > 손쉬운 사용에서 theOdrop을 허용해 주세요.\n선택 파일 단축키를 처음 쓸 때 Finder 자동화 권한도 요청해요.",
+  "triggers.macos_permissions": "시스템 설정 > 개인정보 보호 및 보안 > 손쉬운 사용(최신 macOS: 기기 제어 및 데이터 접근)에서 theOdrop을 허용해 주세요.\n업데이트 후 theOdrop이 켜져 있는데도 입력 감지가 멈춰 있으면, 터미널에서 아래 명령을 실행한 뒤 다시 허용해 주세요.\ntccutil reset Accessibility com.theo.drop\n선택 파일 단축키를 처음 쓸 때 Finder 자동화 권한도 요청해요.",
   "triggers.linux_x11": "드래그 제스처는 X11에서 작동해요.\n파일 관리자 연동을 켜면 첫 번째 키보드 단축키가 Thunar의 theOdrop 동작에 연결돼요(바꾼 뒤 Thunar를 다시 열어 주세요).\n길게 누르기와 다른 파일 관리자의 단축키는 지원하지 않아요. theOdrop 메뉴나 드롭 영역을 써 주세요.",
   "triggers.linux_wayland": "Wayland에서는 커서를 따라가는 제스처를 쓸 수 없어요.\nX11 세션을 쓰거나, 파일 관리자 메뉴와 드롭 영역으로 변환해 주세요.\nThunar는 다시 시작하면 첫 번째 키보드 단축키를 쓸 수 있어요.",
   "triggers.open_accessibility": "손쉬운 사용 설정 열기",

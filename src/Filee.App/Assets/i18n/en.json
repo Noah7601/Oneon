@@ -219,7 +219,7 @@
 
   "triggers.title": "Shortcuts",
   "triggers.description": "Choose how the donut toolbar opens. You can add as many gestures as you like.",
-  "triggers.macos_permissions": "Allow theOdrop in System Settings > Privacy & Security > Accessibility.\nFinder also asks for Automation permission the first time you use a selection shortcut.",
+  "triggers.macos_permissions": "Allow theOdrop in System Settings > Privacy & Security > Accessibility (on newer macOS: Device control & data access).\nAfter an update, if gestures stay stopped although theOdrop is switched on, run this in Terminal and allow it again:\ntccutil reset Accessibility com.theo.drop\nFinder also asks for Automation permission the first time you use a selection shortcut.",
   "triggers.linux_x11": "Drag gestures work on X11.\nWith file manager integration on, the first keyboard shortcut runs Thunar's theOdrop action (reopen Thunar after changing it).\nHold gestures and shortcuts in other file managers aren't available. Use the theOdrop menu or the drop zone.",
   "triggers.linux_wayland": "Gestures that follow the cursor aren't available on Wayland.\nUse an X11 session, or convert with the file manager menu and the drop zone.\nThunar can use the first keyboard shortcut after it restarts.",
   "triggers.open_accessibility": "Open Accessibility settings",
