@@ -21,6 +21,12 @@
     <Style Selector="Rectangle#DropOutline">
       <Setter Property="Stroke" Value="{DynamicResource TextSecondaryBrush}" />
     </Style>
+    <Style Selector="Path#DropArrow">
+      <Setter Property="Stroke" Value="{DynamicResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="Border#DropZone.over Path#DropArrow">
+      <Setter Property="Stroke" Value="{DynamicResource AccentBrush}" />
+    </Style>
     <Style Selector="Border#DropZone.over Rectangle#DropOutline">
       <Setter Property="Stroke" Value="{DynamicResource AccentBrush}" />
     </Style>
@@ -48,13 +54,14 @@
     <!-- Drop zone: files dropped here open the donut toolbar at the cursor. -->
     <!-- Drop zone: dashed outline like a Finder drop target; files dropped here open the donut toolbar. -->
     <Border x:Name="DropZone" DragDrop.AllowDrop="True" MinHeight="180"
-            Background="{DynamicResource SurfaceAltBrush}" CornerRadius="{DynamicResource SoftRadiusLarge}" Padding="28">
+            Background="Transparent" CornerRadius="{DynamicResource SoftRadiusLarge}" Padding="28">
       <Panel>
-        <Rectangle x:Name="DropOutline" StrokeThickness="1.5" StrokeDashArray="4,3"
-                   RadiusX="16" RadiusY="16" Margin="-20" IsHitTestVisible="False" />
+        <Rectangle x:Name="DropOutline" StrokeThickness="1.5" StrokeDashArray="2.5,2" StrokeLineCap="Round"
+                   RadiusX="16" RadiusY="16" Margin="-28" IsHitTestVisible="False" />
       <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
-        <PathIcon Width="34" Height="34" Data="{StaticResource Icon.Download}" Foreground="{DynamicResource TextSecondaryBrush}"
-                  HorizontalAlignment="Center" Margin="0,0,0,4" />
+        <Path x:Name="DropArrow" Width="34" Height="34" Stretch="Uniform" HorizontalAlignment="Center" Margin="0,0,0,4"
+              StrokeThickness="1.8" StrokeLineCap="Round" StrokeJoin="Round"
+              Data="M12,3 V14 M7.5,9.5 L12,14 L16.5,9.5 M4,15 V19.5 H20 V15" />
         <TextBlock Classes="h2" HorizontalAlignment="Center" Text="{DynamicResource home.drop_title}" />
         <TextBlock Classes="muted" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" MaxWidth="460"
                    Text="{Binding DropHint}" />
