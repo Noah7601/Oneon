@@ -35,7 +35,8 @@ base="https://github.com/$repo/releases/download/$tag"
 say "Downloading ${name}… / 내려받는 중…"
 curl -fL --progress-bar -o "$work/$name" "$base/$name"
 curl -fsSL -o "$work/sums.txt" "$base/theOdrop-$version-SHA256SUMS.txt"
-expected="$(awk -v f="$name" '$2 == f { print tolower($1) }' "$work/sums.txt")"
+# The checksum file is written on Windows (CRLF line ends).
+expected="$(awk -v f="$name" '{ sub(/\r$/, "") } $2 == f { print tolower($1) }' "$work/sums.txt")"
 actual="$(shasum -a 256 "$work/$name" | awk '{ print tolower($1) }')"
 if [ -z "$expected" ] || [ "$expected" != "$actual" ]; then
   echo "Checksum mismatch for $name: the download is not the released file. Nothing was changed." >&2
