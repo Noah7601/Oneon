@@ -306,7 +306,8 @@ public class UpdateServiceTests
 
         Assert.True(await updates.RefreshAsync(announce: false));
 
-        Assert.Equal("Filee-9.9.10-win-Setup.exe", updates.Installer!.Name);
+        // The installer for the platform the tests run on: the Windows Setup, or the .dmg for this Mac.
+        Assert.Equal("Filee-9.9.10" + UpdateService.InstallerSuffix, updates.Installer!.Name);
         Assert.Equal("9.9.10", updates.LatestVersion);
         Assert.Equal(0, announced); // no second notice while updating
     }
@@ -320,6 +321,8 @@ public class UpdateServiceTests
             var json = $$"""
                 {"tag_name":"{{tag}}","assets":[
                   {"name":"Filee-{{version}}-win-Setup.exe","browser_download_url":"{{Base}}Filee-{{version}}-win-Setup.exe","size":1234},
+                  {"name":"Filee-{{version}}-osx-arm64.dmg","browser_download_url":"{{Base}}Filee-{{version}}-osx-arm64.dmg","size":1234},
+                  {"name":"Filee-{{version}}-osx-x64.dmg","browser_download_url":"{{Base}}Filee-{{version}}-osx-x64.dmg","size":1234},
                   {"name":"Filee-{{version}}-SHA256SUMS.txt","browser_download_url":"{{Base}}Filee-{{version}}-SHA256SUMS.txt","size":100}]}
                 """;
             return Task.FromResult(request.RequestUri!.AbsolutePath.EndsWith("/releases/latest", StringComparison.Ordinal)
