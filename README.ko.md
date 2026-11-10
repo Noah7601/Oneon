@@ -41,6 +41,16 @@
 | Windows 10/11 (Intel/AMD) | `theOdrop-<version>-win-Setup.exe` (또는 `win-Portable.zip`) |
 
 **macOS 14 이상**
+
+터미널에 아래 한 줄을 붙여넣으면 설치와 업데이트가 한 번에 끝나요.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Noah7601/theodrop/main/installer/macos/update.sh | bash
+```
+
+내 Mac에 맞는 파일을 받아 SHA-256을 확인하고, 예전 앱은 휴지통으로 옮긴 뒤 설치해요. 마지막에 손쉬운 사용 설정이
+열리면 theOdrop을 다시 허용해 주세요. 1.11.7부터는 앱의 업데이트 버튼이 같은 일을 해요. 직접 설치하려면:
+
 1. `.dmg`를 열고 theOdrop을 응용 프로그램 폴더로 끌어다 놓으세요.
 2. Apple 공증을 받지 않은 앱이라 처음 한 번은 실행이 막혀요. **완료**를 누른 뒤
    시스템 설정 → 개인정보 보호 및 보안에서 **그래도 열기**를 누르세요.

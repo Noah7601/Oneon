@@ -41,6 +41,16 @@ Download from [Releases](https://github.com/Noah7601/theodrop/releases/latest).
 | Windows 10/11 (Intel/AMD) | `theOdrop-<version>-win-Setup.exe` (or `win-Portable.zip`) |
 
 **macOS 14 or later**
+
+Install or update in one step (paste into Terminal):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Noah7601/theodrop/main/installer/macos/update.sh | bash
+```
+
+It picks the build for your Mac, checks its SHA-256, replaces the old app (into the Trash) and opens the Accessibility
+settings so you can allow theOdrop again. From 1.11.7 on, the Update button in the app does the same. Or by hand:
+
 1. Open the `.dmg` and drag theOdrop into Applications.
 2. theOdrop is not notarized by Apple, so the first start is blocked once. Click **Done**, then go to
    System Settings → Privacy & Security and click **Open Anyway**.
