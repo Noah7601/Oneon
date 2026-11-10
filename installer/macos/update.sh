@@ -32,7 +32,7 @@ trap 'hdiutil detach -quiet "$work/mnt" 2>/dev/null || true; rm -rf "$work"' EXI
 name="theOdrop-$version-osx-$arch.dmg"
 base="https://github.com/$repo/releases/download/$tag"
 
-say "Downloading $name… / 내려받는 중…"
+say "Downloading ${name}… / 내려받는 중…"
 curl -fL --progress-bar -o "$work/$name" "$base/$name"
 curl -fsSL -o "$work/sums.txt" "$base/theOdrop-$version-SHA256SUMS.txt"
 expected="$(awk -v f="$name" '$2 == f { print tolower($1) }' "$work/sums.txt")"
@@ -42,7 +42,7 @@ if [ -z "$expected" ] || [ "$expected" != "$actual" ]; then
   exit 1
 fi
 
-say "Installing theOdrop $version… / 설치 중…"
+say "Installing theOdrop ${version}… / 설치 중…"
 pkill -f "odrop.app/Contents/MacOS/Filee" 2>/dev/null || true
 sleep 1
 for folder in /Applications "$HOME/Applications"; do
