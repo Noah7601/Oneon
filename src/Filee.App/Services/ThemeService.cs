@@ -14,7 +14,7 @@ public sealed class ThemeService(IPlatformServices platform)
 {
     /// <summary>Accent swatches offered in the Theme page.</summary>
     public static readonly IReadOnlyList<string> Swatches =
-        ["#5E5CE6", "#007AFF", "#32ADE6", "#00C7BE", "#34C759", "#FF9F0A", "#FF375F", "#8E8E93"];
+        ["#007AFF", "#5E5CE6", "#32ADE6", "#00C7BE", "#34C759", "#FF9F0A", "#FF375F", "#8E8E93"];
 
     /// <summary>Embedded Noto fonts (see build/fetch-fonts.ps1). Missing files fall back to system fonts.</summary>
     private const string Latin = "fonts:Filee#Noto Sans";
@@ -35,7 +35,7 @@ public sealed class ThemeService(IPlatformServices platform)
         };
 
         // Accent colour + derived shades. Fluent controls read the System* keys.
-        var accent = Color.TryParse(theme.Accent, out var parsed) ? parsed : Color.Parse("#5E5CE6");
+        var accent = Color.TryParse(theme.Accent, out var parsed) ? parsed : Color.Parse("#007AFF");
         res["AccentColor"] = accent;
         res["AccentBrush"] = new SolidColorBrush(accent);
         res["AccentSoftBrush"] = new SolidColorBrush(accent, 0.18);
@@ -62,7 +62,11 @@ public sealed class ThemeService(IPlatformServices platform)
         var cjk = language.StartsWith("zh", StringComparison.OrdinalIgnoreCase)
             ? $"{Chinese}, {Korean}"
             : $"{Korean}, {Chinese}";
-        res["AppFontFamily"] = FontFamily.Parse($"{Latin}, {cjk}, {SystemFallbacks}");
+        // macOS: the system font (San Francisco + Apple SD Gothic Neo) first, so the app looks native.
+        // Other platforms keep the embedded Noto fonts.
+        res["AppFontFamily"] = OperatingSystem.IsMacOS()
+            ? FontFamily.Parse($"$Default, Apple SD Gothic Neo, {Latin}, {cjk}, {SystemFallbacks}")
+            : FontFamily.Parse($"{Latin}, {cjk}, {SystemFallbacks}");
 
         Motion.Configure(theme.ReduceMotion, () => platform.PrefersReducedMotion);
     }

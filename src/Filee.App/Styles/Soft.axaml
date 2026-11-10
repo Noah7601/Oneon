@@ -1,5 +1,5 @@
 <!--
-  theOdrop glass look: translucent surfaces, quiet depth and springy press feedback.
+  theOdrop Apple-like look: neutral system greys, system blue, calm motion, macOS type scale.
   Colours that depend on light/dark live in ThemeDictionaries below; the accent colour, corner radii and
   the UI font are written at runtime by ThemeService (so users can customise them).
 -->
@@ -11,52 +11,52 @@
     <ResourceDictionary>
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-          <SolidColorBrush x:Key="PageBrush" Color="#E6F1F4F8" />
-          <SolidColorBrush x:Key="WindowGlassBrush" Color="#EDF8FAFC" />
+          <SolidColorBrush x:Key="PageBrush" Color="#F2F5F5F7" />
+          <SolidColorBrush x:Key="WindowGlassBrush" Color="#EDFAFAFA" />
           <SolidColorBrush x:Key="GlassSurfaceBrush" Color="#A6FFFFFF" />
           <SolidColorBrush x:Key="GlassSurfaceStrongBrush" Color="#E8FFFFFF" />
           <SolidColorBrush x:Key="GlassHighlightBrush" Color="#F2FFFFFF" />
           <SolidColorBrush x:Key="SurfaceBrush" Color="#E6FFFFFF" />
           <SolidColorBrush x:Key="SurfaceAltBrush" Color="#8FFFFFFF" />
-          <SolidColorBrush x:Key="SubtleBorderBrush" Color="#52778396" />
-          <SolidColorBrush x:Key="TextPrimaryBrush" Color="#F01B2028" />
-          <SolidColorBrush x:Key="TextSecondaryBrush" Color="#A8525B6A" />
+          <SolidColorBrush x:Key="SubtleBorderBrush" Color="#2E3C3C43" />
+          <SolidColorBrush x:Key="TextPrimaryBrush" Color="#D9000000" />
+          <SolidColorBrush x:Key="TextSecondaryBrush" Color="#993C3C43" />
           <SolidColorBrush x:Key="DangerBrush" Color="#FF3B30" />
           <SolidColorBrush x:Key="SuccessBrush" Color="#248A3D" />
           <SolidColorBrush x:Key="WarningBrush" Color="#C93400" />
-          <BoxShadows x:Key="CardShadow">0 1 2 0 #12FFFFFF, 0 10 28 0 #18334A62</BoxShadows>
+          <BoxShadows x:Key="CardShadow">0 1 2 0 #0F000000, 0 4 14 0 #0D000000</BoxShadows>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-          <SolidColorBrush x:Key="PageBrush" Color="#EB090B11" />
-          <SolidColorBrush x:Key="WindowGlassBrush" Color="#E612151D" />
-          <SolidColorBrush x:Key="GlassSurfaceBrush" Color="#66272C38" />
-          <SolidColorBrush x:Key="GlassSurfaceStrongBrush" Color="#D3262B36" />
+          <SolidColorBrush x:Key="PageBrush" Color="#F21C1C1E" />
+          <SolidColorBrush x:Key="WindowGlassBrush" Color="#E61E1E20" />
+          <SolidColorBrush x:Key="GlassSurfaceBrush" Color="#662C2C2E" />
+          <SolidColorBrush x:Key="GlassSurfaceStrongBrush" Color="#D32C2C2E" />
           <SolidColorBrush x:Key="GlassHighlightBrush" Color="#28FFFFFF" />
-          <SolidColorBrush x:Key="SurfaceBrush" Color="#D12A303C" />
-          <SolidColorBrush x:Key="SurfaceAltBrush" Color="#71363D4B" />
-          <SolidColorBrush x:Key="SubtleBorderBrush" Color="#2EFFFFFF" />
-          <SolidColorBrush x:Key="TextPrimaryBrush" Color="#F5F7F8FA" />
-          <SolidColorBrush x:Key="TextSecondaryBrush" Color="#A7AEB8C7" />
-          <SolidColorBrush x:Key="DangerBrush" Color="#FF6961" />
+          <SolidColorBrush x:Key="SurfaceBrush" Color="#D12C2C2E" />
+          <SolidColorBrush x:Key="SurfaceAltBrush" Color="#713A3A3C" />
+          <SolidColorBrush x:Key="SubtleBorderBrush" Color="#1FFFFFFF" />
+          <SolidColorBrush x:Key="TextPrimaryBrush" Color="#D9FFFFFF" />
+          <SolidColorBrush x:Key="TextSecondaryBrush" Color="#99EBEBF5" />
+          <SolidColorBrush x:Key="DangerBrush" Color="#FF453A" />
           <SolidColorBrush x:Key="SuccessBrush" Color="#30D158" />
           <SolidColorBrush x:Key="WarningBrush" Color="#FF9F0A" />
-          <BoxShadows x:Key="CardShadow">0 1 1 0 #14FFFFFF, 0 12 32 0 #52000000</BoxShadows>
+          <BoxShadows x:Key="CardShadow">0 1 2 0 #33000000, 0 6 18 0 #40000000</BoxShadows>
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
 
       <!-- Defaults; ThemeService overwrites these at startup. -->
-      <SolidColorBrush x:Key="AccentBrush" Color="#5E5CE6" />
-      <SolidColorBrush x:Key="AccentSoftBrush" Color="#365E5CE6" />
-      <SolidColorBrush x:Key="AccentFaintBrush" Color="#205E5CE6" />
-      <SolidColorBrush x:Key="AccentStrongBrush" Color="#4B49C7" />
+      <SolidColorBrush x:Key="AccentBrush" Color="#007AFF" />
+      <SolidColorBrush x:Key="AccentSoftBrush" Color="#2E007AFF" />
+      <SolidColorBrush x:Key="AccentFaintBrush" Color="#17007AFF" />
+      <SolidColorBrush x:Key="AccentStrongBrush" Color="#005CBF" />
       <SolidColorBrush x:Key="OnAccentBrush" Color="#FFFFFF" />
-      <CornerRadius x:Key="SoftRadius">16</CornerRadius>
-      <CornerRadius x:Key="SoftRadiusSmall">9</CornerRadius>
-      <CornerRadius x:Key="SoftRadiusLarge">22</CornerRadius>
+      <CornerRadius x:Key="SoftRadius">12</CornerRadius>
+      <CornerRadius x:Key="SoftRadiusSmall">7</CornerRadius>
+      <CornerRadius x:Key="SoftRadiusLarge">16</CornerRadius>
       <FontFamily x:Key="AppFontFamily">SF Pro Text, SF Pro Display, Apple SD Gothic Neo, Noto Sans, sans-serif</FontFamily>
 
-      <!-- Springy easing used by press/hover transitions ("말랑말랑"). -->
-      <BackEaseOut x:Key="SoftEase" />
+      <!-- Calm ease-out (no overshoot), closer to macOS motion. -->
+      <QuinticEaseOut x:Key="SoftEase" />
     </ResourceDictionary>
   </Styles.Resources>
 
@@ -65,26 +65,27 @@
     <Setter Property="Background" Value="{DynamicResource PageBrush}" />
     <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
     <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}" />
-    <Setter Property="FontSize" Value="14" />
+    <Setter Property="FontSize" Value="13" />
   </Style>
 
   <Style Selector="TextBlock.h1">
-    <Setter Property="FontSize" Value="28" />
-    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="FontSize" Value="26" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="LetterSpacing" Value="-0.4" />
   </Style>
   <Style Selector="TextBlock.h2">
-    <Setter Property="FontSize" Value="17" />
+    <Setter Property="FontSize" Value="15" />
     <Setter Property="FontWeight" Value="SemiBold" />
   </Style>
   <Style Selector="TextBlock.muted">
     <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
   </Style>
   <Style Selector="TextBlock.caption">
-    <Setter Property="FontSize" Value="12" />
+    <Setter Property="FontSize" Value="11" />
     <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
   </Style>
   <Style Selector="TextBlock.label">
-    <Setter Property="FontSize" Value="12.5" />
+    <Setter Property="FontSize" Value="12" />
     <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
     <Setter Property="Margin" Value="0,0,0,4" />
   </Style>
@@ -120,7 +121,7 @@
   </Style>
   <Style Selector="Border.chip:pointerover">
     <Setter Property="Background" Value="{DynamicResource AccentFaintBrush}" />
-    <Setter Property="RenderTransform" Value="scale(1.05)" />
+    <Setter Property="RenderTransform" Value="scale(1.02)" />
   </Style>
 
   <!-- Badge for engine status etc. -->
@@ -136,7 +137,7 @@
   <!-- ───────── Buttons: soft corners and a springy press ───────── -->
   <Style Selector="Button, ToggleButton, RepeatButton">
     <Setter Property="CornerRadius" Value="{DynamicResource SoftRadiusSmall}" />
-    <Setter Property="Padding" Value="14,8" />
+    <Setter Property="Padding" Value="12,6" />
     <Setter Property="BorderBrush" Value="{DynamicResource SubtleBorderBrush}" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="Transitions">
@@ -148,7 +149,7 @@
     </Setter>
   </Style>
   <Style Selector="Button:pressed, ToggleButton:pressed">
-    <Setter Property="RenderTransform" Value="scale(0.95)" />
+    <Setter Property="RenderTransform" Value="scale(0.98)" />
   </Style>
   <Style Selector="Button.ghost">
     <Setter Property="Background" Value="Transparent" />
@@ -184,8 +185,8 @@
   </Style>
   <Style Selector="ListBox.nav ListBoxItem">
     <Setter Property="CornerRadius" Value="{DynamicResource SoftRadiusSmall}" />
-    <Setter Property="Padding" Value="12,10" />
-    <Setter Property="Margin" Value="0,2" />
+    <Setter Property="Padding" Value="10,7" />
+    <Setter Property="Margin" Value="0,1" />
     <Setter Property="RenderTransform" Value="none" />
     <Setter Property="Transitions">
       <Transitions>
@@ -194,7 +195,7 @@
     </Setter>
   </Style>
   <Style Selector="ListBox.nav ListBoxItem:pointerover">
-    <Setter Property="RenderTransform" Value="translateX(3px)" />
+    <Setter Property="RenderTransform" Value="none" />
   </Style>
   <Style Selector="ListBox.nav ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
     <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
@@ -233,10 +234,10 @@
   <!-- ───────── Page content fade-in (keyframes can't animate RenderTransform, so Margin slides) ───────── -->
   <Style Selector="ContentControl.page > :is(Control)">
     <Style.Animations>
-      <Animation Duration="0:0:0.28" Easing="CubicEaseOut" FillMode="Forward">
+      <Animation Duration="0:0:0.22" Easing="CubicEaseOut" FillMode="Forward">
         <KeyFrame Cue="0%">
           <Setter Property="Opacity" Value="0" />
-          <Setter Property="Margin" Value="0,10,0,-10" />
+          <Setter Property="Margin" Value="0,4,0,-4" />
         </KeyFrame>
         <KeyFrame Cue="100%">
           <Setter Property="Opacity" Value="1" />
