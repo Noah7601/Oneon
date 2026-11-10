@@ -9,14 +9,20 @@
       <Setter Property="Transitions">
         <Transitions>
           <BrushTransition Property="Background" Duration="0:0:0.2" />
-          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" Easing="BackEaseOut" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.25" Easing="QuinticEaseOut" />
         </Transitions>
       </Setter>
     </Style>
     <Style Selector="Border#DropZone.over">
       <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
       <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
-      <Setter Property="RenderTransform" Value="scale(1.015)" />
+      <Setter Property="RenderTransform" Value="scale(1.005)" />
+    </Style>
+    <Style Selector="Rectangle#DropOutline">
+      <Setter Property="Stroke" Value="{DynamicResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="Border#DropZone.over Rectangle#DropOutline">
+      <Setter Property="Stroke" Value="{DynamicResource AccentBrush}" />
     </Style>
     <Style Selector="PathIcon.chevron">
       <Setter Property="RenderTransform" Value="rotate(0deg)" />
@@ -40,19 +46,20 @@
     </Border>
 
     <!-- Drop zone: files dropped here open the donut toolbar at the cursor. -->
-    <Border x:Name="DropZone" DragDrop.AllowDrop="True" MinHeight="248"
-            Background="{DynamicResource GlassSurfaceBrush}" BorderBrush="{DynamicResource GlassHighlightBrush}"
-            BorderThickness="1" CornerRadius="{DynamicResource SoftRadiusLarge}" Padding="32"
-            BoxShadow="{DynamicResource CardShadow}">
-      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
-        <Border Width="72" Height="72" CornerRadius="999" Background="{DynamicResource AccentSoftBrush}"
-                HorizontalAlignment="Center" Margin="0,0,0,4">
-          <PathIcon Width="30" Height="30" Data="{StaticResource Icon.Upload}" Foreground="{DynamicResource AccentStrongBrush}" />
-        </Border>
+    <!-- Drop zone: dashed outline like a Finder drop target; files dropped here open the donut toolbar. -->
+    <Border x:Name="DropZone" DragDrop.AllowDrop="True" MinHeight="180"
+            Background="{DynamicResource SurfaceAltBrush}" CornerRadius="{DynamicResource SoftRadiusLarge}" Padding="28">
+      <Panel>
+        <Rectangle x:Name="DropOutline" StrokeThickness="1.5" StrokeDashArray="4,3"
+                   RadiusX="16" RadiusY="16" Margin="-20" IsHitTestVisible="False" />
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+        <PathIcon Width="34" Height="34" Data="{StaticResource Icon.Download}" Foreground="{DynamicResource TextSecondaryBrush}"
+                  HorizontalAlignment="Center" Margin="0,0,0,4" />
         <TextBlock Classes="h2" HorizontalAlignment="Center" Text="{DynamicResource home.drop_title}" />
         <TextBlock Classes="muted" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" MaxWidth="460"
                    Text="{Binding DropHint}" />
       </StackPanel>
+      </Panel>
     </Border>
 
     <!-- Recent conversions -->
