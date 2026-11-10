@@ -281,13 +281,13 @@ internal static class NativeMethods
 
     private static nint _tickSound;
     private static readonly Stopwatch TickClock = Stopwatch.StartNew();
-    private static TimeSpan _lastTickSound = TimeSpan.MinValue;
+    private static TimeSpan? _lastTickSound; // null until the first tick (MinValue overflowed in the subtraction)
 
     /// <summary>A short, quiet click from the system sounds, restarted on every tick.</summary>
     internal static void PlayTickSound()
     {
         var now = TickClock.Elapsed;
-        if (now - _lastTickSound < TickSoundGap)
+        if (_lastTickSound is { } last && now - last < TickSoundGap)
             return;
         _lastTickSound = now;
         if (_tickSound == 0)

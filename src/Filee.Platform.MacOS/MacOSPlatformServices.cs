@@ -103,10 +103,23 @@ public sealed class MacOSPlatformServices : IPlatformServices
 
     public bool ShareFilesViaAirDrop(IReadOnlyList<string> files) => NativeMethods.ShareFilesViaAirDrop(files);
 
+    /// <summary>Set once the tick failed: it is a nicety, so it switches itself off instead of crashing the app.</summary>
+    private bool _tickBroken;
+
     public void PerformTick()
     {
-        NativeMethods.PerformHapticTick();
-        NativeMethods.PlayTickSound();
+        if (_tickBroken)
+            return;
+        try
+        {
+            NativeMethods.PerformHapticTick();
+            NativeMethods.PlayTickSound();
+        }
+        catch (Exception ex)
+        {
+            _tickBroken = true;
+            Console.Error.WriteLine($"theOdrop: tick feedback turned off: {ex.GetType().Name}: {ex.Message}");
+        }
     }
 
     public void OpenAccessibilitySettings() =>
