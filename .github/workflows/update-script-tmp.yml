@@ -27,3 +27,23 @@ jobs:
           /Applications/theOdrop.app/Contents/MacOS/filee-cli version
       - name: Piped from curl like users run it
         run: cat installer/macos/update.sh | bash -s -- --force
+      - name: In-app update script (UpdateService.MacInstallScript)
+        run: |
+          python3 - <<'PY'
+          import re
+          s = open("src/Filee.App/Services/UpdateService.cs", encoding="utf-8-sig").read()
+          body = re.search(r'MacInstallScript = """\n(.*?)\n\s*""";', s, re.S).group(1)
+          open("/tmp/install-update.sh", "w").write("\n".join(l[8:] if l.startswith("        ") else l for l in body.split("\n")) + "\n")
+          PY
+          a=$([ "$(uname -m)" = arm64 ] && echo arm64 || echo x64)
+          curl -fsSL -o /tmp/u.dmg "https://github.com/Noah7601/theodrop/releases/download/v1.11.6/theOdrop-1.11.6-osx-$a.dmg"
+          pkill -f "odrop.app/Contents/MacOS/Filee" || true
+          plutil -replace CFBundleShortVersionString -string 0.0.1 /Applications/theOdrop.app/Contents/Info.plist
+          sleep 30 & fake=$!
+          ( sleep 3; kill $fake ) &
+          bash /tmp/install-update.sh "$fake" /tmp/u.dmg /Applications/theOdrop.app
+          cat ~/Library/Logs/theOdrop-update.log
+          v=$(defaults read /Applications/theOdrop.app/Contents/Info.plist CFBundleShortVersionString); echo "installed $v"; [ "$v" = 1.11.6 ]
+          codesign --verify --deep --strict /Applications/theOdrop.app && echo signature-ok
+          [ ! -e /tmp/u.dmg ] && echo dmg-removed
+          [ ! -e /Applications/.theOdrop-update.app ] && echo no-leftover
