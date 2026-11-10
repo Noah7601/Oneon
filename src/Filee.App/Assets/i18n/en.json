@@ -684,5 +684,7 @@
   "transfer.failed": "Could not send: {0}",
   "transfer.unsupported": "This transfer is not available on this device.",
   "transfer.nothing": "There are no files to send.",
-  "donut.send_to": "Drop → {0}, send to {1}"
+  "donut.send_to": "Drop → {0}, send to {1}",
+  "theme.pick_from_screen": "Eyedropper",
+  "theme.pick_from_screen_tip": "Pick a colour from anywhere on screen (the magnifier in the Colors panel)"
 }

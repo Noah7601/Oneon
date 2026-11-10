@@ -17,7 +17,7 @@ public sealed class ThemeSettings
     public ThemeMode Mode { get; set; } = ThemeMode.System;
 
     /// <summary>Accent colour as <c>#RRGGBB</c>.</summary>
-    public string Accent { get; set; } = "#007AFF";
+    public string Accent { get; set; } = "#FF2BD6"; // Oneon neon pink
 
     /// <summary>Base corner radius in pixels. Larger = "softer" UI.</summary>
     public double CornerRadius { get; set; } = 12;

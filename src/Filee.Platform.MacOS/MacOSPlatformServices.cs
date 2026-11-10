@@ -105,6 +105,40 @@ public sealed class MacOSPlatformServices : IPlatformServices
 
     public bool CopyFilesToClipboard(IReadOnlyList<string> files) => NativeMethods.CopyFilesToPasteboard(files);
 
+    public bool SupportsScreenColorPicker => true;
+
+    /// <summary>
+    /// The system Colors panel (its magnifier is the eyedropper), opened by AppleScript's "choose color": no native
+    /// code needed. It answers "r, g, b" in 0–65535, or fails with -128 when cancelled.
+    /// </summary>
+    public async Task<string?> PickScreenColorAsync(string startHex)
+    {
+        static int Channel(string hex, int at) => Convert.ToInt32(hex.Substring(at, 2), 16) * 257;
+        var start = System.Text.RegularExpressions.Regex.IsMatch(startHex, "^#[0-9A-Fa-f]{6}$")
+            ? $"{{{Channel(startHex, 1)}, {Channel(startHex, 3)}, {Channel(startHex, 5)}}}"
+            : "{65535, 11051, 54998}";
+        var info = new ProcessStartInfo("/usr/bin/osascript")
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+        };
+        info.ArgumentList.Add("-e");
+        info.ArgumentList.Add($"choose color default color {start}");
+        using var process = Process.Start(info);
+        if (process is null)
+            return null;
+        var output = await process.StandardOutput.ReadToEndAsync();
+        await process.WaitForExitAsync();
+        if (process.ExitCode != 0)
+            return null; // cancelled
+        var parts = output.Split(',', StringSplitOptions.TrimEntries);
+        if (parts.Length != 3 || !parts.All(p => int.TryParse(p, out _)))
+            return null;
+        var rgb = parts.Select(p => (int)Math.Round(int.Parse(p) / 257.0)).ToArray();
+        return $"#{rgb[0]:X2}{rgb[1]:X2}{rgb[2]:X2}";
+    }
+
     /// <summary>Set once the tick failed: it is a nicety, so it switches itself off instead of crashing the app.</summary>
     private bool _tickBroken;
 
