@@ -16,7 +16,11 @@ public sealed class TrayService(UserDataStore store, ILocalizer loc, WindowServi
 
     public void Create(Application app)
     {
-        using var iconStream = AssetLoader.Open(new Uri("avares://Filee/Assets/Icons/theodrop.ico"));
+        // macOS: a monochrome template image that the menu bar tints itself (dark on a light bar, white on a dark
+        // one), like the system's own icons. Elsewhere the colored app icon.
+        using var iconStream = AssetLoader.Open(new Uri(OperatingSystem.IsMacOS()
+            ? "avares://Filee/Assets/Icons/theodrop-menubar.png"
+            : "avares://Filee/Assets/Icons/theodrop.ico"));
         _open = new NativeMenuItem();
         _open.Click += (_, _) => windows.ShowMain();
         _pause = new NativeMenuItem();
@@ -38,6 +42,8 @@ public sealed class TrayService(UserDataStore store, ILocalizer loc, WindowServi
             Menu = new NativeMenu { Items = { _open, _pause, new NativeMenuItemSeparator(), _quit } },
             IsVisible = true,
         };
+        if (OperatingSystem.IsMacOS())
+            MacOSProperties.SetIsTemplateIcon(_tray, true);
         _tray.Clicked += (_, _) => windows.ShowMain();
         TrayIcon.SetIcons(app, [_tray]);
 
