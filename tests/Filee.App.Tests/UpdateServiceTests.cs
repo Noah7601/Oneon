@@ -123,7 +123,7 @@ public class UpdateServiceTests
         try
         {
             using var bash = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("/bin/bash", ["-n", script])
-                { RedirectStandardError = true })!;
+            { RedirectStandardError = true })!;
             var errors = bash.StandardError.ReadToEnd();
             bash.WaitForExit();
             Assert.True(bash.ExitCode == 0, errors);
