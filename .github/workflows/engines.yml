@@ -1,0 +1,24 @@
+# Checks that every engine download in engines.json still exists and matches its size and SHA-256 (a moved or
+# replaced file otherwise only shows up as "could not install" in the app). Runs when engines.json changes, on
+# release branches, weekly, and by hand.
+name: Engine downloads
+
+on:
+  push:
+    branches: ['release/**', 'main']
+    paths: ['src/Filee.Engines/Infrastructure/engines.json', 'build/verify-engines.py', '.github/workflows/engines.yml']
+  schedule:
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and check every engine
+        run: python3 build/verify-engines.py

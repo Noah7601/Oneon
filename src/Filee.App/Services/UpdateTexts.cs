@@ -24,7 +24,7 @@ public static class UpdateTexts
     public static string? Status(UpdateService updates, ILocalizer loc) => updates.Step switch
     {
         UpdateStep.Downloading => loc.Format("update.downloading", updates.DownloadPercent),
-        UpdateStep.Installing => loc["update.installing"],
+        UpdateStep.Installing => loc[OperatingSystem.IsMacOS() ? "update.installing_mac" : "update.installing"],
         UpdateStep.Failed => loc["update.failed"],
         UpdateStep.Cancelled => loc["update.cancelled"],
         _ => null,

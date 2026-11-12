@@ -105,7 +105,7 @@
         },
         "calibre": {
           "version": "9.15.0",
-          "url": "https://github.com/kovidgoyal/calibre/releases/download/v9.15.0/calibre-9.15.0-x86_64.txz",
+          "url": "https://download.calibre-ebook.com/9.15.0/calibre-9.15.0-x86_64.txz",
           "sha256": "3F5301C0AA51E5FB2D5F6DCD04024BA4E86501AB328CE5D9D6760EFCCB887990",
           "size": 194998300,
           "kind": "tar.xz"
@@ -144,7 +144,7 @@
         },
         "calibre": {
           "version": "9.15.0",
-          "url": "https://github.com/kovidgoyal/calibre/releases/download/v9.15.0/calibre-9.15.0-arm64.txz",
+          "url": "https://download.calibre-ebook.com/9.15.0/calibre-9.15.0-arm64.txz",
           "sha256": "15AB887F9D787809BC834CA0EA6408E981B409F0B23046C41C18DE948EB50A38",
           "size": 182488416,
           "kind": "tar.xz"
@@ -176,7 +176,7 @@
         },
         "calibre": {
           "version": "9.15.0",
-          "url": "https://github.com/kovidgoyal/calibre/releases/download/v9.15.0/calibre-9.15.0.dmg",
+          "url": "https://download.calibre-ebook.com/9.15.0/calibre-9.15.0.dmg",
           "sha256": "1B3A7451175B73AE2BAA28FE1BC1C53EE34D65B489881E7EC02C20F9E0FF6019",
           "size": 350293492,
           "kind": "dmg"
@@ -187,6 +187,20 @@
           "sha256": "135B8A95B8133396D54BF8E726DBC0066145EFA0D785963FC3D4592ACBFCFE5B",
           "size": 308308875,
           "kind": "dmg"
+        },
+        "ffprobe": {
+          "version": "9.0.2",
+          "url": "https://ffmpeg.martin-riedl.de/download/macos/amd64/1789931006_9.0.2/ffprobe.zip",
+          "sha256": "2322438ED2F6319A691291B247D09C69DCAA3A982460D1F269A7E1AF335CFDFD",
+          "size": 33719233,
+          "kind": "zip"
+        },
+        "ffmpeg": {
+          "version": "9.0.2",
+          "url": "https://ffmpeg.martin-riedl.de/download/macos/amd64/1789931006_9.0.2/ffmpeg.zip",
+          "sha256": "7C6B4125B191CBF773832DC51F424CF2B6BB7DA43007D1E066F95909E47CACD4",
+          "size": 33816391,
+          "kind": "zip"
         }
       }
     },
@@ -215,7 +229,7 @@
         },
         "calibre": {
           "version": "9.15.0",
-          "url": "https://github.com/kovidgoyal/calibre/releases/download/v9.15.0/calibre-9.15.0.dmg",
+          "url": "https://download.calibre-ebook.com/9.15.0/calibre-9.15.0.dmg",
           "sha256": "1B3A7451175B73AE2BAA28FE1BC1C53EE34D65B489881E7EC02C20F9E0FF6019",
           "size": 350293492,
           "kind": "dmg"
@@ -226,6 +240,20 @@
           "sha256": "94BB3248DF074C225490A8A6D1D9DC87C7D6783DBB7A8E9F0D0C3D94348552AF",
           "size": 297798926,
           "kind": "dmg"
+        },
+        "ffprobe": {
+          "version": "9.0.2",
+          "url": "https://ffmpeg.martin-riedl.de/download/macos/arm64/1789931890_9.0.2/ffprobe.zip",
+          "sha256": "FCBE839537485EAEE7A7A8BC5CBC0F90D53617E80943E8A5B2E31CB851197EA6",
+          "size": 28317701,
+          "kind": "zip"
+        },
+        "ffmpeg": {
+          "version": "9.0.2",
+          "url": "https://ffmpeg.martin-riedl.de/download/macos/arm64/1789931890_9.0.2/ffmpeg.zip",
+          "sha256": "C8ED4C4E6978A03C485EDBFE4E0A5DC2380F8A30BBA5150531B31B094492D924",
+          "size": 28395699,
+          "kind": "zip"
         }
       }
     }

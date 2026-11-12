@@ -7,8 +7,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.Json;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
@@ -87,8 +90,31 @@ public sealed partial class UpdateService : ObservableObject
     /// True when this copy was installed by Setup (Inno Setup puts its uninstaller next to Filee.exe). Only then can
     /// the new installer update it in place; the portable zip and a copy run from source have no uninstaller.
     /// </summary>
-    public static bool IsInstalled { get; } = OperatingSystem.IsWindows()
-                                              && File.Exists(Path.Combine(AppContext.BaseDirectory, "unins000.exe"));
+    public static bool IsInstalled { get; } = (OperatingSystem.IsWindows()
+                                               && File.Exists(Path.Combine(AppContext.BaseDirectory, "unins000.exe")))
+                                              || MacAppBundle is not null;
+
+    /// <summary>
+    /// macOS: the Oneon.app this copy runs from (…/Oneon.app/Contents/MacOS/), which an update replaces; null when
+    /// not on macOS or run from source.
+    /// </summary>
+    public static string? MacAppBundle { get; } = OperatingSystem.IsMacOS() ? AppBundleOf(AppContext.BaseDirectory) : null;
+
+    internal static string? AppBundleOf(string baseDirectory)
+    {
+        var macOS = new DirectoryInfo(baseDirectory.TrimEnd('/', '\\'));
+        return macOS is { Name: "MacOS", Parent: { Name: "Contents", Parent: { } app } }
+               && app.Name.EndsWith(".app", StringComparison.OrdinalIgnoreCase)
+            ? app.FullName
+            : null;
+    }
+
+    /// <summary>End of the release file this platform installs: the Windows Setup, or the .dmg for this Mac's chip.</summary>
+    internal static string InstallerSuffix => OperatingSystem.IsMacOS()
+        ? RuntimeInformation.ProcessArchitecture == Architecture.Arm64 ? "-osx-arm64.dmg" : "-osx-x64.dmg"
+        : WindowsInstallerSuffix;
+
+    internal const string WindowsInstallerSuffix = "-win-Setup.exe";
 
     /// <summary>Whether <see cref="UpdateAsync"/> installs by itself (<see cref="IsInstalled"/>; tests set it).</summary>
     internal bool InstallsItself { get; init; } = IsInstalled;
@@ -160,7 +186,7 @@ public sealed partial class UpdateService : ObservableObject
             using var json = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
             var tag = json.RootElement.TryGetProperty("tag_name", out var value) ? value.GetString() : null;
             var newer = IsNewer(tag, CurrentVersion) ? Normalize(tag!) : null;
-            (_installer, _checksums) = FindFiles(json.RootElement);
+            (_installer, _checksums) = FindFiles(json.RootElement, InstallerSuffix);
             IReadOnlyList<ReleaseNote> notes = [];
             if (newer is not null)
             {
@@ -273,6 +299,12 @@ public sealed partial class UpdateService : ObservableObject
             return;
         }
 
+        if (OperatingSystem.IsMacOS())
+        {
+            StartMacUpdate(installer);
+            return;
+        }
+
         Process? setup;
         try
         {
@@ -382,7 +414,8 @@ public sealed partial class UpdateService : ObservableObject
     /// <summary>Opens a download page: the website for installed copies, the release page (portable zip) otherwise.</summary>
     public void OpenDownloadPage()
     {
-        var url = IsInstalled ? WebsiteUrl : LatestReleaseUrl;
+        // Oneon's downloads are its GitHub releases (WebsiteUrl is the original Filee's site).
+        var url = LatestReleaseUrl;
         try
         {
             Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
@@ -414,6 +447,61 @@ public sealed partial class UpdateService : ObservableObject
             UpdateFound?.Invoke(this, newer);
     }
 
+    /// <summary>
+    /// macOS: hands the verified .dmg to a small shell script and quits. The script waits for Oneon to exit, copies
+    /// the new app next to the old one, moves the old one to the Trash, clears the old Accessibility entry (an ad-hoc
+    /// signed build is a new app to macOS), opens the new Oneon and the Accessibility settings to allow it again.
+    /// When anything fails it opens the old app again. Its log is ~/Library/Logs/Oneon-update.log.
+    /// </summary>
+    private void StartMacUpdate(string dmg)
+    {
+        try
+        {
+            var script = Path.Combine(Path.GetDirectoryName(dmg)!, "install-update.sh");
+            File.WriteAllText(script, MacInstallScript);
+            var start = new ProcessStartInfo("/bin/bash") { UseShellExecute = false };
+            foreach (var argument in new[] { script, Environment.ProcessId.ToString(System.Globalization.CultureInfo.InvariantCulture), dmg, MacAppBundle! })
+                start.ArgumentList.Add(argument);
+            using var _ = Process.Start(start) ?? throw new InvalidOperationException("bash did not start");
+        }
+        catch (Exception ex) when (ex is Win32Exception or InvalidOperationException or IOException or UnauthorizedAccessException)
+        {
+            Fail("start", ex);
+            return;
+        }
+        _log.LogInformation("Started the macOS update to {Version}; quitting", LatestVersion);
+        Step = UpdateStep.Installing;
+        Dispatcher.UIThread.Post(() =>
+            (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Shutdown());
+    }
+
+    internal const string MacInstallScript = """
+        #!/bin/bash
+        # Oneon's in-app update on macOS: install-update.sh <pid> <dmg> <app bundle>
+        pid="$1"; dmg="$2"; app="$3"
+        mkdir -p "$HOME/Library/Logs"
+        exec >>"$HOME/Library/Logs/Oneon-update.log" 2>&1
+        echo "$(date) updating $app from $dmg"
+        for _ in $(seq 1 120); do kill -0 "$pid" 2>/dev/null || break; sleep 0.5; done
+        kill -0 "$pid" 2>/dev/null && { kill "$pid"; sleep 2; }
+        folder="$(dirname "$app")"
+        reopen() { echo "update failed: $1"; open "$app"; exit 1; }
+        mnt="$(mktemp -d)"
+        hdiutil attach -nobrowse -quiet -mountpoint "$mnt" "$dmg" || reopen "could not open the disk image"
+        staged="$folder/.Oneon-update.app"
+        rm -rf "$staged"
+        if ! ditto "$mnt/Oneon.app" "$staged"; then hdiutil detach -quiet "$mnt"; rm -rf "$staged"; reopen "could not copy the new app"; fi
+        hdiutil detach -quiet "$mnt"
+        mv "$app" "$HOME/.Trash/$(basename "$app" .app)-$(date +%Y%m%d-%H%M%S).app" || { rm -rf "$staged"; reopen "could not move the old app"; }
+        mv "$staged" "$folder/Oneon.app"
+        tccutil reset Accessibility com.theo.drop
+        open "$folder/Oneon.app"
+        sleep 2
+        open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
+        rm -f "$dmg"
+        echo "$(date) updated"
+        """;
+
     /// <summary>The installer the next update downloads (tests).</summary>
     internal ReleaseFile? Installer => _installer;
 
@@ -421,7 +509,8 @@ public sealed partial class UpdateService : ObservableObject
     internal sealed record ReleaseFile(string Name, string Url, long Size);
 
     /// <summary>Picks the Windows installer and the checksum file from a GitHub release (null when missing).</summary>
-    internal static (ReleaseFile? Installer, ReleaseFile? Checksums) FindFiles(JsonElement release)
+    internal static (ReleaseFile? Installer, ReleaseFile? Checksums) FindFiles(JsonElement release,
+        string installerSuffix = WindowsInstallerSuffix)
     {
         ReleaseFile? installer = null, checksums = null;
         if (!release.TryGetProperty("assets", out var assets) || assets.ValueKind != JsonValueKind.Array)
@@ -433,7 +522,7 @@ public sealed partial class UpdateService : ObservableObject
             var size = asset.TryGetProperty("size", out var s) && s.TryGetInt64(out var bytes) ? bytes : 0;
             if (name.Length == 0 || !url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                 continue;
-            if (name.EndsWith("-win-Setup.exe", StringComparison.OrdinalIgnoreCase))
+            if (name.EndsWith(installerSuffix, StringComparison.OrdinalIgnoreCase))
                 installer = new ReleaseFile(name, url, size);
             else if (name.EndsWith("-SHA256SUMS.txt", StringComparison.OrdinalIgnoreCase))
                 checksums = new ReleaseFile(name, url, size);

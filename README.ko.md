@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Noah7601/theodrop/releases/latest"><b>다운로드</b></a> ·
+  <a href="https://github.com/Noah7601/oneon/releases/latest"><b>다운로드</b></a> ·
   <a href="#설치">설치</a> ·
   <a href="#기능">기능</a> ·
   <a href="#라이선스와-출처">라이선스</a>
@@ -32,7 +32,7 @@
 
 ## 설치
 
-[릴리스](https://github.com/Noah7601/theodrop/releases/latest)에서 내려받으세요.
+[릴리스](https://github.com/Noah7601/oneon/releases/latest)에서 내려받으세요.
 
 | 내 컴퓨터 | 파일 |
 |---|---|
@@ -41,6 +41,16 @@
 | Windows 10/11 (Intel/AMD) | `Oneon-<version>-win-Setup.exe` (또는 `win-Portable.zip`) |
 
 **macOS 14 이상**
+
+터미널에 아래 한 줄을 붙여넣으면 설치와 업데이트가 한 번에 끝나요.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Noah7601/oneon/main/installer/macos/update.sh | bash
+```
+
+내 Mac에 맞는 파일을 받아 SHA-256을 확인하고, 예전 앱은 휴지통으로 옮긴 뒤 설치해요. 마지막에 손쉬운 사용 설정이
+열리면 Oneon을 다시 허용해 주세요. 1.11.7부터는 앱의 업데이트 버튼이 같은 일을 해요. 직접 설치하려면:
+
 1. `.dmg`를 열고 Oneon을 응용 프로그램 폴더로 끌어다 놓으세요.
 2. Apple 공증을 받지 않은 앱이라 처음 한 번은 실행이 막혀요. **완료**를 누른 뒤
    시스템 설정 → 개인정보 보호 및 보안에서 **그래도 열기**를 누르세요.
@@ -74,20 +84,17 @@ Oneon은 이 저장소에서 업데이트를 확인하고, 업데이트해도 �
 ## 직접 빌드하기
 
 ```bash
-git clone https://github.com/Noah7601/theodrop.git
-cd theodrop
+git clone https://github.com/Noah7601/oneon.git
+cd oneon
 dotnet run --project src/Filee.App   # .NET 10 SDK
 dotnet test
 ```
 
-원본 프로젝트의 변경 사항을 계속 합칠 수 있도록 내부 프로젝트 이름은 `Filee`로 두었어요.
 [구조](docs/ARCHITECTURE.md) · [변환기 추가](docs/ADDING-A-CONVERTER.md)
 
 ## 라이선스와 출처
 
-Oneon은 김명구(KnifeLemon)와 기여자들이 만든 [Filee](https://github.com/KnifeLemon/Filee)의 포크예요.
-변환 엔진은 Filee의 것이고, Oneon은 디자인, 아이콘, macOS·Windows 배포 방식을 따로 만들었어요.
-
-MIT 라이선스, © 2026 Myeonggu Kim (KnifeLemon), Filee 기여자, Oneon 기여자. [LICENSE](LICENSE)와
-[NOTICE.md](NOTICE.md)를 참고하세요. 함께 들어 있는 외부 구성 요소는 각자의 라이선스를 따라요:
+MIT 라이선스. [LICENSE](LICENSE)를 참고하세요. 함께 들어 있는 외부 구성 요소는 각자의 라이선스를 따라요:
 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+참고: Oneon은 [Filee](https://github.com/KnifeLemon/Filee)(MIT)를 바탕으로 만들었어요.

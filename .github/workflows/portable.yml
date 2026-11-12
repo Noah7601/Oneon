@@ -109,6 +109,71 @@ jobs:
           if ($LASTEXITCODE -ne 0 -or -not (Test-Path (Join-Path $smoke 'converted/sample.hwpx'))) { throw 'Published CLI conversion failed.' }
           "FILEE_SMOKE_APP=$(Join-Path $bin 'Filee')" >> $env:GITHUB_ENV
 
+      # Every tool of the ⌘ ring and the common conversions, run through the packaged app's CLI (same engine and presets
+      # as the app). Any that fails or writes nothing fails the build, with a summary of all of them.
+      - name: End-to-end tools and conversions
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          set -uo pipefail
+          app="$(ls -d "$RUNNER_TEMP"/filee-smoke/*/Oneon.app | head -1)"
+          cli="$app/Contents/MacOS/filee-cli"
+          w="$RUNNER_TEMP/e2e"; rm -rf "$w"; mkdir -p "$w/in"; cd "$w"
+          python3 - in <<'PY'
+          import struct, sys, zlib
+          def png(path, w, h, seed):
+              rows = b"".join(b"\x00" + bytes(v for x in range(w) for v in ((x * 4 + seed) % 256, (y * 5) % 256, (x + y + seed * 3) % 256)) for y in range(h))
+              chunk = lambda t, d: struct.pack(">I", len(d)) + t + d + struct.pack(">I", zlib.crc32(t + d) & 0xFFFFFFFF)
+              open(path, "wb").write(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0))
+                                     + chunk(b"IDAT", zlib.compress(rows)) + chunk(b"IEND", b""))
+          png(f"{sys.argv[1]}/photo.png", 96, 64, 1)
+          png(f"{sys.argv[1]}/photo2.png", 80, 60, 7)
+          PY
+          printf 'Oneon 한글 end-to-end test\nsecond line\n' > in/note.txt
+          "$cli" convert in/photo.png --to jpg -o in --quiet
+          "$cli" convert in/photo.png in/photo2.png --to pdf -o in --quiet
+          (cd in && zip -q archive.zip photo.png note.txt)
+          ls -la in
+          failed=0
+          run() {
+            local name="$1"; shift
+            local out="out/$name"; mkdir -p "$out"
+            if "$cli" convert "$@" -o "$out" > "out/$name.log" 2>&1 && [ -n "$(find "$out" -type f | head -1)" ]; then
+              echo "OK   $name: $(cd "$out" && find . -type f | sed 's#^\./##' | tr '\n' ' ')"
+            else
+              failed=$((failed + 1)); echo "FAIL $name"; sed 's/^/     /' "out/$name.log"
+            fi
+          }
+          run half-size          in/photo.jpg --preset half-size
+          run grayscale          in/photo.jpg --preset grayscale
+          run remove-background  in/photo.png --preset remove-background
+          run rotate-left        in/photo.jpg --preset rotate-left
+          run rotate-right       in/photo.jpg --preset rotate-right
+          run rotate-180         in/photo.jpg --preset rotate-180
+          run flip-horizontal    in/photo.jpg --preset flip-horizontal
+          run flip-vertical      in/photo.jpg --preset flip-vertical
+          run pdf-long-image     in/photo.pdf --preset pdf-long-image
+          run pdf-split          in/photo.pdf --preset pdf-split
+          run merge-pdf          in/photo.pdf in/photo2.pdf --preset merge-pdf
+          run zip-all            in/photo.png in/note.txt --preset zip-all
+          run extract            in/archive.zip --preset extract
+          # Not here: HEIC output needs FFmpeg and ODT needs Pandoc or LibreOffice (downloadable engines, checked below).
+          for format in jpg webp avif gif tiff bmp ico pdf; do run "png-to-$format" in/photo.png --to "$format"; done
+          for format in docx hwpx pdf; do run "txt-to-$format" in/note.txt --to "$format"; done
+          if [ "$failed" -gt 0 ]; then echo "$failed check(s) failed"; exit 1; fi
+          echo "All end-to-end checks passed"
+
+      # The downloadable engines (calibre, Pandoc, LibreOffice on macOS) installed the way the app's Engines page does,
+      # then run once: a moved download or a changed disk image fails here instead of in the app.
+      - name: Install and run downloadable engines
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          THEODROP_INSTALL_ENGINES: '1'
+        run: |
+          dotnet test tests/Filee.Engines.Tests/Filee.Engines.Tests.csproj --no-build -c Release \
+            --filter "FullyQualifiedName~EngineInstallTests" --logger "console;verbosity=normal"
+
       # Drag-to-install disk image: Oneon.app, a shortcut to Applications and how to open it the first time
       # (the build is ad-hoc signed, not notarized). Its hash goes into the package's checksum file.
       - name: Build disk image
@@ -127,7 +192,15 @@ jobs:
           codesign --verify --deep --strict "$stage/Oneon.app"
           ln -s /Applications "$stage/Applications"
           cp installer/macos/FIRST-OPEN.txt "$stage/처음 실행 방법 (How to open).txt"
-          hdiutil create -volname "Oneon" -srcfolder "$stage" -fs HFS+ -format UDZO -ov "Releases/$name.dmg"
+          # hdiutil on GitHub's macOS runners sometimes fails with "Resource busy" (a known runner issue): retry.
+          for attempt in 1 2 3 4 5; do
+            if hdiutil create -volname "Oneon" -srcfolder "$stage" -fs HFS+ -format UDZO -ov "Releases/$name.dmg"; then
+              break
+            fi
+            [ "$attempt" = 5 ] && exit 1
+            echo "hdiutil failed (attempt $attempt), retrying"
+            sleep $((attempt * 10))
+          done
           hdiutil verify "Releases/$name.dmg"
           (cd Releases && shasum -a 256 "$name.dmg" >> "$name-SHA256SUMS.txt")
           cat "Releases/$name-SHA256SUMS.txt"

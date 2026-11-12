@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Noah7601/theodrop/releases/latest"><b>Download</b></a> ·
+  <a href="https://github.com/Noah7601/oneon/releases/latest"><b>Download</b></a> ·
   <a href="#install">Install</a> ·
   <a href="#features">Features</a> ·
   <a href="#license-and-credits">License</a>
@@ -32,7 +32,7 @@ You can change the keys in Settings.
 
 ## Install
 
-Download from [Releases](https://github.com/Noah7601/theodrop/releases/latest).
+Download from [Releases](https://github.com/Noah7601/oneon/releases/latest).
 
 | Your computer | File |
 |---|---|
@@ -41,6 +41,16 @@ Download from [Releases](https://github.com/Noah7601/theodrop/releases/latest).
 | Windows 10/11 (Intel/AMD) | `Oneon-<version>-win-Setup.exe` (or `win-Portable.zip`) |
 
 **macOS 14 or later**
+
+Install or update in one step (paste into Terminal):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Noah7601/oneon/main/installer/macos/update.sh | bash
+```
+
+It picks the build for your Mac, checks its SHA-256, replaces the old app (into the Trash) and opens the Accessibility
+settings so you can allow Oneon again. From 1.11.7 on, the Update button in the app does the same. Or by hand:
+
 1. Open the `.dmg` and drag Oneon into Applications.
 2. Oneon is not notarized by Apple, so the first start is blocked once. Click **Done**, then go to
    System Settings → Privacy & Security and click **Open Anyway**.
@@ -75,20 +85,17 @@ you choose, and when you click a link.
 ## Build from source
 
 ```bash
-git clone https://github.com/Noah7601/theodrop.git
-cd theodrop
+git clone https://github.com/Noah7601/oneon.git
+cd oneon
 dotnet run --project src/Filee.App   # .NET 10 SDK
 dotnet test
 ```
 
-Internal project names stay `Filee` so changes from the original project can still be merged.
 [Architecture](docs/ARCHITECTURE.md) · [Adding a converter](docs/ADDING-A-CONVERTER.md)
 
 ## License and credits
 
-Oneon is a fork of [Filee](https://github.com/KnifeLemon/Filee) by Myeonggu Kim (KnifeLemon) and contributors,
-which provides the conversion engine. Oneon adds its own design, icon and macOS/Windows packaging.
-
-MIT license, © 2026 Myeonggu Kim (KnifeLemon), Filee contributors and Oneon contributors. See [LICENSE](LICENSE)
-and [NOTICE.md](NOTICE.md). Bundled third-party components keep their own licenses:
+MIT license. See [LICENSE](LICENSE). Bundled third-party components keep their own licenses:
 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+Reference: Oneon is based on [Filee](https://github.com/KnifeLemon/Filee) (MIT).

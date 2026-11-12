@@ -24,7 +24,7 @@
 
 #define AppName "Oneon"
 #define AppExe "Filee.exe"
-#define RepositoryUrl "https://github.com/Noah7601/theodrop"
+#define RepositoryUrl "https://github.com/Noah7601/oneon"
 ; Never change: Windows finds the installed Oneon by this id (uninstall key "{<id>}_is1").
 ; Oneon has its own id, so installing it never replaces or uninstalls an installed Filee.
 #define AppGuid "B41C2496-6A0E-4D52-8F88-969463EF2B1C"

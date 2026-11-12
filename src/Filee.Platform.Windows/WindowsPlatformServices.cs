@@ -13,8 +13,11 @@ namespace Filee.Platform.Windows;
 public sealed class WindowsPlatformServices : IPlatformServices
 {
     private const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
-    private const string ContextMenuKey = @"Software\Classes\*\shell\Filee";
-    private const string AppName = "Filee";
+    private const string ContextMenuKey = @"Software\Classes\*\shell\theOdrop";
+    private const string AppName = "theOdrop"; // registry value names stay (renaming would leave a stale sign-in entry)
+    // theOdrop 1.11.x used the original Filee's names (sign-in entry, classic verb, Send To shortcut). They are removed
+    // only when they point at this executable, so an installed Filee keeps its own.
+    private const string LegacyName = "Filee";
 
     /// <summary>Window classes that belong to Explorer windows and the desktop.</summary>
     private static readonly HashSet<string> FileManagerClasses = new(StringComparer.Ordinal)
@@ -113,6 +116,8 @@ public sealed class WindowsPlatformServices : IPlatformServices
     public void SetStartWithSystem(bool enabled, string executablePath)
     {
         using var key = Registry.CurrentUser.CreateSubKey(RunKey);
+        if (key.GetValue(LegacyName) is string legacy && PointsAt(legacy, executablePath))
+            key.DeleteValue(LegacyName, throwOnMissingValue: false);
         if (enabled)
             key.SetValue(AppName, $"\"{executablePath}\" --background");
         else
@@ -120,7 +125,7 @@ public sealed class WindowsPlatformServices : IPlatformServices
     }
 
     /// <summary>
-    /// Registers a per-user "Convert with Filee" verb for all files (no admin rights needed) and a Send To shortcut.
+    /// Registers a per-user "Convert with Oneon" verb for all files (no admin rights needed) and a Send To shortcut.
     /// On Windows 11 the classic verb appears under "Show more options"; the top-level entry is the packaged
     /// IExplorerCommand (<see cref="ExplorerMenuRegistration"/>), which this switches on and off through its title file.
     /// When that package is registered the classic verb is removed, because Windows also lists the packaged command
@@ -130,6 +135,7 @@ public sealed class WindowsPlatformServices : IPlatformServices
     {
         if (ExplorerMenuRegistration.IsSupportedOs)
             ExplorerMenuRegistration.SetTitle(enabled ? label : null);
+        RemoveLegacyMenuEntries(executablePath);
 
         if (!enabled)
         {
@@ -213,7 +219,49 @@ public sealed class WindowsPlatformServices : IPlatformServices
     }
 
     private static string SendToShortcutPath =>
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.SendTo), "Filee.lnk");
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.SendTo), "theOdrop.lnk");
+
+    private static bool PointsAt(string? value, string executablePath) =>
+        !string.IsNullOrEmpty(value) && value.Contains(executablePath, StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Removes the classic verb and Send To shortcut theOdrop 1.11.x created under Filee's names.</summary>
+    private static void RemoveLegacyMenuEntries(string executablePath)
+    {
+        var legacyVerb = $@"Software\Classes\*\shell\{LegacyName}";
+        string? legacyCommand;
+        using (var command = Registry.CurrentUser.OpenSubKey(legacyVerb + @"\command"))
+            legacyCommand = command?.GetValue(null) as string;
+        if (PointsAt(legacyCommand, executablePath))
+            Registry.CurrentUser.DeleteSubKeyTree(legacyVerb, throwOnMissingSubKey: false);
+
+        var legacyShortcut = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.SendTo), LegacyName + ".lnk");
+        if (File.Exists(legacyShortcut) && PointsAt(ShortcutTarget(legacyShortcut), executablePath))
+            TryDelete(legacyShortcut);
+    }
+
+    /// <summary>Target of a .lnk file, read through the WScript.Shell automation object (null when unknown).</summary>
+    private static string? ShortcutTarget(string shortcutPath)
+    {
+        var type = Type.GetTypeFromProgID("WScript.Shell");
+        if (type is null)
+            return null;
+        dynamic? shell = null;
+        try
+        {
+            shell = Activator.CreateInstance(type)!;
+            dynamic link = shell.CreateShortcut(shortcutPath);
+            return (string?)link.TargetPath;
+        }
+        catch (COMException)
+        {
+            return null;
+        }
+        finally
+        {
+            if (shell is not null)
+                Marshal.FinalReleaseComObject(shell);
+        }
+    }
 
     private static nint RootWindowAt(int x, int y)
     {

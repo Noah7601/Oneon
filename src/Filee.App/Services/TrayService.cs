@@ -16,8 +16,8 @@ public sealed class TrayService(UserDataStore store, ILocalizer loc, WindowServi
 
     public void Create(Application app)
     {
-        // macOS: a monochrome template image that the menu bar tints itself (dark on a light bar, white on a dark
-        // one), like the system's own icons. Elsewhere the colored app icon.
+        // macOS: a monochrome template image that the menu bar tints itself (white on a dark or glass bar, dark on a
+        // light one), like the system's own icons. Elsewhere the colored app icon.
         using var iconStream = AssetLoader.Open(new Uri(OperatingSystem.IsMacOS()
             ? "avares://Filee/Assets/Icons/theodrop-menubar.png"
             : "avares://Filee/Assets/Icons/theodrop.ico"));

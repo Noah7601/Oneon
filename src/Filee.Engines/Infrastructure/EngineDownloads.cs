@@ -37,7 +37,9 @@ public static class EngineDownloads
         new("pandoc", ["pandoc"], 236_000_000, ["pandoc"]),
         // Ghostscript from conda-forge plus the Microsoft C++ runtime it was built against (copied next to it).
         new("ghostscript", OperatingSystem.IsWindows() ? ["ghostscript", "vcruntime"] : ["ghostscript"], 31_000_000, ["ghostscript"]),
-        new("ffmpeg", ["ffmpeg"], 272_000_000, ["ffmpeg"]),
+        // macOS builds (Martin Riedl's static builds) come as one zip per program: ffprobe first, then ffmpeg, which
+        // gets a copy of it so both programs are in one folder like the Windows and Linux archives.
+        new("ffmpeg", OperatingSystem.IsMacOS() ? ["ffprobe", "ffmpeg"] : ["ffmpeg"], 272_000_000, ["ffmpeg"]),
         new("calibre", ["calibre"], 663_000_000, ["calibre"]),
     ];
 

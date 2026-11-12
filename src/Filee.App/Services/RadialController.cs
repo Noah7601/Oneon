@@ -111,8 +111,22 @@ public sealed class RadialController(
         // A drop on the donut arrives around the same time as the button release; give it a moment.
         DispatcherTimer.RunOnce(() =>
         {
-            if (_visible && !_dropped && !viewModel.IsClickMode)
-                Close(animate: true);
+            if (!_visible || _dropped || viewModel.IsClickMode)
+                return;
+            // The system refused the drop (macOS: ⌘ held while dragging from Finder), so no Drop event came. The
+            // button was released over a slice with the files already loaded: run that slice as the drop would have.
+            if (_window is { SourceRefusesDrop: true } window && viewModel.HasFiles
+                && window.LastDragHit.Kind is DonutHitKind.Segment or DonutHitKind.SubSegment)
+            {
+                var hit = window.LastDragHit;
+                log.LogInformation("Drop refused by the drag source; running slice {Index}/{Sub} on release", hit.Index, hit.Sub);
+                _dropped = true;
+                window.DonutControl.CollapseGroup();
+                window.DonutControl.SetExternalHighlight(-1);
+                Convert(hit.Index, hit.Sub, viewModel.Files);
+                return;
+            }
+            Close(animate: true);
         }, TimeSpan.FromMilliseconds(250));
     }
 

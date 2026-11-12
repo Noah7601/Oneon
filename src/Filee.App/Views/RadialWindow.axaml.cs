@@ -40,6 +40,16 @@ public partial class RadialWindow : Window
 
     private int _dragOverEvents;
     private DonutHit _lastDragHit;
+    private DragDropEffects _sourceEffects;
+
+    /// <summary>
+    /// True when the drag source allows no effect the ring can report, so the system refuses the drop: on macOS a
+    /// Finder drag with ⌘ held only allows "generic", which Avalonia does not map, and no Drop event ever comes.
+    /// </summary>
+    public bool SourceRefusesDrop => _dragOverEvents > 0 && _sourceEffects == DragDropEffects.None;
+
+    /// <summary>Where the last drag-over event was on the donut (where a refused drop was released).</summary>
+    public DonutHit LastDragHit => _lastDragHit;
     private Point? _lastDragAt;
 
     private void OnDragEnter(object? sender, DragEventArgs e)
@@ -60,15 +70,33 @@ public partial class RadialWindow : Window
     {
         var at = e.GetPosition(Donut);
         var hit = Donut.HitTest(at);
+        _sourceEffects = e.DragEffects;
         _dragOverEvents++;
         _lastDragHit = hit;
         _lastDragAt = at;
         var files = e.DataTransfer.Contains(DataFormat.File);
         Donut.SetExternalHit(hit, at);
 
-        // Always COPY. Reporting MOVE would make Explorer delete the source files after the drop.
-        e.DragEffects = files && Donut.Converts(hit) ? DragDropEffects.Copy : DragDropEffects.None;
+        e.DragEffects = files && Donut.Converts(hit) ? AcceptedEffect(e.DragEffects) : DragDropEffects.None;
         e.Handled = true;
+    }
+
+    /// <summary>
+    /// The effect to report for a drop the ring takes, given the effects the drag source allows. COPY whenever it is
+    /// allowed: reporting MOVE would make Explorer delete the source files after the drop. On macOS the key held during
+    /// the drag narrows what the source allows (Finder: ⌘ = move only, ⌃ = link only, ⌥ = copy), and a drop whose effect
+    /// is not allowed is refused, so the ⌘ and ⌃⌘ rings never received their files. There the ring takes the drop as a
+    /// link or a move instead: it only reads the files, and Finder does not move or delete them for a drop on another app.
+    /// </summary>
+    internal static DragDropEffects AcceptedEffect(DragDropEffects allowed)
+    {
+        if (allowed.HasFlag(DragDropEffects.Copy) || !OperatingSystem.IsMacOS())
+            return DragDropEffects.Copy;
+        if (allowed.HasFlag(DragDropEffects.Link))
+            return DragDropEffects.Link;
+        if (allowed.HasFlag(DragDropEffects.Move))
+            return DragDropEffects.Move;
+        return DragDropEffects.Copy;
     }
 
     private void OnDragLeave(object? sender, DragEventArgs e)
@@ -84,7 +112,7 @@ public partial class RadialWindow : Window
         DragSummary?.Invoke(_dragOverEvents, hit, Donut.LitAmount(hit.Index));
         Donut.CollapseGroup();
         Donut.SetExternalHighlight(-1);
-        e.DragEffects = Donut.Converts(hit) ? DragDropEffects.Copy : DragDropEffects.None;
+        e.DragEffects = Donut.Converts(hit) ? AcceptedEffect(e.DragEffects) : DragDropEffects.None;
         Dropped?.Invoke(hit, LocalFiles(e));
         e.Handled = true;
     }
