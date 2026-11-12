@@ -47,6 +47,8 @@ public sealed class RadialController(
     private JobViewModel? _lastRingJob;   // for "click the ✓ to open the folder"
     private IDisposable? _handOffTimer;
     private int _dragGeneration;
+    private bool _dragReachedDonut;
+    private bool _dragEndedOnDonut;
 
     /// <summary>
     /// How long a drag that never brought files may keep the invisible window up, in case the button release is
@@ -65,11 +67,15 @@ public sealed class RadialController(
     /// </summary>
     public void ShowForDrag(int x, int y, WheelMode wheel = WheelMode.Convert)
     {
+        if (_visible && !_dropped && !viewModel.IsClickMode && viewModel.HasFiles)
+            log.LogInformation("A new drag gesture replaced the donut's files before a drop");
         ReleaseProgressToToast();
         var window = EnsureWindow();
         // A ring from an earlier conversion (finished or handed to the toast) must not keep this gesture's window up.
         window.DonutControl.LeaveProgressMode();
         _dropped = false;
+        _dragReachedDonut = false;
+        _dragEndedOnDonut = false;
         viewModel.ResetForDrag(wheel);
         window.DonutControl.AllowContextEdit = false;
         PlaceAndShow(window, x, y, activate: false);
@@ -123,9 +129,14 @@ public sealed class RadialController(
                 _dropped = true;
                 window.DonutControl.CollapseGroup();
                 window.DonutControl.SetExternalHighlight(-1);
-                Convert(hit.Index, hit.Sub, viewModel.Files);
+                if (hit.Kind == DonutHitKind.SubSegment && window.DonutControl.IsTransferFan(hit.Index))
+                    ConvertAndSend(hit.Index, hit.Sub, viewModel.Files);
+                else
+                    Convert(hit.Index, hit.Sub, viewModel.Files);
                 return;
             }
+            if (_dragReachedDonut && !_dragEndedOnDonut)
+                log.LogInformation("The donut closed 250 ms after the release, with no drop or leave from the system");
             Close(animate: true);
         }, TimeSpan.FromMilliseconds(250));
     }
@@ -169,6 +180,7 @@ public sealed class RadialController(
         var window = new RadialWindow { DataContext = viewModel };
         var donut = window.DonutControl;
 
+        window.DragEntered += () => (_dragReachedDonut, _dragEndedOnDonut) = (true, false);
         window.FilesEntered += files =>
         {
             if (viewModel.IsClickMode || SameFiles(files, viewModel.Files))
@@ -188,9 +200,12 @@ public sealed class RadialController(
         };
         // One line per drag, to tell "the drag never reached the donut" from "it did but nothing lit up" when someone
         // reports a donut that doesn't react.
-        window.DragSummary += (events, hit, lit) =>
-            log.LogInformation("Drag over the donut: {Events} move event(s), ended on {Kind} {Index}, drawn lit {Lit:0.00}",
-                events, hit.Kind, hit.Index, lit);
+        window.DragSummary += (events, hit, lit, dropped) =>
+        {
+            _dragEndedOnDonut = true;
+            log.LogInformation("Drag over the donut: {Events} move event(s), ended on {Kind} {Index}, drawn lit {Lit:0.00}{Drop}",
+                events, hit.Kind, hit.Index, lit, dropped ? "" : ", left without a drop");
+        };
         window.EscapePressed += () => Close();
         window.Deactivated += (_, _) =>
         {

@@ -2,6 +2,7 @@
 // Later launches forward arguments through a named pipe.
 
 using System.IO.Pipes;
+using System.Net.Sockets;
 using System.Text.Json;
 
 namespace Filee.App.Services;
@@ -28,6 +29,9 @@ public sealed class SingleInstance : IDisposable
     /// <summary>Raised on a background thread with the arguments of a later launch.</summary>
     public event Action<string[]>? ArgumentsReceived;
 
+    /// <summary>Raised when listening fails and is about to retry.</summary>
+    public event Action<Exception>? ListeningFailed;
+
     public static SingleInstance Acquire() => Acquire(DefaultName);
 
     /// <summary>The instance under another name (tests, which must not reach a Filee that is running).</summary>
@@ -48,27 +52,102 @@ public sealed class SingleInstance : IDisposable
             return;
         _ = Task.Run(async () =>
         {
-            while (!_cts.IsCancellationRequested)
+            NamedPipeServerStream? keeper = null;
+            NamedPipeServerStream? next = null;
+            try
             {
-                try
+                while (!_cts.IsCancellationRequested)
                 {
-                    await using var server = new NamedPipeServerStream(_name, PipeDirection.In, 1,
-                        PipeTransmissionMode.Byte, PipeOptions.Asynchronous | PipeOptions.CurrentUserOnly);
-                    await server.WaitForConnectionAsync(_cts.Token);
-                    var args = await JsonSerializer.DeserializeAsync(server, AppJsonContext.Default.StringArray, _cts.Token);
-                    if (args is not null)
-                        ArgumentsReceived?.Invoke(args);
-                }
-                catch (OperationCanceledException)
-                {
-                    return;
-                }
-                catch (Exception ex) when (ex is IOException or JsonException)
-                {
-                    // A client disconnected half-way; keep serving.
+                    var connected = false;
+                    try
+                    {
+                        // Unix pipes share one listening socket. Keep it alive while a connected launch is read so
+                        // launches already queued by the OS are not discarded between server instances.
+                        if (!OperatingSystem.IsWindows())
+                            keeper ??= CreateServer();
+                        var waiting = next ?? CreateServer();
+                        next = null;
+                        await using var server = waiting;
+                        await WaitForLaunch(server, _cts.Token);
+                        connected = true;
+                        if (OperatingSystem.IsWindows())
+                            next = TryCreateServer();
+                        using var reading = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
+                        reading.CancelAfter(ReadTimeout);
+                        var args = await JsonSerializer.DeserializeAsync(server, AppJsonContext.Default.StringArray, reading.Token);
+                        if (args is not null)
+                            ArgumentsReceived?.Invoke(args);
+                    }
+                    catch (OperationCanceledException) when (_cts.IsCancellationRequested)
+                    {
+                        return;
+                    }
+                    catch (Exception ex) when (connected && ex is IOException or JsonException)
+                    {
+                        // A client disconnected half-way; keep serving.
+                    }
+                    catch (Exception ex)
+                    {
+                        try
+                        {
+                            do
+                            {
+                                await Task.Delay(500, _cts.Token);
+                            } while (ex is SocketException { SocketErrorCode: SocketError.TooManyOpenSockets } && !FileHandleIsFree());
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return;
+                        }
+                        ListeningFailed?.Invoke(ex);
+                    }
                 }
             }
+            finally
+            {
+                next?.Dispose();
+                keeper?.Dispose();
+            }
         });
+    }
+
+    private static bool FileHandleIsFree()
+    {
+        if (OperatingSystem.IsWindows())
+            return true;
+        try
+        {
+            File.OpenHandle("/dev/null").Dispose();
+            return true;
+        }
+        catch (IOException)
+        {
+            return false;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return true;
+        }
+    }
+
+    internal TimeSpan ReadTimeout { get; set; } = TimeSpan.FromSeconds(10);
+
+    internal Func<NamedPipeServerStream, CancellationToken, Task> WaitForLaunch { get; set; } =
+        (server, token) => server.WaitForConnectionAsync(token);
+
+    private NamedPipeServerStream CreateServer() => new(_name, PipeDirection.In, 2,
+        PipeTransmissionMode.Byte, PipeOptions.Asynchronous | PipeOptions.CurrentUserOnly);
+
+    private NamedPipeServerStream? TryCreateServer()
+    {
+        try
+        {
+            return CreateServer();
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            return null;
+        }
     }
 
     /// <summary>
@@ -91,7 +170,7 @@ public sealed class SingleInstance : IDisposable
                 JsonSerializer.Serialize(client, args, AppJsonContext.Default.StringArray);
                 return true;
             }
-            catch (Exception ex) when (ex is IOException or TimeoutException or UnauthorizedAccessException)
+            catch (Exception ex) when (ex is IOException or TimeoutException or UnauthorizedAccessException or SocketException)
             {
                 if (DateTime.UtcNow >= deadline)
                     return false;
