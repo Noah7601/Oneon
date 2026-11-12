@@ -1,0 +1,68 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Filee.App.ViewModels.Pages"
+             x:Class="Filee.App.Views.Pages.TransferPage"
+             x:DataType="vm:TransferPageViewModel">
+  <StackPanel Spacing="18">
+    <TextBlock Classes="h1" Text="{DynamicResource transfer.title}" />
+    <TextBlock Classes="muted" TextWrapping="Wrap" Text="{DynamicResource transfer.description}" />
+
+    <Button Classes="accent" Click="OnAddFolder" HorizontalAlignment="Left">
+      <StackPanel Orientation="Horizontal" Spacing="6">
+        <PathIcon Width="12" Height="12" Data="{StaticResource Icon.Plus}" />
+        <TextBlock Text="{DynamicResource transfer.add_folder}" />
+      </StackPanel>
+    </Button>
+
+    <ItemsControl ItemsSource="{Binding Targets}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Spacing="14" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate x:DataType="vm:TransferTargetViewModel">
+          <Border Classes="card">
+            <StackPanel Spacing="12">
+              <DockPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="4">
+                  <Button Command="{Binding MoveUpCommand}" ToolTip.Tip="{DynamicResource transfer.up}">
+                    <PathIcon Width="13" Height="13" Data="{StaticResource Icon.ArrowUp}" />
+                  </Button>
+                  <Button Command="{Binding MoveDownCommand}" ToolTip.Tip="{DynamicResource transfer.down}">
+                    <PathIcon Width="13" Height="13" Data="{StaticResource Icon.ArrowDown}" />
+                  </Button>
+                  <Button Command="{Binding RemoveCommand}" IsVisible="{Binding IsFolder}" ToolTip.Tip="{DynamicResource transfer.remove}">
+                    <PathIcon Width="14" Height="14" Data="{StaticResource Icon.Delete}" />
+                  </Button>
+                </StackPanel>
+                <ToggleSwitch IsChecked="{Binding Enabled}" OnContent="{Binding KindLabel}" OffContent="{Binding KindLabel}" />
+              </DockPanel>
+
+              <StackPanel Spacing="4" IsVisible="{Binding IsFolder}">
+                <TextBlock Classes="label" Text="{DynamicResource transfer.folder}" />
+                <DockPanel>
+                  <Button DockPanel.Dock="Right" Margin="8,0,0,0" Content="{DynamicResource presets.browse}" Click="OnBrowseFolder" />
+                  <TextBox Text="{Binding Path}" />
+                </DockPanel>
+              </StackPanel>
+
+              <StackPanel Spacing="4" IsVisible="{Binding IsGoogleDrive}">
+                <TextBlock Classes="label" Text="{DynamicResource transfer.drive_subfolder}" />
+                <TextBox Text="{Binding Path}" PlaceholderText="Oneon" />
+                <TextBlock Classes="caption" TextWrapping="Wrap" Text="{DynamicResource transfer.drive_hint}" />
+              </StackPanel>
+
+              <StackPanel Spacing="4">
+                <TextBlock Classes="label" Text="{DynamicResource transfer.name}" />
+                <TextBox Text="{Binding Name}" PlaceholderText="{Binding KindLabel}" />
+              </StackPanel>
+
+              <CheckBox Content="{DynamicResource transfer.confirm_toggle}" IsChecked="{Binding Confirm}" />
+            </StackPanel>
+          </Border>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </StackPanel>
+</UserControl>
