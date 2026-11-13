@@ -47,7 +47,7 @@
       <DockPanel>
         <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="12,0,0,0" Classes="accent"
                 Content="{DynamicResource triggers.open_accessibility}" Command="{Binding OpenAccessibilityCommand}" />
-        <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{DynamicResource home.accessibility_needed}" />
+        <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding AccessibilityHint}" />
       </DockPanel>
     </Border>
 

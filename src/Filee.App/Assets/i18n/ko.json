@@ -24,7 +24,7 @@
   "home.drop_hint": "또는 탐색기에서 {0} 키를 누른 채 파일을 드래그하면 커서 위치에 원형 툴바가 열려요.",
   "home.drop_hint_macos": "또는 Finder에서 {0} 키를 누른 채 파일을 드래그하면 커서 위치에 원형 툴바가 열려요.",
   "home.drop_hint_linux": "또는 파일 관리자에서 {0} 키를 누른 채 파일을 드래그하면 커서 위치에 원형 툴바가 열려요.",
-  "home.accessibility_needed": "⌥ Option 드래그로 원형 툴바를 열려면 손쉬운 사용에서 Oneon을 허용해 주세요.\n켜는 즉시 동작해요.",
+  "home.accessibility_needed": "{0} 드래그로 원형 툴바를 열려면 손쉬운 사용에서 Oneon을 허용해 주세요.\n켜는 즉시 동작해요.",
   "home.recent": "최근 변환",
   "home.recent_empty": "변환한 파일이 여기에 표시됩니다.",
   "home.open_folder": "폴더 열기",

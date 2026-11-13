@@ -24,7 +24,7 @@
   "home.drop_hint": "Or hold {0} while dragging files in Explorer. The donut toolbar opens at your cursor.",
   "home.drop_hint_macos": "Or hold {0} while dragging files in Finder. The donut toolbar opens at your cursor.",
   "home.drop_hint_linux": "Or hold {0} while dragging files in your file manager. The donut toolbar opens at your cursor.",
-  "home.accessibility_needed": "To open the donut by dragging with ⌥ Option, allow Oneon under Accessibility.\nIt works as soon as you switch it on.",
+  "home.accessibility_needed": "To open the donut by dragging with {0}, allow Oneon under Accessibility.\nIt works as soon as you switch it on.",
   "home.recent": "Recent conversions",
   "home.recent_empty": "Your converted files will show up here.",
   "home.open_folder": "Open folder",
