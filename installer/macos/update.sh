@@ -1,13 +1,13 @@
 #!/bin/bash
 # Installs or updates Oneon on macOS in one step:
-#   curl -fsSL https://raw.githubusercontent.com/Noah7601/oneon/main/installer/macos/update.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/Noah7601/Oneon/main/installer/macos/update.sh | bash
 # Downloads the latest release's .dmg for this Mac (Apple Silicon or Intel), checks its SHA-256 against the release's
 # checksum file, quits Oneon, moves the old app to the Trash, installs the new one in /Applications, clears the old
 # Accessibility entry (an ad-hoc signed update is a new app to macOS) and opens Oneon again.
 # --force reinstalls the latest version even when it is already installed.
 set -euo pipefail
 
-repo="Noah7601/oneon"
+repo="Noah7601/Oneon"
 app="/Applications/Oneon.app"
 force=0
 [ "${1:-}" = "--force" ] && force=1
