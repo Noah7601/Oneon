@@ -95,7 +95,10 @@ public sealed partial class HomePageViewModel : ObservableObject, IDisposable
         if (triggers is not null)
             triggers.StatusChanged += OnTriggerStatusChanged;
         var drag = store.Settings.Triggers.FirstOrDefault(t => t.Enabled && t.Kind == TriggerKind.Drag);
-        DropHint = loc.Format(OperatingSystem.IsMacOS() ? "home.drop_hint_macos" : OperatingSystem.IsLinux() ? "home.drop_hint_linux" : "home.drop_hint", drag is null ? "—" : GestureText.Modifiers(drag.Modifiers));
+        var modifiers = drag is null ? "—" : GestureText.Modifiers(drag.Modifiers);
+        DropHint = loc.Format(OperatingSystem.IsMacOS() ? "home.drop_hint_macos" : OperatingSystem.IsLinux() ? "home.drop_hint_linux" : "home.drop_hint", modifiers);
+        // Same modifier as the drop hint: the banner used to say "⌥ Option" even when the gesture was Shift.
+        AccessibilityHint = loc.Format("home.accessibility_needed", modifiers);
         store.HistoryChanged += OnHistoryChanged;
         Reload();
     }
@@ -122,6 +125,8 @@ public sealed partial class HomePageViewModel : ObservableObject, IDisposable
     }
 
     public string DropHint { get; }
+
+    public string AccessibilityHint { get; }
 
     public ObservableCollection<HistoryItemViewModel> History { get; } = [];
 

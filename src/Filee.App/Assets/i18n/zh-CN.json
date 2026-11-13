@@ -24,7 +24,7 @@
   "home.drop_hint": "或在资源管理器中按住 {0} 拖动文件，环形工具栏会在光标处打开。",
   "home.drop_hint_macos": "或在访达中按住 {0} 拖动文件，环形工具栏会在光标处打开。",
   "home.drop_hint_linux": "或在文件管理器中按住 {0} 拖动文件，环形工具栏会在光标处打开。",
-  "home.accessibility_needed": "要按住 ⌥ Option 拖动打开环形工具栏，请在“辅助功能”中允许 Oneon。\n打开后立即生效。",
+  "home.accessibility_needed": "要按住 {0} 拖动打开环形工具栏，请在“辅助功能”中允许 Oneon。\n打开后立即生效。",
   "home.recent": "最近的转换",
   "home.recent_empty": "转换后的文件会显示在这里。",
   "home.open_folder": "打开文件夹",
