@@ -16,13 +16,29 @@ one-line summaries in the user's language (`ko`, `en`, `zh`; a line per change, 
 ## 1.13.0
 
 <!-- update
-level: optional
-ko: Command+Control을 누른 채 파일을 끌어 AirDrop으로 바로 보낼 수 있어요
-en: Hold Command+Control while dragging files to send them with AirDrop
-zh: 按住 Command+Control 拖动文件即可通过隔空投送发送
+level: recommended
+ko: 앱 이름이 theOdrop에서 Oneon으로 바뀌었어요. 설정과 기록은 그대로 옮겨져요
+ko: 프리셋 조각 위에서 잠깐 멈추면 바깥 네온 링이 열려, 변환한 파일을 폴더·구글 드라이브·클립보드·AirDrop으로 바로 보낼 수 있어요
+ko: 새 기본 강조색은 네온 핑크이고, 테마에서 스포이드로 색을 고를 수 있어요
+ko: 변환 휠과 도구 휠을 서로 다른 드래그 단축키로 열 수 있어요
+en: theOdrop is now Oneon. Your settings and history move over automatically
+en: Pause on a preset slice to open the outer neon ring and send the converted file to a folder, Google Drive, the clipboard or AirDrop
+en: The new default accent is neon pink, and Themes has a color picker
+en: Open separate conversion and tools wheels with different drag shortcuts
+zh: theOdrop 现已更名为 Oneon，设置和记录会自动迁移
+zh: 在预设扇区上稍作停留即可打开外圈霓虹环，把转换后的文件发送到文件夹、Google 云端硬盘、剪贴板或隔空投送
+zh: 新的默认强调色为霓虹粉，主题中可用取色器选色
+zh: 使用不同的拖动快捷键分别打开转换轮盘和工具轮盘
 -->
 
+이번 버전에는 공개되지 않았던 1.12.0의 변경 사항도 함께 들어 있습니다.
+
+- 앱 이름이 **theOdrop → Oneon**으로 바뀌고 아이콘이 새로 바뀌었습니다. 처음 실행할 때 설정·기록이 들어 있는 데이터 폴더를 `theOdrop`에서 `Oneon`으로 자동으로 옮깁니다. 명령줄 명령은 `oneon`입니다.
+- **전송 네온 링:** 원형 툴바에서 프리셋 조각 위에 잠깐 멈추면 바깥에 네온 링이 열립니다. 링의 조각에 놓으면 변환한 파일을 지정 폴더, 구글 드라이브(Google Drive 데스크톱 앱의 `내 드라이브/Oneon`), 클립보드, AirDrop으로 보냅니다. 파일은 항상 **복사**만 하고 원본은 그대로 둡니다. 보낼 곳과 순서, 보내기 전 확인 여부는 설정 > 전송에서 바꿀 수 있습니다.
+- 기본 강조색이 **네온 핑크**로 바뀌었습니다. 테마에서 스포이드로 원하는 색을 고를 수 있습니다. 이미 강조색을 직접 고른 경우에는 그 색을 유지합니다.
 - macOS 동작 휠에 AirDrop을 추가했습니다. Command+Control을 누른 채 파일을 끌고 AirDrop에 놓으면 시스템 AirDrop 창이 열립니다.
+- macOS 신규 설치는 Shift+드래그로 변환 휠, Command+드래그로 도구 휠을 엽니다. 기존 변환 단축키는 유지됩니다. 도구 휠은 현재 파일에 적용 가능한 도구만 보여 줍니다.
+- 홈 화면의 손쉬운 사용 안내가 실제로 설정한 드래그 키를 보여 줍니다.
 
 ## 1.12.0
 
