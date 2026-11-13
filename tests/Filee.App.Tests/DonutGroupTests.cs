@@ -397,7 +397,8 @@ public class DonutGroupTests
 
             vm.Load([@"C:\docs\a.pdf"], clickMode: true); // the PDF donut has no group
             vm.FitToThisDonut();
-            Assert.False(vm.ReserveSubRing);
+            // No group ring; the outer transfer ring (when any transfer is set up) still needs the room.
+            Assert.Equal(vm.TransferItems is { Count: > 0 }, vm.ReserveSubRing);
             vm.Load([@"C:\photos\a.jpg"], clickMode: true); // the image donut has
             vm.FitToThisDonut();
             Assert.True(vm.ReserveSubRing);
