@@ -73,7 +73,7 @@ Every file's SHA-256 hash is in `Oneon-<version>-SHA256SUMS.txt`.
 - **Many files at once**, with presets for quality, size, PDF pages, output folder and file names.
 - **Watch folders** that convert every file dropped into them.
 - **Other ways in**: right-click menu (Finder Services, Windows 11 Explorer), keyboard shortcut, drop zone and a
-  `oneon` command line (Windows Setup option; macOS via `install.sh` from the `.tar.gz`).
+  `theodrop` command line (Windows Setup option; macOS via `install.sh` from the `.tar.gz`).
 - Light and dark themes; English, 한국어 and 简体中文.
 
 ## Privacy
@@ -86,7 +86,7 @@ you choose, and when you click a link.
 
 ```bash
 git clone https://github.com/Noah7601/Oneon.git
-cd oneon
+cd Oneon
 dotnet run --project src/Filee.App   # .NET 10 SDK
 dotnet test
 ```

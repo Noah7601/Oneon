@@ -72,7 +72,7 @@ Oneon은 이 저장소에서 업데이트를 확인하고, 업데이트해도 �
   자세한 내용은 [ENGINES.md](docs/ENGINES.md)에 있어요.
 - **여러 파일 한 번에 변환**: 품질, 크기, PDF 페이지, 저장 폴더, 파일 이름 프리셋을 지원해요.
 - **감시 폴더**: 폴더에 들어오는 파일을 자동으로 변환해요.
-- **다른 실행 방법**: 우클릭 메뉴(Finder 서비스, Windows 11 탐색기), 단축키, 드롭 영역, `oneon` 명령줄
+- **다른 실행 방법**: 우클릭 메뉴(Finder 서비스, Windows 11 탐색기), 단축키, 드롭 영역, `theodrop` 명령줄
   (Windows는 설치할 때 선택, macOS는 `.tar.gz`의 `install.sh`로 설치).
 - 라이트·다크 테마, English·한국어·简体中文 지원.
 
@@ -85,7 +85,7 @@ Oneon은 이 저장소에서 업데이트를 확인하고, 업데이트해도 �
 
 ```bash
 git clone https://github.com/Noah7601/Oneon.git
-cd oneon
+cd Oneon
 dotnet run --project src/Filee.App   # .NET 10 SDK
 dotnet test
 ```

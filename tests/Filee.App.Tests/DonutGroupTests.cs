@@ -386,8 +386,10 @@ public class DonutGroupTests
         var images = store.Profiles.Single(p => p.Id == "images");
         var before = images.PresetIds.ToList();
         var group = new Preset { Id = "test-room-group", Name = "Formats", Kind = PresetKind.Group, SubPresetIds = ["to-png"] };
+        var transfers = store.Settings.Transfers.ToList();
         try
         {
+            store.Settings.Transfers.Clear(); // the transfer ring is checked separately below
             store.Presets.Add(group);
             images.PresetIds.Add(group.Id);
             var vm = AppHost.Get<RadialViewModel>();
@@ -397,9 +399,14 @@ public class DonutGroupTests
 
             vm.Load([@"C:\docs\a.pdf"], clickMode: true); // the PDF donut has no group
             vm.FitToThisDonut();
-            // No group ring; the outer transfer ring (when any transfer is set up) still needs the room.
-            Assert.Equal(vm.TransferItems is { Count: > 0 }, vm.ReserveSubRing);
+            Assert.False(vm.ReserveSubRing);
             vm.Load([@"C:\photos\a.jpg"], clickMode: true); // the image donut has
+            vm.FitToThisDonut();
+            Assert.True(vm.ReserveSubRing);
+
+            // With a place to send to, every convert donut keeps room for the neon transfer ring.
+            store.Settings.Transfers.Add(new Filee.Core.Settings.TransferTarget { Kind = Filee.Core.Settings.TransferKind.Clipboard, Name = "Clipboard" });
+            vm.Load([@"C:\docs\a.pdf"], clickMode: true);
             vm.FitToThisDonut();
             Assert.True(vm.ReserveSubRing);
         }
@@ -408,6 +415,8 @@ public class DonutGroupTests
             images.PresetIds.Clear();
             images.PresetIds.AddRange(before);
             store.Presets.Remove(group);
+            store.Settings.Transfers.Clear();
+            store.Settings.Transfers.AddRange(transfers);
         }
     }
 
