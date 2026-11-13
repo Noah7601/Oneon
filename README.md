@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Noah7601/theodrop/releases/latest"><b>Download</b></a> ·
+  <a href="https://github.com/Noah7601/Oneon/releases/latest"><b>Download</b></a> ·
   <a href="#install">Install</a> ·
   <a href="#features">Features</a> ·
   <a href="#license-and-credits">License</a>
@@ -32,7 +32,7 @@ You can change the keys in Settings.
 
 ## Install
 
-Download from [Releases](https://github.com/Noah7601/theodrop/releases/latest).
+Download from [Releases](https://github.com/Noah7601/Oneon/releases/latest).
 
 | Your computer | File |
 |---|---|
@@ -45,7 +45,7 @@ Download from [Releases](https://github.com/Noah7601/theodrop/releases/latest).
 Install or update in one step (paste into Terminal):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Noah7601/theodrop/main/installer/macos/update.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Noah7601/Oneon/main/installer/macos/update.sh | bash
 ```
 
 It picks the build for your Mac, checks its SHA-256, replaces the old app (into the Trash) and opens the Accessibility
@@ -85,8 +85,8 @@ you choose, and when you click a link.
 ## Build from source
 
 ```bash
-git clone https://github.com/Noah7601/theodrop.git
-cd theodrop
+git clone https://github.com/Noah7601/Oneon
+cd Oneon
 dotnet run --project src/Filee.App   # .NET 10 SDK
 dotnet test
 ```

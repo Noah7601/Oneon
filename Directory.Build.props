@@ -20,7 +20,7 @@
     <Copyright>Copyright (c) theOdrop contributors; Filee portions copyright their contributors</Copyright>
 
     <!-- Single source of truth for the GitHub repository (used by the updater and the About page). -->
-    <FileeRepositoryUrl>https://github.com/Noah7601/theodrop</FileeRepositoryUrl>
+    <FileeRepositoryUrl>https://github.com/Noah7601/Oneon</FileeRepositoryUrl>
     <RepositoryUrl>$(FileeRepositoryUrl)</RepositoryUrl>
   </PropertyGroup>
 </Project>
