@@ -1,4 +1,4 @@
-# Temporary: finds where LibreOffice 26.2.6 moved to (the stable/ link now answers 404). Delete after use.
+# Temporary: finds which archived LibreOffice 26.2.6 build matches engines.json. Delete after use.
 name: Probe LibreOffice archive
 on:
   push:
@@ -8,11 +8,10 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - run: |
-          for b in 1 2 3 4 5; do
+          for b in 3 2 1; do
             v="26.2.6.$b"
             for f in "win/x86_64/LibreOffice_${v}_Win_x86-64.msi" "mac/x86_64/LibreOffice_${v}_MacOS_x86-64.dmg" "mac/aarch64/LibreOffice_${v}_MacOS_aarch64.dmg"; do
               u="https://downloadarchive.documentfoundation.org/libreoffice/old/$v/$f"
-              echo "$(curl -s -o /dev/null -w '%{http_code}' -I -L "$u") $u"
+              echo "SHA $(curl -sL "$u" | sha256sum | cut -c1-64 | tr a-f A-F) $u"
             done
           done
-          echo "--- stable now:"; curl -sL https://download.documentfoundation.org/libreoffice/stable/ | grep -o 'href="[0-9.]*/"' | sort -u
