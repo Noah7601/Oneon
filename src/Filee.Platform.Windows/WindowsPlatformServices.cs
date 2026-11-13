@@ -219,7 +219,7 @@ public sealed class WindowsPlatformServices : IPlatformServices
     }
 
     private static string SendToShortcutPath =>
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.SendTo), "theOdrop.lnk");
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.SendTo), "Oneon.lnk");
 
     private static bool PointsAt(string? value, string executablePath) =>
         !string.IsNullOrEmpty(value) && value.Contains(executablePath, StringComparison.OrdinalIgnoreCase);
@@ -234,9 +234,13 @@ public sealed class WindowsPlatformServices : IPlatformServices
         if (PointsAt(legacyCommand, executablePath))
             Registry.CurrentUser.DeleteSubKeyTree(legacyVerb, throwOnMissingSubKey: false);
 
-        var legacyShortcut = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.SendTo), LegacyName + ".lnk");
-        if (File.Exists(legacyShortcut) && PointsAt(ShortcutTarget(legacyShortcut), executablePath))
-            TryDelete(legacyShortcut);
+        // Send To shortcuts of earlier names: Filee's (theOdrop 1.11.0-1.11.3) and theOdrop's (1.11.4-1.11.7).
+        foreach (var name in new[] { LegacyName, "theOdrop" })
+        {
+            var legacyShortcut = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.SendTo), name + ".lnk");
+            if (File.Exists(legacyShortcut) && PointsAt(ShortcutTarget(legacyShortcut), executablePath))
+                TryDelete(legacyShortcut);
+        }
     }
 
     /// <summary>Target of a .lnk file, read through the WScript.Shell automation object (null when unknown).</summary>

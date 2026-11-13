@@ -18,8 +18,10 @@ if [ "$bundle_id" != 'com.theo.drop' ]; then
     exit 1
 fi
 "$install_dir/Contents/MacOS/Filee" --uninstall-cleanup
-if [ -L "$HOME/.local/bin/theodrop" ] && [ "$(readlink "$HOME/.local/bin/theodrop")" = "$install_dir/Contents/MacOS/filee-cli" ]; then
-    rm -- "$HOME/.local/bin/theodrop"
-fi
+for command in oneon theodrop; do
+    if [ -L "$HOME/.local/bin/$command" ] && [ "$(readlink "$HOME/.local/bin/$command")" = "$install_dir/Contents/MacOS/filee-cli" ]; then
+        rm -- "$HOME/.local/bin/$command"
+    fi
+done
 rm -rf -- "$install_dir"
 printf '%s\n' 'Oneon was removed. Your settings and conversion results were kept.'

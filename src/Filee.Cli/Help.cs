@@ -1,4 +1,4 @@
-// Usage text of the "theodrop" command.
+// Usage text of the "oneon" command.
 
 using System.Reflection;
 
@@ -13,8 +13,8 @@ internal static class Help
     {
         "convert" => Convert,
         "watch" => Watch,
-        "formats" => "Usage: theodrop formats [<format>]\n\nLists every format, or what one format converts to.\n",
-        "presets" => "Usage: theodrop presets\n\nLists the presets saved in Oneon (built-in and your own).\n",
+        "formats" => "Usage: oneon formats [<format>]\n\nLists every format, or what one format converts to.\n",
+        "presets" => "Usage: oneon presets\n\nLists the presets saved in Oneon (built-in and your own).\n",
         _ => General,
     };
 
@@ -22,19 +22,19 @@ internal static class Help
         Oneon: convert files offline from the command line.
 
         Usage:
-          theodrop convert <files or folders...> --to <format> [options]
-          theodrop convert <files or folders...> --preset <preset> [options]
-          theodrop watch <folder> --to <format> [options]
-          theodrop formats [<format>]
-          theodrop presets
-          theodrop help [<command>]
-          theodrop version
+          oneon convert <files or folders...> --to <format> [options]
+          oneon convert <files or folders...> --preset <preset> [options]
+          oneon watch <folder> --to <format> [options]
+          oneon formats [<format>]
+          oneon presets
+          oneon help [<command>]
+          oneon version
 
         Examples:
-          theodrop convert photo.heic --to jpg
-          theodrop convert *.png --to webp --quality 80 -o converted
-          theodrop convert D:\Scans --recursive --preset to-pdf
-          theodrop watch D:\Inbox --to pdf --move-originals
+          oneon convert photo.heic --to jpg
+          oneon convert *.png --to webp --quality 80 -o converted
+          oneon convert D:\Scans --recursive --preset to-pdf
+          oneon watch D:\Inbox --to pdf --move-originals
 
         Presets and engines are the ones in the Oneon app. Exit codes: 0 all converted, 1 some failed,
         2 wrong arguments or a missing input, 3 nothing to convert.
@@ -42,13 +42,13 @@ internal static class Help
         """;
 
     private const string Convert = """
-        Usage: theodrop convert <files or folders...> (--to <format> | --preset <preset>) [options]
+        Usage: oneon convert <files or folders...> (--to <format> | --preset <preset>) [options]
 
         Files can be wildcards (*.heic). Folders convert the files in them that Oneon knows.
 
         Options:
-          -t, --to <format>      Target format, e.g. jpg, png, pdf, docx, mp4 (see 'theodrop formats')
-          -p, --preset <preset>  A preset from the app, by id or name (see 'theodrop presets')
+          -t, --to <format>      Target format, e.g. jpg, png, pdf, docx, mp4 (see 'oneon formats')
+          -p, --preset <preset>  A preset from the app, by id or name (see 'oneon presets')
           -o, --output <folder>  Save there instead of next to the sources
           -r, --recursive        Include sub folders
           -q, --quality <1-100>  Image quality for JPG, WebP, AVIF, …
@@ -61,7 +61,7 @@ internal static class Help
         """;
 
     private const string Watch = """
-        Usage: theodrop watch <folder> (--to <format> | --preset <preset>) [options]
+        Usage: oneon watch <folder> (--to <format> | --preset <preset>) [options]
 
         Converts files that land in the folder until Ctrl+C. Files are converted once they are complete (no
         longer growing or open in another program). Output goes to a "converted" folder inside it unless -o is given.
