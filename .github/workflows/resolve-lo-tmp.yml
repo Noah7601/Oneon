@@ -1,0 +1,16 @@
+# Temporary: finds the archived LibreOffice 26.2.6 downloads (moved out of "stable"). Removed before merging.
+name: Resolve LibreOffice archive
+on:
+  push:
+    branches: ['release/v1.12.0']
+    paths: ['.github/workflows/resolve-lo-tmp.yml']
+jobs:
+  resolve:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          curl -fsSL https://download.documentfoundation.org/libreoffice/stable/ | grep -oE 'href="[0-9.]+/"' | head
+          for b in 1 2 3 4; do v="26.2.6.$b"; base="https://downloadarchive.documentfoundation.org/libreoffice/old/$v"
+            for path in "win/x86_64/LibreOffice_${v}_Win_x86-64.msi" "mac/x86_64/LibreOffice_${v}_MacOS_x86-64.dmg" "mac/aarch64/LibreOffice_${v}_MacOS_aarch64.dmg"; do
+              if curl -fsSL -o /tmp/f "$base/$path"; then echo "FOUND $base/$path $(stat -c %s /tmp/f) $(sha256sum /tmp/f | cut -d' ' -f1 | tr a-f A-F)"; fi
+            done; done

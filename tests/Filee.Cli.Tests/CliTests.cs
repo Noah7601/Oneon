@@ -231,7 +231,7 @@ public sealed class CliTests : IDisposable
 
         (code, output, _) = await Run("--version");
         Assert.Equal(Cli.Success, code);
-        Assert.StartsWith("theodrop ", output);
+        Assert.StartsWith("oneon ", output);
     }
 
     [Fact]
