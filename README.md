@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="src/Filee.App/Assets/Icons/theodrop.png" alt="theOdrop" width="128">
+  <img src="src/Filee.App/Assets/Icons/theodrop.png" alt="Oneon" width="128">
 </p>
 
-<h1 align="center">theOdrop</h1>
+<h1 align="center">Oneon</h1>
 
 <p align="center">
   <b>Drag a file, drop it on a format, done.</b><br>
@@ -36,9 +36,9 @@ Download from [Releases](https://github.com/Noah7601/Oneon/releases/latest).
 
 | Your computer | File |
 |---|---|
-| Mac with Apple Silicon (M1 or later) | `theOdrop-<version>-osx-arm64.dmg` |
-| Mac with Intel | `theOdrop-<version>-osx-x64.dmg` |
-| Windows 10/11 (Intel/AMD) | `theOdrop-<version>-win-Setup.exe` (or `win-Portable.zip`) |
+| Mac with Apple Silicon (M1 or later) | `Oneon-<version>-osx-arm64.dmg` |
+| Mac with Intel | `Oneon-<version>-osx-x64.dmg` |
+| Windows 10/11 (Intel/AMD) | `Oneon-<version>-win-Setup.exe` (or `win-Portable.zip`) |
 
 **macOS 14 or later**
 
@@ -49,19 +49,19 @@ curl -fsSL https://raw.githubusercontent.com/Noah7601/Oneon/main/installer/macos
 ```
 
 It picks the build for your Mac, checks its SHA-256, replaces the old app (into the Trash) and opens the Accessibility
-settings so you can allow theOdrop again. From 1.11.7 on, the Update button in the app does the same. Or by hand:
+settings so you can allow Oneon again. From 1.11.7 on, the Update button in the app does the same. Or by hand:
 
-1. Open the `.dmg` and drag theOdrop into Applications.
-2. theOdrop is not notarized by Apple, so the first start is blocked once. Click **Done**, then go to
+1. Open the `.dmg` and drag Oneon into Applications.
+2. Oneon is not notarized by Apple, so the first start is blocked once. Click **Done**, then go to
    System Settings → Privacy & Security and click **Open Anyway**.
 
 **Windows 10/11**
-1. Run `theOdrop-<version>-win-Setup.exe`.
+1. Run `Oneon-<version>-win-Setup.exe`.
 2. It is not code-signed, so "Windows protected your PC" may appear. Click **More info** → **Run anyway**.
 3. Setup can add the right-click menu (Windows 11), start at sign-in and optional engines.
 
-theOdrop checks this repository for updates and keeps your settings when it updates.
-Every file's SHA-256 hash is in `theOdrop-<version>-SHA256SUMS.txt`.
+Oneon checks this repository for updates and keeps your settings when it updates.
+Every file's SHA-256 hash is in `Oneon-<version>-SHA256SUMS.txt`.
 
 ## Features
 
@@ -78,27 +78,24 @@ Every file's SHA-256 hash is in `theOdrop-<version>-SHA256SUMS.txt`.
 
 ## Privacy
 
-Files are converted on your computer and never uploaded. theOdrop collects no usage data. It connects to the
+Files are converted on your computer and never uploaded. Oneon collects no usage data. It connects to the
 internet only to check GitHub for a newer release (can be turned off in Settings → About), to download engines
 you choose, and when you click a link.
 
 ## Build from source
 
 ```bash
-git clone https://github.com/Noah7601/Oneon
+git clone https://github.com/Noah7601/Oneon.git
 cd Oneon
 dotnet run --project src/Filee.App   # .NET 10 SDK
 dotnet test
 ```
 
-Internal project names stay `Filee` so changes from the original project can still be merged.
 [Architecture](docs/ARCHITECTURE.md) · [Adding a converter](docs/ADDING-A-CONVERTER.md)
 
 ## License and credits
 
-theOdrop is a fork of [Filee](https://github.com/KnifeLemon/Filee) by Myeonggu Kim (KnifeLemon) and contributors,
-which provides the conversion engine. theOdrop adds its own design, icon and macOS/Windows packaging.
-
-MIT license, © 2026 Myeonggu Kim (KnifeLemon), Filee contributors and theOdrop contributors. See [LICENSE](LICENSE)
-and [NOTICE.md](NOTICE.md). Bundled third-party components keep their own licenses:
+MIT license. See [LICENSE](LICENSE). Bundled third-party components keep their own licenses:
 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+Reference: Oneon is based on [Filee](https://github.com/KnifeLemon/Filee) (MIT).

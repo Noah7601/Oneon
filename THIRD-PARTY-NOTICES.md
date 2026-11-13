@@ -1,6 +1,6 @@
 # Third-party notices
 
-theOdrop is MIT-licensed. It uses and redistributes the following third-party software.
+Oneon is MIT-licensed. It uses and redistributes the following third-party software.
 Each component remains under its own license.
 
 ## Libraries (NuGet)

@@ -134,6 +134,17 @@ public sealed class ConversionService
         return job;
     }
 
+    /// <summary>Waits for a job started with <see cref="Start"/> to finish (the transfer ring sends its outputs then).</summary>
+    public async Task<ConversionJob> WhenFinishedAsync(JobViewModel vm)
+    {
+        var finished = _waiting.GetOrAdd(vm.Job.Id, _ => new TaskCompletionSource<ConversionJob>(TaskCreationOptions.RunContinuationsAsynchronously));
+        if (vm.Job.State is not (JobState.Queued or JobState.Running))
+            finished.TrySetResult(vm.Job);
+        var job = await finished.Task;
+        _waiting.TryRemove(job.Id, out _);
+        return job;
+    }
+
     /// <summary>Moves a job into the toast window (no-op if it is already there or gone).</summary>
     public void ShowInToast(JobViewModel vm)
     {

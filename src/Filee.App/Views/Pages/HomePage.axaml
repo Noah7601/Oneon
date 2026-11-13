@@ -9,14 +9,26 @@
       <Setter Property="Transitions">
         <Transitions>
           <BrushTransition Property="Background" Duration="0:0:0.2" />
-          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" Easing="BackEaseOut" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.25" Easing="QuinticEaseOut" />
         </Transitions>
       </Setter>
     </Style>
     <Style Selector="Border#DropZone.over">
       <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
       <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
-      <Setter Property="RenderTransform" Value="scale(1.015)" />
+      <Setter Property="RenderTransform" Value="scale(1.005)" />
+    </Style>
+    <Style Selector="Rectangle#DropOutline">
+      <Setter Property="Stroke" Value="{DynamicResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="Path#DropArrow">
+      <Setter Property="Stroke" Value="{DynamicResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="Border#DropZone.over Path#DropArrow">
+      <Setter Property="Stroke" Value="{DynamicResource AccentBrush}" />
+    </Style>
+    <Style Selector="Border#DropZone.over Rectangle#DropOutline">
+      <Setter Property="Stroke" Value="{DynamicResource AccentBrush}" />
     </Style>
     <Style Selector="PathIcon.chevron">
       <Setter Property="RenderTransform" Value="rotate(0deg)" />
@@ -40,40 +52,43 @@
     </Border>
 
     <!-- Drop zone: files dropped here open the donut toolbar at the cursor. -->
-    <Border x:Name="DropZone" DragDrop.AllowDrop="True" MinHeight="248"
-            Background="{DynamicResource GlassSurfaceBrush}" BorderBrush="{DynamicResource GlassHighlightBrush}"
-            BorderThickness="1" CornerRadius="{DynamicResource SoftRadiusLarge}" Padding="32"
-            BoxShadow="{DynamicResource CardShadow}">
-      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
-        <Border Width="72" Height="72" CornerRadius="999" Background="{DynamicResource AccentSoftBrush}"
-                HorizontalAlignment="Center" Margin="0,0,0,4">
-          <PathIcon Width="30" Height="30" Data="{StaticResource Icon.Upload}" Foreground="{DynamicResource AccentStrongBrush}" />
-        </Border>
+    <!-- Drop zone: dashed outline like a Finder drop target; files dropped here open the donut toolbar. -->
+    <Border x:Name="DropZone" DragDrop.AllowDrop="True" MinHeight="180"
+            Background="Transparent" CornerRadius="{DynamicResource SoftRadiusLarge}" Padding="28">
+      <Panel>
+        <Rectangle x:Name="DropOutline" StrokeThickness="1.5" StrokeDashArray="2.5,2" StrokeLineCap="Round"
+                   RadiusX="16" RadiusY="16" Margin="-28" IsHitTestVisible="False" />
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+        <Path x:Name="DropArrow" Width="34" Height="34" Stretch="Uniform" HorizontalAlignment="Center" Margin="0,0,0,4"
+              StrokeThickness="1.8" StrokeLineCap="Round" StrokeJoin="Round"
+              Data="M12,3 V14 M7.5,9.5 L12,14 L16.5,9.5 M4,15 V19.5 H20 V15" />
         <TextBlock Classes="h2" HorizontalAlignment="Center" Text="{DynamicResource home.drop_title}" />
         <TextBlock Classes="muted" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" MaxWidth="460"
                    Text="{Binding DropHint}" />
       </StackPanel>
+      </Panel>
     </Border>
 
     <!-- Recent conversions -->
     <StackPanel Spacing="12">
       <DockPanel>
-        <Button DockPanel.Dock="Right" Classes="ghost" Content="{DynamicResource home.clear_history}" Command="{Binding ClearHistoryCommand}" />
+        <Button DockPanel.Dock="Right" Classes="link" Content="{DynamicResource home.clear_history}" Command="{Binding ClearHistoryCommand}" />
         <TextBlock Classes="h2" VerticalAlignment="Center" Text="{DynamicResource home.recent}" />
       </DockPanel>
       <Border Classes="card" IsVisible="{Binding IsEmpty}" Padding="16,14">
         <TextBlock Classes="muted" Text="{DynamicResource home.recent_empty}" />
       </Border>
-      <ItemsControl ItemsSource="{Binding History}">
+      <Border Classes="group" IsVisible="{Binding !IsEmpty}">
+      <ItemsControl Classes="grouped" ItemsSource="{Binding History}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
-            <StackPanel Spacing="12" />
+            <StackPanel Spacing="0" />
           </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
           <DataTemplate x:DataType="vm:HistoryItemViewModel">
-            <Border Classes="card" Padding="16,12">
-              <StackPanel Spacing="12">
+            <Border Classes="row">
+              <StackPanel Spacing="8">
                 <DockPanel>
                   <Button DockPanel.Dock="Right" Command="{Binding OpenFolderCommand}" IsVisible="{Binding HasOutputs}" Padding="10,5">
                     <StackPanel Orientation="Horizontal" Spacing="6">
@@ -81,10 +96,9 @@
                       <TextBlock Text="{DynamicResource home.open_folder}" />
                     </StackPanel>
                   </Button>
-                  <Border DockPanel.Dock="Left" Width="36" Height="36" CornerRadius="999" Margin="0,0,12,0"
-                          Background="{DynamicResource AccentSoftBrush}">
+                  <Border DockPanel.Dock="Left" Width="24" Height="24" Margin="0,0,12,0">
                     <Panel>
-                      <PathIcon Width="15" Height="15" Data="{StaticResource Icon.Check}" Foreground="{DynamicResource AccentStrongBrush}" IsVisible="{Binding !HasErrors}" />
+                      <PathIcon Width="16" Height="16" Data="{StaticResource Icon.Check}" Foreground="{DynamicResource SuccessBrush}" IsVisible="{Binding !HasErrors}" />
                       <PathIcon Width="15" Height="15" Data="{StaticResource Icon.Alert}" Foreground="{DynamicResource DangerBrush}" IsVisible="{Binding HasErrors}" />
                     </Panel>
                   </Border>
@@ -99,7 +113,7 @@
                 </DockPanel>
 
                 <!-- Failed files: the list on demand, and converting them again -->
-                <DockPanel IsVisible="{Binding HasFailures}" Margin="44,0,0,0">
+                <DockPanel IsVisible="{Binding HasFailures}" Margin="36,0,0,0">
                   <Button DockPanel.Dock="Right" Command="{Binding RetryCommand}" IsVisible="{Binding CanRetry}" Padding="10,5">
                     <StackPanel Orientation="Horizontal" Spacing="6">
                       <PathIcon Width="13" Height="13" Data="{StaticResource Icon.Refresh}" />
@@ -114,7 +128,7 @@
                     </StackPanel>
                   </Button>
                 </DockPanel>
-                <ItemsControl ItemsSource="{Binding Failures}" IsVisible="{Binding ShowFailures}" Margin="50,0,0,2">
+                <ItemsControl ItemsSource="{Binding Failures}" IsVisible="{Binding ShowFailures}" Margin="42,0,0,2">
                   <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                       <StackPanel Spacing="4" />
@@ -134,6 +148,7 @@
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>
+      </Border>
     </StackPanel>
   </StackPanel>
 </UserControl>

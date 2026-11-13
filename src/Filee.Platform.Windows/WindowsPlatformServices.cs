@@ -14,7 +14,7 @@ public sealed class WindowsPlatformServices : IPlatformServices
 {
     private const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
     private const string ContextMenuKey = @"Software\Classes\*\shell\theOdrop";
-    private const string AppName = "theOdrop";
+    private const string AppName = "theOdrop"; // registry value names stay (renaming would leave a stale sign-in entry)
     // theOdrop 1.11.x used the original Filee's names (sign-in entry, classic verb, Send To shortcut). They are removed
     // only when they point at this executable, so an installed Filee keeps its own.
     private const string LegacyName = "Filee";
@@ -125,7 +125,7 @@ public sealed class WindowsPlatformServices : IPlatformServices
     }
 
     /// <summary>
-    /// Registers a per-user "Convert with theOdrop" verb for all files (no admin rights needed) and a Send To shortcut.
+    /// Registers a per-user "Convert with Oneon" verb for all files (no admin rights needed) and a Send To shortcut.
     /// On Windows 11 the classic verb appears under "Show more options"; the top-level entry is the packaged
     /// IExplorerCommand (<see cref="ExplorerMenuRegistration"/>), which this switches on and off through its title file.
     /// When that package is registered the classic verb is removed, because Windows also lists the packaged command

@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # theOdrop ships for macOS and Windows only (Windows is built by release.yml).
+          # Oneon ships for macOS and Windows only (Windows is built by release.yml).
           - runner: macos-15
             rid: osx-arm64
           - runner: macos-15-intel
@@ -92,10 +92,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Archive extraction failed.' }
           $package = Join-Path $smoke ($archive.Name.Replace('.tar.gz', ''))
           if ($IsMacOS) {
-            codesign --verify --deep --strict (Join-Path $package 'theOdrop.app')
+            codesign --verify --deep --strict (Join-Path $package 'Oneon.app')
             if ($LASTEXITCODE -ne 0) { throw 'Extracted app signature did not verify.' }
           }
-          $bin = if ($IsMacOS) { Join-Path $package 'theOdrop.app/Contents/MacOS' } else { $package }
+          $bin = if ($IsMacOS) { Join-Path $package 'Oneon.app/Contents/MacOS' } else { $package }
           $cli = Join-Path $bin 'filee-cli'
           & $cli version
           if ($LASTEXITCODE -ne 0) { throw 'CLI did not start.' }
@@ -116,7 +116,7 @@ jobs:
         shell: bash
         run: |
           set -uo pipefail
-          app="$(ls -d "$RUNNER_TEMP"/filee-smoke/*/theOdrop.app | head -1)"
+          app="$(ls -d "$RUNNER_TEMP"/filee-smoke/*/Oneon.app | head -1)"
           cli="$app/Contents/MacOS/filee-cli"
           w="$RUNNER_TEMP/e2e"; rm -rf "$w"; mkdir -p "$w/in"; cd "$w"
           python3 - in <<'PY'
@@ -129,7 +129,7 @@ jobs:
           png(f"{sys.argv[1]}/photo.png", 96, 64, 1)
           png(f"{sys.argv[1]}/photo2.png", 80, 60, 7)
           PY
-          printf 'theOdrop 한글 end-to-end test\nsecond line\n' > in/note.txt
+          printf 'Oneon 한글 end-to-end test\nsecond line\n' > in/note.txt
           "$cli" convert in/photo.png --to jpg -o in --quiet
           "$cli" convert in/photo.png in/photo2.png --to pdf -o in --quiet
           (cd in && zip -q archive.zip photo.png note.txt)
@@ -174,7 +174,7 @@ jobs:
           dotnet test tests/Filee.Engines.Tests/Filee.Engines.Tests.csproj --no-build -c Release \
             --filter "FullyQualifiedName~EngineInstallTests" --logger "console;verbosity=normal"
 
-      # Drag-to-install disk image: theOdrop.app, a shortcut to Applications and how to open it the first time
+      # Drag-to-install disk image: Oneon.app, a shortcut to Applications and how to open it the first time
       # (the build is ad-hoc signed, not notarized). Its hash goes into the package's checksum file.
       - name: Build disk image
         if: runner.os == 'macOS'
@@ -188,13 +188,13 @@ jobs:
           rm -rf "$source" "$stage"
           mkdir -p "$source" "$stage"
           tar -xzf "$archive" -C "$source"
-          ditto "$source/$name/theOdrop.app" "$stage/theOdrop.app"
-          codesign --verify --deep --strict "$stage/theOdrop.app"
+          ditto "$source/$name/Oneon.app" "$stage/Oneon.app"
+          codesign --verify --deep --strict "$stage/Oneon.app"
           ln -s /Applications "$stage/Applications"
           cp installer/macos/FIRST-OPEN.txt "$stage/처음 실행 방법 (How to open).txt"
           # hdiutil on GitHub's macOS runners sometimes fails with "Resource busy" (a known runner issue): retry.
           for attempt in 1 2 3 4 5; do
-            if hdiutil create -volname "theOdrop" -srcfolder "$stage" -fs HFS+ -format UDZO -ov "Releases/$name.dmg"; then
+            if hdiutil create -volname "Oneon" -srcfolder "$stage" -fs HFS+ -format UDZO -ov "Releases/$name.dmg"; then
               break
             fi
             [ "$attempt" = 5 ] && exit 1

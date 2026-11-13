@@ -58,6 +58,24 @@ public interface IPlatformServices
     /// <summary>Opens macOS AirDrop for the supplied files. Returns false where AirDrop is unavailable.</summary>
     bool ShareFilesViaAirDrop(IReadOnlyList<string> files) => false;
 
+    /// <summary>Puts the files on the clipboard as files (paste in Finder, Mail, a chat…). False when unsupported.</summary>
+    bool CopyFilesToClipboard(IReadOnlyList<string> files) => false;
+
+    /// <summary>True when <see cref="PickScreenColorAsync"/> can pick a colour from anywhere on screen.</summary>
+    bool SupportsScreenColorPicker => false;
+
+    /// <summary>
+    /// Lets the user pick a colour from the screen (an eyedropper), starting from <paramref name="startHex"/>.
+    /// Returns <c>#RRGGBB</c>, or null when cancelled or unsupported.
+    /// </summary>
+    Task<string?> PickScreenColorAsync(string startHex) => Task.FromResult<string?>(null);
+
+    /// <summary>
+    /// A short "tick" when the highlight moves to another slice, like an iPod click wheel. macOS plays a quiet
+    /// click sound and, on a Force Touch trackpad, a haptic tap; elsewhere it does nothing.
+    /// </summary>
+    void PerformTick() { }
+
     /// <summary>
     /// Puts an always-on-top window back at the top of the z-order without activating it. Windows can push such a
     /// window below normal ones (seen after the Photos app opened) while it still reports itself as topmost.

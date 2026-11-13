@@ -26,7 +26,7 @@ if ($Version -notmatch '^\d+\.\d+\.\d+(?:-[0-9A-Za-z][0-9A-Za-z.-]*)?$') {
     throw 'Version must be a three-part version with an optional prerelease suffix.'
 }
 $bundleVersion = ($Version -split '-')[0]
-$packageName = "theOdrop-$Version-$Runtime"
+$packageName = "Oneon-$Version-$Runtime"
 New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
 $OutputDir = (Resolve-Path -LiteralPath $OutputDir).Path
 $archive = Join-Path $OutputDir "$packageName.tar.gz"
@@ -36,7 +36,7 @@ if ((Test-Path -LiteralPath $archive) -or (Test-Path -LiteralPath $sums)) {
 }
 $stage = Join-Path $root ('build/.cache/portable/' + [Guid]::NewGuid().ToString('N'))
 $package = Join-Path $stage $packageName
-$appBundle = Join-Path $package 'theOdrop.app'
+$appBundle = Join-Path $package 'Oneon.app'
 $publish = if ($Runtime.StartsWith('osx-')) { Join-Path $appBundle 'Contents/MacOS' } else { $package }
 New-Item -ItemType Directory -Force -Path $publish | Out-Null
 

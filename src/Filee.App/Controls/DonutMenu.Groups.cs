@@ -57,9 +57,34 @@ public sealed partial class DonutMenu
     private Point? _lastPointer;
     private const double KeyboardJitter = 6;
 
-    /// <summary>The slices of the group fanned out right now, or null.</summary>
-    private IReadOnlyList<DonutItem>? ExpandedChildren =>
-        !IsEditMode && _expanded >= 0 && _expanded < Count ? Items![_expanded].Children : null;
+    /// <summary>The slices fanned out right now (a group's presets or the transfer zone), or null.</summary>
+    private IReadOnlyList<DonutItem>? ExpandedChildren => _expanded >= 0 ? FanOf(_expanded) : null;
+
+    /// <summary>
+    /// What slice <paramref name="index"/> fans out: a group its presets; an enabled preset the transfer zone (when
+    /// there is one). Null when it fans out nothing.
+    /// </summary>
+    private IReadOnlyList<DonutItem>? FanOf(int index)
+    {
+        if (IsEditMode || index < 0 || index >= Count)
+            return null;
+        var item = Items![index];
+        if (item.IsGroup)
+            return item.Children;
+        return item.IsEnabled && TransferItems is { Count: > 0 } transfers ? transfers : null;
+    }
+
+    /// <summary>True when slice <paramref name="index"/> fans out the transfer zone (not a group's presets).</summary>
+    public bool IsTransferFan(int index) => index >= 0 && index < Count && !Items![index].IsGroup && FanOf(index) is not null;
+
+    /// <summary>A slice of a fan was chosen: a group's preset converts, a transfer slice converts and sends.</summary>
+    private void InvokeFan(int index, int sub)
+    {
+        if (IsTransferFan(index))
+            TransferInvoked?.Invoke(this, (index, sub));
+        else
+            SubSegmentInvoked?.Invoke(this, (index, sub));
+    }
 
     private (double Inner, double Outer) SubRadii => (OuterRadius + PopOut + SubGap, OuterRadius + PopOut + SubGap + SubBand);
 
@@ -69,7 +94,7 @@ public sealed partial class DonutMenu
     /// <summary>True when <paramref name="p"/> is in the direction of <paramref name="group"/>'s ring, at any distance.</summary>
     private bool InFan(Point p, int group)
     {
-        var count = group >= 0 && group < Count ? Items![group].Children?.Count ?? 0 : 0;
+        var count = FanOf(group)?.Count ?? 0;
         return count > 0 && DonutGeometry.SubIndexAt(Center, p, 0, double.MaxValue, DonutGeometry.MidAngle(group, Count),
             count, SubSpanOf(count)) >= 0;
     }
@@ -88,7 +113,7 @@ public sealed partial class DonutMenu
     /// <summary>The middle of slice <paramref name="sub"/> of group <paramref name="group"/>'s ring (tests).</summary>
     internal Point SubSliceCenter(int group, int sub)
     {
-        var count = Items![group].Children!.Count;
+        var count = FanOf(group)!.Count;
         var mid = DonutGeometry.SubMidAngle(DonutGeometry.MidAngle(group, Count), sub, count, SubSpanOf(count));
         return DonutGeometry.PointAt(Center, (SubRadii.Inner + SubRadii.Outer) / 2, mid);
     }
@@ -115,7 +140,7 @@ public sealed partial class DonutMenu
                 // what a click or a drop here converts with, but the ring stays open.
                 ClearPending();
                 break;
-            case DonutHitKind.Segment when hit.Index >= 0 && hit.Index < Count && Items![hit.Index].CanExpand:
+            case DonutHitKind.Segment when FanOf(hit.Index) is { Count: > 0 }:
                 _expanded = -1;
                 var distance = at is { } p ? Distance(p, Center) : 0;
                 if (_pendingGroup != hit.Index)
@@ -195,6 +220,8 @@ public sealed partial class DonutMenu
             return;
         _subHover = sub;
         ActiveIndexChanged?.Invoke(this, ActiveIndex);
+        if (sub >= 0)
+            Ticked?.Invoke(this, EventArgs.Empty); // no pop-out kick: the sub-ring has no per-slice springs
         StartAnimation();
     }
 
@@ -212,6 +239,36 @@ public sealed partial class DonutMenu
         _keyboardHold = true;
         _keyAnchor = _lastPointer;
         return true;
+    }
+
+    /// <summary>Scroll amount (in wheel notches) that moves the highlight by one slice.</summary>
+    private const double WheelStep = 1.0;
+
+    private double _wheelRest;
+
+    /// <summary>
+    /// Click wheel: scrolling (mouse wheel or two fingers on a trackpad) turns the highlight around the donut, or
+    /// around an open group's ring, one slice per notch. Down/right is clockwise. Enter or a click converts.
+    /// </summary>
+    protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
+    {
+        base.OnPointerWheelChanged(e);
+        if (IsEditMode || _progressMode || Count == 0)
+            return;
+        var delta = Math.Abs(e.Delta.Y) >= Math.Abs(e.Delta.X) ? -e.Delta.Y : e.Delta.X;
+        if (Math.Sign(delta) != Math.Sign(_wheelRest))
+            _wheelRest = 0; // changing direction starts a fresh notch
+        _wheelRest += delta;
+        while (Math.Abs(_wheelRest) >= WheelStep)
+        {
+            var clockwise = _wheelRest > 0;
+            _wheelRest -= clockwise ? WheelStep : -WheelStep;
+            if (ActiveIndex < 0 && ExpandedChildren is null)
+                SetHover(clockwise ? 0 : Count - 1); // first notch picks a slice
+            else
+                HandleKey(clockwise ? Key.Down : Key.Up);
+        }
+        e.Handled = true;
     }
 
     private bool HandleKeyCore(Key key, KeyModifiers modifiers)
@@ -240,7 +297,7 @@ public sealed partial class DonutMenu
             if (key is Key.Enter or Key.Space)
             {
                 if (children[_subHover].IsEnabled)
-                    SubSegmentInvoked?.Invoke(this, (_expanded, _subHover));
+                    InvokeFan(_expanded, _subHover);
                 return true;
             }
             if (step == 0)
@@ -279,7 +336,7 @@ public sealed partial class DonutMenu
     public bool Converts(DonutHit hit) => hit.Kind switch
     {
         DonutHitKind.Segment => hit.Index >= 0 && hit.Index < Count && Items![hit.Index] is { IsGroup: false, IsEnabled: true },
-        DonutHitKind.SubSegment => hit.Index >= 0 && hit.Index < Count && Items![hit.Index].Children is { } children &&
+        DonutHitKind.SubSegment => FanOf(hit.Index) is { } children &&
                                    hit.Sub >= 0 && hit.Sub < children.Count && children[hit.Sub].IsEnabled,
         _ => false,
     };
@@ -359,7 +416,7 @@ public sealed partial class DonutMenu
         var distance = Distance(p, Center);
         if (distance <= OuterRadius + PopOut - LeaveEdge)
             return true;
-        var count = Items![group].Children?.Count ?? 0;
+        var count = FanOf(group)?.Count ?? 0;
         var reach = SubRadii.Outer + BackdropMargin;
         if (count == 0 || distance > reach - LeaveEdge)
             return false;
@@ -373,7 +430,10 @@ public sealed partial class DonutMenu
     private void DrawSubRing(DrawingContext context, Point center, Typeface bold, Typeface regular)
     {
         var group = _shownExpanded;
-        var children = Items![group].Children!;
+        var children = FanOf(group);
+        if (children is null)
+            return;
+        var neon = IsTransferFan(group);
         var parentMid = DonutGeometry.MidAngle(group, Count);
         var subSpan = SubSpanOf(children.Count);
         var (inner, outer) = SubRadii;
@@ -393,8 +453,15 @@ public sealed partial class DonutMenu
                 var item = children[k];
                 var mid = DonutGeometry.SubMidAngle(parentMid, k, children.Count, subSpan);
                 var wedge = CreateWedge(center, inner, outer, mid, subSpan);
-                context.DrawGeometry(WithOpacity(SliceBrush, SliceOpacity * (item.IsEnabled ? 1 : 0.55)), BorderPen(), wedge);
                 var hot = k == _subHover && group == _expanded && item.IsEnabled;
+                if (neon)
+                {
+                    DrawNeonSlice(context, wedge, hot, item.IsEnabled);
+                    DrawLabel(context, item, center, (inner + outer) / 2, mid, subSpan * (inner + outer) / 2 - 8,
+                        SubBand - 8, bold, regular, hot, NeonInk);
+                    continue;
+                }
+                context.DrawGeometry(WithOpacity(SliceBrush, SliceOpacity * (item.IsEnabled ? 1 : 0.55)), BorderPen(), wedge);
                 if (hot)
                     context.DrawGeometry(WithOpacity(AccentBrush, 0.82), null, wedge);
                 DrawLabel(context, item, center, (inner + outer) / 2, mid, subSpan * (inner + outer) / 2 - 8,

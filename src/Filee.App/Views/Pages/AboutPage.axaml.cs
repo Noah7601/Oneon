@@ -17,13 +17,6 @@ public partial class AboutPage : UserControl
     }
 
     // A star is given on the repository page itself.
-    // The project theOdrop is based on (credited under its MIT license).
-    private async void OnOriginalProject(object? sender, RoutedEventArgs e)
-    {
-        if (TopLevel.GetTopLevel(this) is { } top)
-            await top.Launcher.LaunchUriAsync(new Uri("https://github.com/KnifeLemon/Filee"));
-    }
-
     private async void OnIssue(object? sender, RoutedEventArgs e)
     {
         if (TopLevel.GetTopLevel(this) is { } top)

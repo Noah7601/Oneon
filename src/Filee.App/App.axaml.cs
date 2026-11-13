@@ -106,6 +106,7 @@ public partial class App : Application
         if (Program.Instance is { } instance)
         {
             instance.ArgumentsReceived += args => Dispatcher.UIThread.Post(() => HandleCommandLine(CommandLine.Parse(args)));
+            instance.ListeningFailed += ex => log.LogWarning(ex, "A later launch couldn't be taken; trying the next");
             instance.StartListening();
         }
 

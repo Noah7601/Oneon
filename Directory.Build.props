@@ -14,10 +14,10 @@
          parameters of a member is fine (CS1573). -->
     <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
 
-    <Version>1.11.7</Version>
-    <Product>theOdrop</Product>
-    <Authors>theOdrop contributors; based on Filee</Authors>
-    <Copyright>Copyright (c) theOdrop contributors; Filee portions copyright their contributors</Copyright>
+    <Version>1.13.0</Version>
+    <Product>Oneon</Product>
+    <Authors>Oneon contributors; based on Filee</Authors>
+    <Copyright>Copyright (c) Oneon contributors; Filee portions copyright their contributors</Copyright>
 
     <!-- Single source of truth for the GitHub repository (used by the updater and the About page). -->
     <FileeRepositoryUrl>https://github.com/Noah7601/Oneon</FileeRepositoryUrl>

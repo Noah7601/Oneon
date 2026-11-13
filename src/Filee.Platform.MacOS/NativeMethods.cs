@@ -153,6 +153,26 @@ internal static class NativeMethods
         return true;
     }
 
+    /// <summary>Writes the files to the general pasteboard as file URLs, like ⌘C in Finder.</summary>
+    internal static bool CopyFilesToPasteboard(IReadOnlyList<string> files)
+    {
+        using var pool = new AutoreleasePool();
+        var items = Send(objc_getClass("NSMutableArray"), sel_registerName("arrayWithCapacity:"), files.Count);
+        foreach (var path in files.Where(File.Exists))
+        {
+            var value = SendString(objc_getClass("NSString"), sel_registerName("stringWithUTF8String:"), path);
+            var url = Send(objc_getClass("NSURL"), sel_registerName("fileURLWithPath:"), value);
+            SendVoid(items, sel_registerName("addObject:"), url);
+        }
+        if (Send(items, sel_registerName("count")) == 0)
+            return false;
+        var pasteboard = Send(objc_getClass("NSPasteboard"), sel_registerName("generalPasteboard"));
+        if (pasteboard == 0)
+            return false;
+        Send(pasteboard, sel_registerName("clearContents"));
+        return SendBool(pasteboard, sel_registerName("writeObjects:"), items);
+    }
+
     private readonly struct AutoreleasePool : IDisposable
     {
         private readonly nint _pool = Send(Send(objc_getClass("NSAutoreleasePool"), sel_registerName("alloc")), sel_registerName("init"));
@@ -261,4 +281,55 @@ internal static class NativeMethods
 
     [DllImport(ObjC, EntryPoint = "objc_msgSend")]
     private static extern void SendInteger(nint receiver, nint selector, nint value);
+
+    [DllImport(ObjC, EntryPoint = "objc_msgSend")]
+    private static extern void SendInteger2(nint receiver, nint selector, nint first, nint second);
+
+    /// <summary>
+    /// One "alignment" tap on a Force Touch trackpad (NSHapticFeedbackPatternAlignment = 1,
+    /// NSHapticFeedbackPerformanceTimeNow = 1). Silent on Macs or mice without haptics.
+    /// </summary>
+    [DllImport(ObjC, EntryPoint = "objc_msgSend")]
+    private static extern void SendFloat(nint receiver, nint selector, float value);
+
+    /// <summary>System sound used for the tick (any name in /System/Library/Sounds) and its volume (0..1).</summary>
+    private const string TickSoundName = "Tink";
+    private const float TickVolume = 0.25f;
+
+    /// <summary>Shortest gap between two tick sounds, so a fast spin doesn't turn into a buzz.</summary>
+    private static readonly TimeSpan TickSoundGap = TimeSpan.FromMilliseconds(35);
+
+    private static nint _tickSound;
+    private static readonly Stopwatch TickClock = Stopwatch.StartNew();
+    private static TimeSpan? _lastTickSound; // null until the first tick (MinValue overflowed in the subtraction)
+
+    /// <summary>A short, quiet click from the system sounds, restarted on every tick.</summary>
+    internal static void PlayTickSound()
+    {
+        var now = TickClock.Elapsed;
+        if (_lastTickSound is { } last && now - last < TickSoundGap)
+            return;
+        _lastTickSound = now;
+        if (_tickSound == 0)
+        {
+            var name = SendString(objc_getClass("NSString"), sel_registerName("stringWithUTF8String:"), TickSoundName);
+            var sound = Send(objc_getClass("NSSound"), sel_registerName("soundNamed:"), name);
+            if (sound == 0)
+                return;
+            _tickSound = Send(sound, sel_registerName("retain")); // kept for the life of the app
+            SendFloat(_tickSound, sel_registerName("setVolume:"), TickVolume);
+        }
+        SendVoid(_tickSound, sel_registerName("stop")); // restart instead of skipping when still playing
+        SendBool(_tickSound, sel_registerName("play"));
+    }
+
+    internal static void PerformHapticTick()
+    {
+        var manager = objc_getClass("NSHapticFeedbackManager");
+        if (manager == 0)
+            return;
+        var performer = Send(manager, sel_registerName("defaultPerformer"));
+        if (performer != 0)
+            SendInteger2(performer, sel_registerName("performFeedbackPattern:performanceTime:"), 1, 1);
+    }
 }

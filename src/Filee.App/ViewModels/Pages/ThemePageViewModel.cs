@@ -14,11 +14,13 @@ namespace Filee.App.ViewModels.Pages;
 public sealed partial class ThemePageViewModel : ObservableObject
 {
     private readonly UserDataStore _store;
+    private readonly IPlatformServices _platform;
     private readonly bool _loading;
 
     public ThemePageViewModel(UserDataStore store, ILocalizer loc, IPlatformServices platform)
     {
         _store = store;
+        _platform = platform;
         _loading = true;
         var theme = store.Settings.Theme;
         Modes = Enum.GetValues<ThemeMode>().Select(m => new Choice<ThemeMode>(m, loc[$"theme.mode.{m}"])).ToList();
@@ -71,6 +73,17 @@ public sealed partial class ThemePageViewModel : ObservableObject
 
     [RelayCommand]
     private void PickSwatch(Color color) => Accent = color;
+
+    /// <summary>The eyedropper button is shown only where the system has one (macOS).</summary>
+    public bool CanPickFromScreen => _platform.SupportsScreenColorPicker;
+
+    /// <summary>Picks the accent from anywhere on screen.</summary>
+    [RelayCommand]
+    private async Task PickFromScreen()
+    {
+        if (await _platform.PickScreenColorAsync(AccentHex) is { } hex)
+            AccentHex = hex;
+    }
 
     private void Save(Action<ThemeSettings> change)
     {

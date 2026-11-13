@@ -27,7 +27,7 @@ for path, entry in entries:
         continue
     sha, size = hashlib.sha256(), 0
     try:
-        request = urllib.request.Request(entry["url"], headers={"User-Agent": "theOdrop-engine-check"})
+        request = urllib.request.Request(entry["url"], headers={"User-Agent": "Oneon-engine-check"})
         with urllib.request.urlopen(request, timeout=120) as response:
             while chunk := response.read(1 << 20):
                 sha.update(chunk)

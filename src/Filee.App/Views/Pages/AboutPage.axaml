@@ -11,7 +11,7 @@
       <StackPanel Orientation="Horizontal" Spacing="18">
         <Image Source="avares://Filee/Assets/Icons/theodrop.png" Width="72" Height="72" />
         <StackPanel VerticalAlignment="Center" Spacing="4">
-          <TextBlock Text="theOdrop" FontSize="24" FontWeight="Bold" />
+          <TextBlock Text="Oneon" FontSize="24" FontWeight="Bold" />
           <TextBlock Classes="muted" Text="{Binding Version}" />
           <TextBlock Classes="muted" Text="{DynamicResource about.license}" TextWrapping="Wrap" />
           <Button Classes="ghost" Padding="0" Click="OnOpenRepository" Margin="0,4,0,0">
@@ -25,11 +25,8 @@
     </Border>
     <Border Classes="card">
       <StackPanel Spacing="10">
-        <TextBlock Classes="h2" Text="{DynamicResource about.credits_title}" />
-        <TextBlock Classes="muted" TextWrapping="Wrap" Text="{DynamicResource about.credits_text}" />
         <WrapPanel>
-          <Button Classes="accent" Click="OnIssue" Margin="0,0,8,0" Content="{DynamicResource about.report_issue}" />
-          <Button Click="OnOriginalProject" Content="{DynamicResource about.original_project}" />
+          <Button Classes="accent" Click="OnIssue" Content="{DynamicResource about.report_issue}" />
         </WrapPanel>
       </StackPanel>
     </Border>

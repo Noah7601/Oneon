@@ -46,7 +46,7 @@ public static class ExplorerMenuPackage
     public const string PackageFileName = "FileeExplorerMenu.msix";
 
     /// <summary>
-    /// File in the data folder (%APPDATA%\theOdrop, TITLE_FILE in FileeExplorerMenu.c) whose first line is the menu title
+    /// File in the data folder (%APPDATA%\Oneon, TITLE_FILE in FileeExplorerMenu.c) whose first line is the menu title
     /// in the UI language. It exists while the Explorer menu setting is on; without it the DLL hides the entry.
     /// </summary>
     public const string TitleFileName = "explorer-menu.txt";
@@ -90,8 +90,8 @@ public static class ExplorerMenuPackage
                 new XAttribute("Version", ManifestVersion.ToString(4)),
                 new XAttribute("ProcessorArchitecture", Architecture)),
             new XElement(Foundation + "Properties",
-                new XElement(Foundation + "DisplayName", "theOdrop"),
-                new XElement(Foundation + "PublisherDisplayName", "theOdrop contributors"),
+                new XElement(Foundation + "DisplayName", "Oneon"),
+                new XElement(Foundation + "PublisherDisplayName", "Oneon contributors"),
                 new XElement(Foundation + "Logo", LogoPath),
                 new XElement(Uap10 + "AllowExternalContent", "true")),
             new XElement(Foundation + "Resources",
@@ -113,8 +113,8 @@ public static class ExplorerMenuPackage
                     // AppListEntry="none": the package only carries the shell extension, it adds no Start menu entry.
                     new XElement(Uap + "VisualElements",
                         new XAttribute("AppListEntry", "none"),
-                        new XAttribute("DisplayName", "theOdrop"),
-                        new XAttribute("Description", "theOdrop File Explorer integration"),
+                        new XAttribute("DisplayName", "Oneon"),
+                        new XAttribute("Description", "Oneon File Explorer integration"),
                         new XAttribute("BackgroundColor", "transparent"),
                         new XAttribute("Square150x150Logo", LogoPath),
                         new XAttribute("Square44x44Logo", LogoPath)),
@@ -133,7 +133,7 @@ public static class ExplorerMenuPackage
                             new XAttribute("Category", "windows.comServer"),
                             new XElement(Com + "ComServer",
                                 new XElement(Com + "SurrogateServer",
-                                    new XAttribute("DisplayName", "theOdrop context menu"),
+                                    new XAttribute("DisplayName", "Oneon context menu"),
                                     new XElement(Com + "Class",
                                         new XAttribute("Id", clsid),
                                         new XAttribute("Path", DllFileName),

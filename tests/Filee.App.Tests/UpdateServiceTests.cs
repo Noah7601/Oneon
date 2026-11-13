@@ -89,21 +89,21 @@ public class UpdateServiceTests
     {
         using var release = JsonDocument.Parse($$"""
             {"tag_name": "v9.9.9", "assets": [
-              {"name": "theOdrop-9.9.9-SHA256SUMS.txt", "size": 189, "browser_download_url": "{{Base}}theOdrop-9.9.9-SHA256SUMS.txt"},
-              {"name": "theOdrop-9.9.9-osx-arm64.tar.gz", "size": 7, "browser_download_url": "{{Base}}theOdrop-9.9.9-osx-arm64.tar.gz"},
-              {"name": "theOdrop-9.9.9-osx-arm64.dmg", "size": 8, "browser_download_url": "{{Base}}theOdrop-9.9.9-osx-arm64.dmg"},
-              {"name": "theOdrop-9.9.9-osx-x64.dmg", "size": 9, "browser_download_url": "{{Base}}theOdrop-9.9.9-osx-x64.dmg"},
-              {"name": "theOdrop-9.9.9-win-Setup.exe", "size": 1234, "browser_download_url": "{{Base}}theOdrop-9.9.9-win-Setup.exe"}
+              {"name": "Oneon-9.9.9-SHA256SUMS.txt", "size": 189, "browser_download_url": "{{Base}}Oneon-9.9.9-SHA256SUMS.txt"},
+              {"name": "Oneon-9.9.9-osx-arm64.tar.gz", "size": 7, "browser_download_url": "{{Base}}Oneon-9.9.9-osx-arm64.tar.gz"},
+              {"name": "Oneon-9.9.9-osx-arm64.dmg", "size": 8, "browser_download_url": "{{Base}}Oneon-9.9.9-osx-arm64.dmg"},
+              {"name": "Oneon-9.9.9-osx-x64.dmg", "size": 9, "browser_download_url": "{{Base}}Oneon-9.9.9-osx-x64.dmg"},
+              {"name": "Oneon-9.9.9-win-Setup.exe", "size": 1234, "browser_download_url": "{{Base}}Oneon-9.9.9-win-Setup.exe"}
             ]}
             """);
 
-        Assert.Equal("theOdrop-9.9.9-osx-arm64.dmg", UpdateService.FindFiles(release.RootElement, "-osx-arm64.dmg").Installer?.Name);
-        Assert.Equal("theOdrop-9.9.9-osx-x64.dmg", UpdateService.FindFiles(release.RootElement, "-osx-x64.dmg").Installer?.Name);
-        Assert.Equal("theOdrop-9.9.9-win-Setup.exe", UpdateService.FindFiles(release.RootElement).Installer?.Name);
+        Assert.Equal("Oneon-9.9.9-osx-arm64.dmg", UpdateService.FindFiles(release.RootElement, "-osx-arm64.dmg").Installer?.Name);
+        Assert.Equal("Oneon-9.9.9-osx-x64.dmg", UpdateService.FindFiles(release.RootElement, "-osx-x64.dmg").Installer?.Name);
+        Assert.Equal("Oneon-9.9.9-win-Setup.exe", UpdateService.FindFiles(release.RootElement).Installer?.Name);
     }
 
     [Theory]
-    [InlineData("/Applications/theOdrop.app/Contents/MacOS/", "/Applications/theOdrop.app")]
+    [InlineData("/Applications/Oneon.app/Contents/MacOS/", "/Applications/Oneon.app")]
     [InlineData("/Users/me/Applications/TheoDrop.app/Contents/MacOS", "/Users/me/Applications/TheoDrop.app")]
     [InlineData("/Users/me/theodrop/src/Filee.App/bin/Debug/net10.0/", null)]
     public void The_app_bundle_is_found_from_the_program_folder(string baseDirectory, string? bundle)
@@ -123,7 +123,7 @@ public class UpdateServiceTests
         try
         {
             using var bash = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("/bin/bash", ["-n", script])
-                { RedirectStandardError = true })!;
+            { RedirectStandardError = true })!;
             var errors = bash.StandardError.ReadToEnd();
             bash.WaitForExit();
             Assert.True(bash.ExitCode == 0, errors);

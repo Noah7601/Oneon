@@ -95,7 +95,7 @@ public sealed partial class UpdateService : ObservableObject
                                               || MacAppBundle is not null;
 
     /// <summary>
-    /// macOS: the theOdrop.app this copy runs from (…/theOdrop.app/Contents/MacOS/), which an update replaces; null when
+    /// macOS: the Oneon.app this copy runs from (…/Oneon.app/Contents/MacOS/), which an update replaces; null when
     /// not on macOS or run from source.
     /// </summary>
     public static string? MacAppBundle { get; } = OperatingSystem.IsMacOS() ? AppBundleOf(AppContext.BaseDirectory) : null;
@@ -414,7 +414,7 @@ public sealed partial class UpdateService : ObservableObject
     /// <summary>Opens a download page: the website for installed copies, the release page (portable zip) otherwise.</summary>
     public void OpenDownloadPage()
     {
-        // theOdrop's downloads are its GitHub releases (WebsiteUrl is the original Filee's site).
+        // Oneon's downloads are its GitHub releases (WebsiteUrl is the original Filee's site).
         var url = LatestReleaseUrl;
         try
         {
@@ -448,10 +448,10 @@ public sealed partial class UpdateService : ObservableObject
     }
 
     /// <summary>
-    /// macOS: hands the verified .dmg to a small shell script and quits. The script waits for theOdrop to exit, copies
+    /// macOS: hands the verified .dmg to a small shell script and quits. The script waits for Oneon to exit, copies
     /// the new app next to the old one, moves the old one to the Trash, clears the old Accessibility entry (an ad-hoc
-    /// signed build is a new app to macOS), opens the new theOdrop and the Accessibility settings to allow it again.
-    /// When anything fails it opens the old app again. Its log is ~/Library/Logs/theOdrop-update.log.
+    /// signed build is a new app to macOS), opens the new Oneon and the Accessibility settings to allow it again.
+    /// When anything fails it opens the old app again. Its log is ~/Library/Logs/Oneon-update.log.
     /// </summary>
     private void StartMacUpdate(string dmg)
     {
@@ -477,10 +477,10 @@ public sealed partial class UpdateService : ObservableObject
 
     internal const string MacInstallScript = """
         #!/bin/bash
-        # theOdrop's in-app update on macOS: install-update.sh <pid> <dmg> <app bundle>
+        # Oneon's in-app update on macOS: install-update.sh <pid> <dmg> <app bundle>
         pid="$1"; dmg="$2"; app="$3"
         mkdir -p "$HOME/Library/Logs"
-        exec >>"$HOME/Library/Logs/theOdrop-update.log" 2>&1
+        exec >>"$HOME/Library/Logs/Oneon-update.log" 2>&1
         echo "$(date) updating $app from $dmg"
         for _ in $(seq 1 120); do kill -0 "$pid" 2>/dev/null || break; sleep 0.5; done
         kill -0 "$pid" 2>/dev/null && { kill "$pid"; sleep 2; }
@@ -488,14 +488,14 @@ public sealed partial class UpdateService : ObservableObject
         reopen() { echo "update failed: $1"; open "$app"; exit 1; }
         mnt="$(mktemp -d)"
         hdiutil attach -nobrowse -quiet -mountpoint "$mnt" "$dmg" || reopen "could not open the disk image"
-        staged="$folder/.theOdrop-update.app"
+        staged="$folder/.Oneon-update.app"
         rm -rf "$staged"
-        if ! ditto "$mnt/theOdrop.app" "$staged"; then hdiutil detach -quiet "$mnt"; rm -rf "$staged"; reopen "could not copy the new app"; fi
+        if ! ditto "$mnt/Oneon.app" "$staged"; then hdiutil detach -quiet "$mnt"; rm -rf "$staged"; reopen "could not copy the new app"; fi
         hdiutil detach -quiet "$mnt"
         mv "$app" "$HOME/.Trash/$(basename "$app" .app)-$(date +%Y%m%d-%H%M%S).app" || { rm -rf "$staged"; reopen "could not move the old app"; }
-        mv "$staged" "$folder/theOdrop.app"
+        mv "$staged" "$folder/Oneon.app"
         tccutil reset Accessibility com.theo.drop
-        open "$folder/theOdrop.app"
+        open "$folder/Oneon.app"
         sleep 2
         open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
         rm -f "$dmg"

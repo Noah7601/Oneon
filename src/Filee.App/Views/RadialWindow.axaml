@@ -9,7 +9,7 @@
         xmlns:vm="using:Filee.App.ViewModels"
         x:Class="Filee.App.Views.RadialWindow"
         x:DataType="vm:RadialViewModel"
-        Title="theOdrop"
+        Title="Oneon"
         WindowDecorations="None"
         Background="Transparent"
         TransparencyLevelHint="Transparent"
@@ -27,6 +27,7 @@
                  OuterRadius="{Binding OuterRadius}"
                  HoleRatio="{Binding HoleRatio}"
                  SliceOpacity="{Binding SliceOpacity}"
-                 ReserveSubRing="{Binding ReserveSubRing}" />
+                 ReserveSubRing="{Binding ReserveSubRing}"
+                 TransferItems="{Binding TransferItems}" />
   </Panel>
 </Window>

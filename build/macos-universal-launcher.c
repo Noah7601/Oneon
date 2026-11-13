@@ -1,4 +1,4 @@
-// Universal (arm64 + x86_64) trampoline for theOdrop.app.
+// Universal (arm64 + x86_64) trampoline for Oneon.app.
 //
 // A self-contained .NET application cannot be merged into one universal binary: the runtime ships
 // architecture-specific managed assemblies (System.Private.CoreLib and friends) next to the native
@@ -6,7 +6,7 @@
 // architecture in Contents/MacOS/arm64 and Contents/MacOS/x64, and this trampoline - the only truly
 // universal binary - starts the payload that matches the slice macOS chose for it.
 //
-// CFProcessPath is exported before the exec so CoreFoundation still resolves theOdrop.app as the
+// CFProcessPath is exported before the exec so CoreFoundation still resolves Oneon.app as the
 // main bundle (Finder services, the Dock icon and the application name depend on it).
 #include <errno.h>
 #include <libgen.h>
@@ -27,13 +27,13 @@ int main(int argc, char **argv) {
     char self[PATH_MAX];
     uint32_t size = (uint32_t)sizeof(self);
     if (_NSGetExecutablePath(self, &size) != 0) {
-        fprintf(stderr, "theOdrop: cannot determine the executable path.\n");
+        fprintf(stderr, "Oneon: cannot determine the executable path.\n");
         return 1;
     }
 
     char resolved[PATH_MAX];
     if (realpath(self, resolved) == NULL) {
-        fprintf(stderr, "theOdrop: cannot resolve %s: %s\n", self, strerror(errno));
+        fprintf(stderr, "Oneon: cannot resolve %s: %s\n", self, strerror(errno));
         return 1;
     }
 
@@ -44,12 +44,12 @@ int main(int argc, char **argv) {
 
     char target[PATH_MAX];
     if (snprintf(target, sizeof(target), "%s/%s/%s", dirname(directory), THEODROP_SLICE, basename(name)) >= (int)sizeof(target)) {
-        fprintf(stderr, "theOdrop: the application path is too long.\n");
+        fprintf(stderr, "Oneon: the application path is too long.\n");
         return 1;
     }
 
     setenv("CFProcessPath", self, 1);
     execv(target, argv);
-    fprintf(stderr, "theOdrop: cannot start %s: %s\n", target, strerror(errno));
+    fprintf(stderr, "Oneon: cannot start %s: %s\n", target, strerror(errno));
     return 127;
 }

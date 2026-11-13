@@ -17,10 +17,10 @@ public sealed class ThemeSettings
     public ThemeMode Mode { get; set; } = ThemeMode.System;
 
     /// <summary>Accent colour as <c>#RRGGBB</c>.</summary>
-    public string Accent { get; set; } = "#5E5CE6";
+    public string Accent { get; set; } = "#FF2BD6"; // Oneon neon pink
 
     /// <summary>Base corner radius in pixels. Larger = "softer" UI.</summary>
-    public double CornerRadius { get; set; } = 16;
+    public double CornerRadius { get; set; } = 12;
 
     /// <summary>
     /// Disables animations (for low-end PCs or motion sensitivity).
@@ -81,6 +81,9 @@ public sealed class AppSettings
     public DonutSettings Donut { get; set; } = new();
 
     public List<TriggerGesture> Triggers { get; set; } = TriggerGesture.Defaults();
+
+    /// <summary>Slices of the transfer ring (outer ring of the donut), in order.</summary>
+    public List<TransferTarget> Transfers { get; set; } = TransferTarget.Defaults();
 
     /// <summary>Process names (without .exe) in which gestures never trigger.</summary>
     public List<string> ExcludedProcesses { get; set; } = [];

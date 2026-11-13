@@ -60,7 +60,7 @@ public sealed class JobQueue : IAsyncDisposable
         job.State = JobState.Running;
         Notify(job);
 
-        var workDir = Path.Combine(Path.GetTempPath(), "theOdrop", job.Id);
+        var workDir = Path.Combine(Path.GetTempPath(), "Oneon", job.Id);
         Directory.CreateDirectory(workDir);
         try
         {

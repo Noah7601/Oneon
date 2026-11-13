@@ -27,6 +27,7 @@ namespace Filee.App.Services;
 public sealed class RadialController(
     RadialViewModel viewModel,
     ConversionService conversions,
+    TransferService transfers,
     WindowService windows,
     UserDataStore store,
     IPlatformServices platform,
@@ -46,6 +47,8 @@ public sealed class RadialController(
     private JobViewModel? _lastRingJob;   // for "click the ✓ to open the folder"
     private IDisposable? _handOffTimer;
     private int _dragGeneration;
+    private bool _dragReachedDonut;
+    private bool _dragEndedOnDonut;
 
     /// <summary>
     /// How long a drag that never brought files may keep the invisible window up, in case the button release is
@@ -64,11 +67,15 @@ public sealed class RadialController(
     /// </summary>
     public void ShowForDrag(int x, int y, WheelMode wheel = WheelMode.Convert)
     {
+        if (_visible && !_dropped && !viewModel.IsClickMode && viewModel.HasFiles)
+            log.LogInformation("A new drag gesture replaced the donut's files before a drop");
         ReleaseProgressToToast();
         var window = EnsureWindow();
         // A ring from an earlier conversion (finished or handed to the toast) must not keep this gesture's window up.
         window.DonutControl.LeaveProgressMode();
         _dropped = false;
+        _dragReachedDonut = false;
+        _dragEndedOnDonut = false;
         viewModel.ResetForDrag(wheel);
         window.DonutControl.AllowContextEdit = false;
         PlaceAndShow(window, x, y, activate: false);
@@ -122,9 +129,14 @@ public sealed class RadialController(
                 _dropped = true;
                 window.DonutControl.CollapseGroup();
                 window.DonutControl.SetExternalHighlight(-1);
-                Convert(hit.Index, hit.Sub, viewModel.Files);
+                if (hit.Kind == DonutHitKind.SubSegment && window.DonutControl.IsTransferFan(hit.Index))
+                    ConvertAndSend(hit.Index, hit.Sub, viewModel.Files);
+                else
+                    Convert(hit.Index, hit.Sub, viewModel.Files);
                 return;
             }
+            if (_dragReachedDonut && !_dragEndedOnDonut)
+                log.LogInformation("The donut closed 250 ms after the release, with no drop or leave from the system");
             Close(animate: true);
         }, TimeSpan.FromMilliseconds(250));
     }
@@ -168,6 +180,7 @@ public sealed class RadialController(
         var window = new RadialWindow { DataContext = viewModel };
         var donut = window.DonutControl;
 
+        window.DragEntered += () => (_dragReachedDonut, _dragEndedOnDonut) = (true, false);
         window.FilesEntered += files =>
         {
             if (viewModel.IsClickMode || SameFiles(files, viewModel.Files))
@@ -178,16 +191,21 @@ public sealed class RadialController(
         window.Dropped += (hit, files) =>
         {
             _dropped = true;
-            if (hit.Kind is DonutHitKind.Segment or DonutHitKind.SubSegment)
+            if (hit.Kind == DonutHitKind.SubSegment && donut.IsTransferFan(hit.Index))
+                ConvertAndSend(hit.Index, hit.Sub, files.Count > 0 ? files : viewModel.Files);
+            else if (hit.Kind is DonutHitKind.Segment or DonutHitKind.SubSegment)
                 Convert(hit.Index, hit.Sub, files.Count > 0 ? files : viewModel.Files);
             else
                 Close();
         };
         // One line per drag, to tell "the drag never reached the donut" from "it did but nothing lit up" when someone
         // reports a donut that doesn't react.
-        window.DragSummary += (events, hit, lit) =>
-            log.LogInformation("Drag over the donut: {Events} move event(s), ended on {Kind} {Index}, drawn lit {Lit:0.00}",
-                events, hit.Kind, hit.Index, lit);
+        window.DragSummary += (events, hit, lit, dropped) =>
+        {
+            _dragEndedOnDonut = true;
+            log.LogInformation("Drag over the donut: {Events} move event(s), ended on {Kind} {Index}, drawn lit {Lit:0.00}{Drop}",
+                events, hit.Kind, hit.Index, lit, dropped ? "" : ", left without a drop");
+        };
         window.EscapePressed += () => Close();
         window.Deactivated += (_, _) =>
         {
@@ -196,8 +214,10 @@ public sealed class RadialController(
         };
 
         donut.ActiveIndexChanged += (_, index) => viewModel.ShowHint(index, donut.ActiveSubIndex, donut.IsCenterHot);
+        donut.Ticked += (_, _) => platform.PerformTick();
         donut.SegmentInvoked += (_, index) => Convert(index, -1, viewModel.Files);
         donut.SubSegmentInvoked += (_, hit) => Convert(hit.Group, hit.Sub, viewModel.Files);
+        donut.TransferInvoked += (_, hit) => ConvertAndSend(hit.Index, hit.Transfer, viewModel.Files);
         donut.CenterInvoked += (_, _) => Close();
         donut.SegmentContextRequested += async (_, index) => await EditPresetAsync(index);
         donut.SubSegmentContextRequested += async (_, hit) => await EditPresetAsync(hit.Group, hit.Sub);
@@ -246,6 +266,33 @@ public sealed class RadialController(
             return;
         }
         ShowProgress(job);
+    }
+
+    /// <summary>
+    /// Transfer zone: converts with preset slice <paramref name="index"/> as usual (progress ring, toast), then sends
+    /// the result to transfer slice <paramref name="transfer"/>. The "send?" question comes after the conversion, when
+    /// there is something to send.
+    /// </summary>
+    private void ConvertAndSend(int index, int transfer, IReadOnlyList<string> files)
+    {
+        if (viewModel.TransferAt(transfer) is not { } target || viewModel.PresetAt(index, -1) is not { } preset || files.Count == 0)
+        {
+            Close();
+            return;
+        }
+        log.LogInformation("Converting {Count} file(s) with preset {Preset}, then sending to {Kind}",
+            files.Count, preset.Id, target.Kind);
+        var job = conversions.Start(files, preset, showInToast: false);
+        if (job is null)
+        {
+            Close();
+            return;
+        }
+        if (_window is null)
+            Close();
+        else
+            ShowProgress(job);
+        _ = transfers.SendAfterAsync(job, target);
     }
 
     // ───────── Progress ring ─────────

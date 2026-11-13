@@ -53,6 +53,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
             new("toolbar", "nav.toolbar", "Icon.Donut", typeof(ToolbarPageViewModel)),
             new("presets", "nav.presets", "Icon.Tune", typeof(PresetsPageViewModel)),
             new("watch", "nav.watch", "Icon.Folder", typeof(WatchFoldersPageViewModel)),
+            new("transfer", "nav.transfer", "Icon.Upload", typeof(TransferPageViewModel)),
             new("theme", "nav.theme", "Icon.Palette", typeof(ThemePageViewModel)),
             new("engines", "nav.engines", "Icon.Engine", typeof(EnginesPageViewModel)),
             new("about", "nav.about", "Icon.Info", typeof(AboutPageViewModel)),

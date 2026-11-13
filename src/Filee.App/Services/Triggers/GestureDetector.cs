@@ -17,6 +17,7 @@ public sealed class GestureDetector
     private IReadOnlyList<TriggerGesture> _gestures = [];
     private Armed? _armed;
     private bool _dragActive;
+    private bool _pressed; // a press came in and its release hasn't; don't trust a late macOS move's button mask
     private bool _lateRejected; // scope check failed for this drag; don't re-check on every move
     private int _lastX, _lastY;
 
@@ -60,6 +61,7 @@ public sealed class GestureDetector
             _lastX = x;
             _lastY = y;
             _armed = null;
+            _pressed = true;
             _lateRejected = false;
             if (Paused)
                 return;
@@ -116,10 +118,11 @@ public sealed class GestureDetector
     /// <summary>
     /// The modifier was pressed after the drag had already started (common in Explorer: start dragging,
     /// then press Ctrl to copy). Treat it like a drag gesture that just passed the threshold. Caller holds the lock.
+    /// Only during a press: macOS can report the button held on a move just after its release.
     /// </summary>
     private TriggerGesture? DetectLateModifier(int x, int y, ModifierKeys modifiers, TriggerMouseButton heldButton)
     {
-        if (_dragActive || _lateRejected || Paused || heldButton == TriggerMouseButton.None || modifiers == ModifierKeys.None)
+        if (!_pressed || _dragActive || _lateRejected || Paused || heldButton == TriggerMouseButton.None || modifiers == ModifierKeys.None)
             return null;
 
         var late = _gestures.FirstOrDefault(g =>
@@ -142,6 +145,7 @@ public sealed class GestureDetector
             _armed = null;
             ended = _dragActive;
             _dragActive = false;
+            _pressed = false;
             _lateRejected = false;
         }
         if (ended)

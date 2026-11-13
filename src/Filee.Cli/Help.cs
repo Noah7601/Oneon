@@ -14,12 +14,12 @@ internal static class Help
         "convert" => Convert,
         "watch" => Watch,
         "formats" => "Usage: theodrop formats [<format>]\n\nLists every format, or what one format converts to.\n",
-        "presets" => "Usage: theodrop presets\n\nLists the presets saved in theOdrop (built-in and your own).\n",
+        "presets" => "Usage: theodrop presets\n\nLists the presets saved in Oneon (built-in and your own).\n",
         _ => General,
     };
 
     private const string General = """
-        theOdrop: convert files offline from the command line.
+        Oneon: convert files offline from the command line.
 
         Usage:
           theodrop convert <files or folders...> --to <format> [options]
@@ -36,7 +36,7 @@ internal static class Help
           theodrop convert D:\Scans --recursive --preset to-pdf
           theodrop watch D:\Inbox --to pdf --move-originals
 
-        Presets and engines are the ones in the theOdrop app. Exit codes: 0 all converted, 1 some failed,
+        Presets and engines are the ones in the Oneon app. Exit codes: 0 all converted, 1 some failed,
         2 wrong arguments or a missing input, 3 nothing to convert.
 
         """;
@@ -44,7 +44,7 @@ internal static class Help
     private const string Convert = """
         Usage: theodrop convert <files or folders...> (--to <format> | --preset <preset>) [options]
 
-        Files can be wildcards (*.heic). Folders convert the files in them that theOdrop knows.
+        Files can be wildcards (*.heic). Folders convert the files in them that Oneon knows.
 
         Options:
           -t, --to <format>      Target format, e.g. jpg, png, pdf, docx, mp4 (see 'theodrop formats')
