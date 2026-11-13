@@ -1,0 +1,18 @@
+# Temporary: finds where LibreOffice 26.2.6 moved to (the stable/ link now answers 404). Delete after use.
+name: Probe LibreOffice archive
+on:
+  push:
+    branches: ['fix/libreoffice-archive']
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          for b in 1 2 3 4 5; do
+            v="26.2.6.$b"
+            for f in "win/x86_64/LibreOffice_${v}_Win_x86-64.msi" "mac/x86_64/LibreOffice_${v}_MacOS_x86-64.dmg" "mac/aarch64/LibreOffice_${v}_MacOS_aarch64.dmg"; do
+              u="https://downloadarchive.documentfoundation.org/libreoffice/old/$v/$f"
+              echo "$(curl -s -o /dev/null -w '%{http_code}' -I -L "$u") $u"
+            done
+          done
+          echo "--- stable now:"; curl -sL https://download.documentfoundation.org/libreoffice/stable/ | grep -o 'href="[0-9.]*/"' | sort -u
