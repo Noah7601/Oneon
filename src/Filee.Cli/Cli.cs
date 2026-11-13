@@ -26,8 +26,8 @@ internal static class Cli
         var options = CliOptions.Parse(args);
         if (options.Error is not null)
         {
-            errors.WriteLine($"theodrop: {options.Error}");
-            errors.WriteLine("Run 'theodrop help' for usage.");
+            errors.WriteLine($"oneon: {options.Error}");
+            errors.WriteLine("Run 'oneon help' for usage.");
             return UsageError;
         }
         switch (options.Command)
@@ -36,7 +36,7 @@ internal static class Cli
                 output.Write(Help.Text(options.Inputs.FirstOrDefault()));
                 return Success;
             case "version":
-                output.WriteLine($"theodrop {Help.Version}");
+                output.WriteLine($"oneon {Help.Version}");
                 return Success;
         }
 
@@ -60,12 +60,12 @@ internal static class Cli
         var missing = new List<string>();
         var files = ExpandInputs(options.Inputs, options.Recursive, missing);
         foreach (var path in missing)
-            errors.WriteLine($"theodrop: not found: {path}");
+            errors.WriteLine($"oneon: not found: {path}");
         if (missing.Count > 0)
             return UsageError;
         if (files.Count == 0)
         {
-            errors.WriteLine("theodrop: no files to convert.");
+            errors.WriteLine("oneon: no files to convert.");
             return NothingToDo;
         }
 
@@ -101,7 +101,7 @@ internal static class Cli
             settleTime: settle);
         if (!watcher.Start())
         {
-            errors.WriteLine($"theodrop: {watcher.Error}");
+            errors.WriteLine($"oneon: {watcher.Error}");
             return UsageError;
         }
         if (!options.Quiet)
@@ -211,12 +211,12 @@ internal static class Cli
         {
             if (FindFormat(options.To) is not { } format)
             {
-                errors.WriteLine($"theodrop: unknown format '{options.To}'. Run 'theodrop formats' for the list.");
+                errors.WriteLine($"oneon: unknown format '{options.To}'. Run 'oneon formats' for the list.");
                 return null;
             }
             if (!format.Writable)
             {
-                errors.WriteLine($"theodrop: Filee reads {format.DisplayName} but can't write it.");
+                errors.WriteLine($"oneon: Filee reads {format.DisplayName} but can't write it.");
                 return null;
             }
             preset = new Preset { TargetFormat = format.Id };
@@ -232,7 +232,7 @@ internal static class Cli
             var found = Find(host.Store.Presets.Where(p => !p.IsGroup)) ?? Find(host.Store.Presets);
             if (found is null)
             {
-                errors.WriteLine($"theodrop: no preset '{wanted}'. Run 'theodrop presets' for the list.");
+                errors.WriteLine($"oneon: no preset '{wanted}'. Run 'oneon presets' for the list.");
                 return null;
             }
             if (found.IsGroup)
@@ -240,8 +240,8 @@ internal static class Cli
                 // A donut group converts nothing; name what it holds so the right one is easy to pick.
                 var members = found.SubPresetIds.Select(host.Store.FindConversion).OfType<Preset>().Select(p => p.Id).ToList();
                 errors.WriteLine(members.Count > 0
-                    ? $"theodrop: '{wanted}' is a group on the donut, not a conversion. Use one of: {string.Join(", ", members)}"
-                    : $"theodrop: '{wanted}' is a group on the donut, not a conversion, and has no presets left. Run 'theodrop presets' for the list.");
+                    ? $"oneon: '{wanted}' is a group on the donut, not a conversion. Use one of: {string.Join(", ", members)}"
+                    : $"oneon: '{wanted}' is a group on the donut, not a conversion, and has no presets left. Run 'oneon presets' for the list.");
                 return null;
             }
             preset = found.Clone();
@@ -305,7 +305,7 @@ internal static class Cli
         {
             if (FindFormat(name) is not { } from)
             {
-                errors.WriteLine($"theodrop: unknown format '{name}'.");
+                errors.WriteLine($"oneon: unknown format '{name}'.");
                 return UsageError;
             }
             var installed = host.Catalog.CreatePlanner();
@@ -327,7 +327,7 @@ internal static class Cli
                 output.WriteLine($"  {format.Id,-10} {format.DisplayName}{(format.Writable ? "" : " (read only)")}  .{string.Join(" .", format.Extensions)}");
         }
         output.WriteLine();
-        output.WriteLine("Run 'theodrop formats <format>' to see what a format converts to.");
+        output.WriteLine("Run 'oneon formats <format>' to see what a format converts to.");
         return Success;
     }
 
@@ -337,7 +337,7 @@ internal static class Cli
         foreach (var preset in host.Store.Presets.Where(p => !p.IsGroup))
             output.WriteLine($"{preset.Id,-24} {host.Texts.DisplayName(preset),-28} {preset.TargetFormat}");
         output.WriteLine();
-        output.WriteLine("Use one with: theodrop convert <files> --preset <id or name>");
+        output.WriteLine("Use one with: oneon convert <files> --preset <id or name>");
         return Success;
     }
 }

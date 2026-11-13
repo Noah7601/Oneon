@@ -1,4 +1,4 @@
-// Entry point of filee-cli.exe (run as "theodrop" through cli\theodrop.cmd). Ctrl+C cancels the running conversion or
+// Entry point of filee-cli.exe (run as "oneon" through cli\oneon.cmd). Ctrl+C cancels the running conversion or
 // stops watching; a second Ctrl+C ends the process at once.
 
 using System.Text;

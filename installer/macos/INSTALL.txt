@@ -1,6 +1,6 @@
 This package requires macOS 14 or later and contains a separate build for
 Apple Silicon or Intel Macs. The .NET runtime is included.
-Run ./install.sh to copy Oneon.app to ~/Applications and add ~/.local/bin/theodrop.
+Run ./install.sh to copy Oneon.app to ~/Applications and add ~/.local/bin/oneon.
 You can also move Oneon.app into Applications manually. Keep its location stable
 so Accessibility and Finder Automation permissions continue to identify it.
 
