@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Noah7601/oneon/releases/latest"><b>다운로드</b></a> ·
+  <a href="https://github.com/Noah7601/Oneon/releases/latest"><b>다운로드</b></a> ·
   <a href="#설치">설치</a> ·
   <a href="#기능">기능</a> ·
   <a href="#라이선스와-출처">라이선스</a>
@@ -32,7 +32,7 @@
 
 ## 설치
 
-[릴리스](https://github.com/Noah7601/oneon/releases/latest)에서 내려받으세요.
+[릴리스](https://github.com/Noah7601/Oneon/releases/latest)에서 내려받으세요.
 
 | 내 컴퓨터 | 파일 |
 |---|---|
@@ -45,7 +45,7 @@
 터미널에 아래 한 줄을 붙여넣으면 설치와 업데이트가 한 번에 끝나요.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Noah7601/oneon/main/installer/macos/update.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Noah7601/Oneon/main/installer/macos/update.sh | bash
 ```
 
 내 Mac에 맞는 파일을 받아 SHA-256을 확인하고, 예전 앱은 휴지통으로 옮긴 뒤 설치해요. 마지막에 손쉬운 사용 설정이
@@ -84,7 +84,7 @@ Oneon은 이 저장소에서 업데이트를 확인하고, 업데이트해도 �
 ## 직접 빌드하기
 
 ```bash
-git clone https://github.com/Noah7601/oneon.git
+git clone https://github.com/Noah7601/Oneon.git
 cd oneon
 dotnet run --project src/Filee.App   # .NET 10 SDK
 dotnet test
