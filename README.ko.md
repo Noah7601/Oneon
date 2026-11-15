@@ -1,9 +1,10 @@
 <p align="center">
-  <a href="https://github.com/Noah7601/Oneon/releases/latest"><img src="docs/media/oneon-banner-ko.jpg" alt="Oneon: 끌어서 놓으면, 변환하고 보내기까지." width="100%"></a>
+  <a href="https://github.com/Noah7601/Oneon/releases/latest"><img src="docs/media/oneon-banner-en.jpg" alt="Oneon: One drag. Converted and sent." width="100%"></a>
 </p>
 
 <p align="center">
-  <b>파일을 끌어서 원하는 형식에 놓으면 변환 끝. 바깥 네온 링에 놓으면 바로 보내기까지.</b><br>
+  <b>드래그 한 번으로 변환하고 보내기까지.</b><br>
+  Shift를 누른 채 끌어서 형식에 놓으면 끝, 네온 링에 놓으면 보내기까지. 앱을 열 필요도, 업로드할 필요도 없어요.<br>
   인터넷 없이 동작하는 macOS·Windows용 무료 파일 변환기예요.
 </p>
 

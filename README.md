@@ -1,10 +1,11 @@
 <p align="center">
-  <a href="https://github.com/Noah7601/Oneon/releases/latest"><img src="docs/media/oneon-banner-en.jpg" alt="Oneon: drag, drop, convert and send." width="100%"></a>
+  <a href="https://github.com/Noah7601/Oneon/releases/latest"><img src="docs/media/oneon-banner-en.jpg" alt="Oneon: One drag. Converted and sent." width="100%"></a>
 </p>
 
 <p align="center">
-  <b>Drag a file, drop it on a format, done. Drop it on the outer neon ring and it is sent, too.</b><br>
-  A free file converter for macOS and Windows that works offline.
+  <b>One drag. Converted and sent.</b><br>
+  Shift-drag a file, drop it on a format — or on the neon ring to send it. Nothing to open, nothing to upload.<br>
+  A free, offline file converter for macOS and Windows.
 </p>
 
 <p align="center">
