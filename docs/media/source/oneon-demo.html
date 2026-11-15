@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+html,body{margin:0;background:transparent;font-family:"Noto Sans CJK KR","Noto Sans KR","Noto Sans",sans-serif}
+svg{display:block}
+</style></head>
+<body>
+<svg id="s" xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"></svg>
+<script>
+const L = {
+  ko:{file:"여행사진.jpg", out:"여행사진.png", count:"JPG 1개", esc:"Esc로 닫기", conv:"변환 중", done:"완료",
+      targets:["폴더","구글 드라이브","클립보드","AirDrop"], toast:"클립보드에 복사했어요", finder:"사진",
+      hint1:"Shift + 드래그", hint2:"프리셋 위에서 잠깐 멈추면", hint3:"네온 링에 놓으면 변환 후 전송"},
+  en:{file:"trip.jpg", out:"trip.png", count:"1 JPG", esc:"Esc to close", conv:"Converting", done:"Done",
+      targets:["Folder","Google Drive","Clipboard","AirDrop"], toast:"Copied to the clipboard", finder:"Photos",
+      hint1:"Shift + drag", hint2:"Pause on a preset", hint3:"Drop on the neon ring: convert and send"}
+};
+const PINK="#FF2BD6", NEON="#39FF14";
+const slices=["PNG","WEBP","PDF","JPG\n70%","ICO","BMP","TIFF","AVIF"];
+const HOT=0, TARGET=2;            // PNG slice, Clipboard target
+const C={x:560,y:278}, R1=56, R2=128, R3=140, R4=206;
+const N=slices.length, SPAN=2*Math.PI/N, START=-Math.PI/2 - SPAN/2 + SPAN; // PNG centred slightly right of top
+
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const seg=(t,a,b)=>clamp((t-a)/(b-a));
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const back=x=>{const c1=1.55,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const lerp=(a,b,k)=>a+(b-a)*k;
+const pt=(r,a)=>[C.x+r*Math.cos(a),C.y+r*Math.sin(a)];
+
+function wedge(r1,r2,a0,a1,gap=3){
+  const o0=a0+gap/2/r2,o1=a1-gap/2/r2,i0=a0+gap/2/r1,i1=a1-gap/2/r1;
+  const [x1,y1]=pt(r2,o0),[x2,y2]=pt(r2,o1),[x3,y3]=pt(r1,i1),[x4,y4]=pt(r1,i0);
+  const lg=(o1-o0)>Math.PI?1:0;
+  return `M${x1},${y1}A${r2},${r2} 0 ${lg} 1 ${x2},${y2}L${x3},${y3}A${r1},${r1} 0 ${lg} 0 ${x4},${y4}Z`;
+}
+const sliceMid=i=>START+SPAN*i+SPAN/2;
+// transfer ring: 4 slots of 26deg, centred on the hot slice
+const TS=26*Math.PI/180, TN=4;
+const tMid=j=>sliceMid(HOT)+(j-(TN-1)/2)*TS;
+
+function cursor(x,y,press){
+  return `<g transform="translate(${x},${y})">
+    <path d="M0,0 L0,22 L6,17 L10,27 L14,25 L10,15 L18,15 Z" fill="#fff" stroke="#000" stroke-width="1.4" stroke-linejoin="round"/>
+  </g>`;
+}
+function fileIcon(x,y,label,alpha=1,scale=1){
+  return `<g transform="translate(${x},${y}) scale(${scale})" opacity="${alpha}">
+    <rect x="-22" y="-28" width="44" height="54" rx="6" fill="#E9F3FF"/>
+    <path d="M10,-28 L22,-16 L10,-16 Z" fill="#B9D3F2"/>
+    <rect x="-16" y="-10" width="32" height="24" rx="3" fill="#4A9E6B"/>
+    <circle cx="-6" cy="-3" r="4" fill="#FFD25A"/>
+    <path d="M-16,14 L-4,2 L4,9 L10,4 L16,10 L16,14 Z" fill="#2F7A4E"/>
+    <rect x="-24" y="12" width="22" height="11" rx="2" fill="#E8833A"/>
+    <text x="-13" y="20.5" font-size="7.5" font-weight="700" fill="#fff" text-anchor="middle">JPG</text>
+    ${label?`<text x="0" y="44" font-size="12" fill="#E5E5EA" text-anchor="middle">${label}</text>`:""}
+  </g>`;
+}
+
+const BANNER=location.search.includes("banner");
+function render(t,lang){
+  const s=L[lang];
+  let g="";
+  // desktop
+  g+=`<defs>
+    <radialGradient id="bg" cx="70%" cy="40%" r="80%"><stop offset="0" stop-color="#2A2A2E"/><stop offset="1" stop-color="#131315"/></radialGradient>
+    <filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity=".45"/></filter>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  ${BANNER?"":`<rect width="960" height="540" fill="url(#bg)"/>`}`;
+  // finder window
+  if(!BANNER) g+=`<g filter="url(#sh)"><rect x="40" y="70" width="250" height="300" rx="12" fill="#1E1E20" stroke="#3A3A3C"/></g>
+    <rect x="40" y="70" width="250" height="36" rx="12" fill="#2A2A2D"/><rect x="40" y="94" width="250" height="12" fill="#2A2A2D"/>
+    <circle cx="60" cy="88" r="5.5" fill="#FF5F57"/><circle cx="78" cy="88" r="5.5" fill="#FEBC2E"/><circle cx="96" cy="88" r="5.5" fill="#28C840"/>
+    <text x="165" y="93" font-size="13" fill="#C7C7CC" text-anchor="middle" font-weight="600">${s.finder}</text>`;
+  const fileX=110,fileY=170;
+
+  // cursor path
+  const p1=[fileX+6,fileY+2], p2=[C.x-10,C.y+16];
+  const hotP=pt((R1+R2)/2+4,sliceMid(HOT)), tgtP=pt((R3+R4)/2,tMid(TARGET));
+  let cx,cy;
+  if(t<0.8){const k=ease(seg(t,0,0.8));cx=lerp(330,p1[0],k);cy=lerp(420,p1[1],k);}
+  else if(t<1.5){const k=ease(seg(t,0.9,1.5));cx=lerp(p1[0],p2[0],k);cy=lerp(p1[1],p2[1],k);}
+  else if(t<2.6){const k=ease(seg(t,1.95,2.5));cx=lerp(p2[0],hotP[0],k);cy=lerp(p2[1],hotP[1],k);}
+  else if(t<4.1){const k=ease(seg(t,3.4,3.95));cx=lerp(hotP[0],tgtP[0],k);cy=lerp(hotP[1],tgtP[1],k);}
+  else {cx=tgtP[0];cy=tgtP[1];}
+  const dragging=t>=0.9&&t<4.1;
+
+  // file in finder (dims while dragged)
+  if(!BANNER) g+=fileIcon(fileX,fileY,s.file,dragging?0.45:1);
+
+  // shift badge
+  const shiftA=t<0.9?0:t<4.1?1:Math.max(0,1-seg(t,4.1,4.4));
+  if(shiftA>0&&!BANNER) g+=`<g opacity="${shiftA}"><rect x="40" y="400" width="104" height="40" rx="9" fill="#2C2C2E" stroke="#48484A"/>
+     <text x="92" y="426" font-size="17" fill="#fff" text-anchor="middle" font-weight="700">⇧ Shift</text></g>`;
+
+  // donut
+  const open=seg(t,1.45,1.95), close=seg(t,5.6,6.0);
+  const vis=t>=1.45&&t<6.0;
+  if(vis){
+    const k=back(open)*(1-ease(close));
+    const rot=(1-open)*-0.45;
+    const alpha=clamp(open*1.6)*(1-close);
+    g+=`<g opacity="${alpha}" transform="translate(${C.x},${C.y}) scale(${0.55+0.45*k}) rotate(${rot*57.3}) translate(${-C.x},${-C.y})">`;
+    g+=`<circle cx="${C.x}" cy="${C.y+5}" r="${R2+12}" fill="#000" opacity=".28" filter="url(#glow)"/>`;
+    const hot=t>=2.35&&t<4.3;
+    for(let i=0;i<N;i++){
+      const a0=START+SPAN*i,a1=a0+SPAN,m=(a0+a1)/2;
+      const isHot=i===HOT&&hot;
+      const pop=isHot?7:0, dx=pop*Math.cos(m), dy=pop*Math.sin(m);
+      g+=`<g transform="translate(${dx},${dy})"><path d="${wedge(R1,R2,a0,a1)}" fill="${isHot?PINK:"#2C2C2F"}" stroke="${isHot?PINK:"#3A3A3D"}" stroke-width="1"/>`;
+      const [lx,ly]=pt((R1+R2)/2+2,m); const lines=slices[i].split("\n");
+      lines.forEach((ln,j)=>{g+=`<text x="${lx}" y="${ly+5+(j-(lines.length-1)/2)*15}" font-size="${j?11:14}" font-weight="${j?400:700}" fill="${isHot?"#fff":(j?"#A1A1A6":"#F2F2F7")}" text-anchor="middle">${ln}</text>`});
+      g+=`</g>`;
+    }
+    // centre
+    g+=`<circle cx="${C.x}" cy="${C.y}" r="${R1-6}" fill="#1C1C1E" stroke="#3A3A3D"/>`;
+    // progress
+    const prog=seg(t,4.35,5.25);
+    if(t>=4.3){
+      const a=prog*2*Math.PI-1e-4, r=R1-10;
+      const [x0,y0]=[C.x,C.y-r],[x1,y1]=[C.x+r*Math.sin(a),C.y-r*Math.cos(a)];
+      g+=`<circle cx="${C.x}" cy="${C.y}" r="${r}" fill="none" stroke="#3A3A3D" stroke-width="5"/>`;
+      g+=`<path d="M${x0},${y0}A${r},${r} 0 ${a>Math.PI?1:0} 1 ${x1},${y1}" fill="none" stroke="${PINK}" stroke-width="5" stroke-linecap="round"/>`;
+      g+=`<text x="${C.x}" y="${C.y+5}" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">${prog<1?Math.round(prog*100)+"%":s.done}</text>`;
+    } else {
+      g+=`<text x="${C.x}" y="${C.y-1}" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">${s.count}</text>`;
+      g+=`<text x="${C.x}" y="${C.y+16}" font-size="9.5" fill="#8E8E93" text-anchor="middle">${s.esc}</text>`;
+    }
+    // transfer (neon) ring
+    if(t>=2.95&&t<4.3){
+      for(let j=0;j<TN;j++){
+        const f=back(seg(t,2.95+j*0.06,3.35+j*0.06)), fo=1-seg(t,4.15,4.3);
+        if(f<=0)continue;
+        const m=tMid(j), a0=m-TS/2, a1=m+TS/2, r4=R3+(R4-R3)*clamp(f,0,1.2);
+        const lit=j===TARGET&&t>=3.85;
+        g+=`<g opacity="${clamp(f)*fo}">`;
+        if(lit) g+=`<path d="${wedge(R3,r4,a0,a1)}" fill="${NEON}" filter="url(#glow)"/>`;
+        else g+=`<path d="${wedge(R3,r4,a0,a1)}" fill="rgba(22,22,26,.92)" stroke="${NEON}" stroke-opacity=".85" stroke-width="1.5"/>`;
+        const [lx,ly]=pt((R3+r4)/2,m);
+        g+=`<text x="${lx}" y="${ly+4}" font-size="11.5" font-weight="700" fill="${lit?"#0B1A07":"#E8FFE0"}" text-anchor="middle">${s.targets[j]}</text></g>`;
+      }
+    }
+    g+=`</g>`;
+  }
+  // pause hint (dwell ring at cursor)
+  if(t>=2.5&&t<3.0){const k=seg(t,2.5,2.95);const r=13,a=k*2*Math.PI-1e-4;
+    g+=`<path d="M${cx},${cy-r}A${r},${r} 0 ${a>Math.PI?1:0} 1 ${cx+r*Math.sin(a)},${cy-r*Math.cos(a)}" fill="none" stroke="${NEON}" stroke-width="3" stroke-linecap="round" opacity=".9"/>`;}
+
+  // ghost file under cursor
+  if(dragging) g+=fileIcon(cx+34,cy+44,"",0.85,0.6);
+  // cursor
+  g+=cursor(cx,cy);
+
+  // toast
+  const ta=seg(t,5.3,5.6)*(1-seg(t,7.2,7.5));
+  if(ta>0){const y=lerp(20,36,ease(seg(t,5.3,5.6)));
+    g+=`<g opacity="${ta}" filter="url(#sh)"><rect x="620" y="${y}" width="310" height="62" rx="14" fill="#232325" stroke="#3A3A3C"/></g>
+      <g opacity="${ta}">${fileIcon(656,y+30,"",1,0.62)}
+      <text x="688" y="${y+27}" font-size="14" font-weight="700" fill="#fff">${s.out}</text>
+      <text x="688" y="${y+46}" font-size="12.5" fill="${NEON}">✓ ${s.toast}</text></g>`;}
+
+  // step caption (bottom right)
+  const steps=[[0.9,1.9,s.hint1],[2.3,3.8,s.hint2],[3.8,5.6,s.hint3]];
+  if(!BANNER) steps.forEach(([a,b,txt])=>{const al=seg(t,a,a+0.2)*(1-seg(t,b-0.2,b));if(al>0)
+    g+=`<text x="560" y="510" font-size="17" font-weight="700" fill="#F2F2F7" text-anchor="middle" opacity="${al}">${txt}</text>`;});
+
+  document.getElementById("s").innerHTML=g;
+}
+window.render=render;
+{const q=new URLSearchParams(location.search);render(parseFloat(q.get("t")||"3.9"),q.get("l")||"ko");}
+</script>
+</body></html>
