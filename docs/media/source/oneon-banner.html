@@ -1,0 +1,31 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+html,body{margin:0}
+.b{width:1280px;height:640px;position:relative;overflow:hidden;font-family:"Noto Sans CJK KR","Noto Sans",sans-serif;
+ background:radial-gradient(120% 120% at 78% 45%,#2B2B30 0%,#161618 55%,#0E0E10 100%);color:#F2F2F7}
+.glowp{position:absolute;right:120px;top:40px;width:560px;height:560px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,43,214,.16),transparent)}
+.logo{position:absolute;left:80px;top:78px;display:flex;align-items:center;gap:22px}
+.logo .ic{width:92px;height:92px}.logo .ic svg{width:92px;height:92px}
+.logo span{font-size:64px;font-weight:800;letter-spacing:-1px}
+h1{position:absolute;left:80px;top:205px;margin:0;font-size:54px;line-height:1.22;font-weight:800;letter-spacing:-1.5px;width:640px}
+h1 em{font-style:normal;color:#FF2BD6}h1 b{color:#39FF14;font-weight:800}
+p{position:absolute;left:82px;top:358px;margin:0;font-size:24px;color:#A1A1A6;font-weight:500;width:600px}
+.chips{position:absolute;left:80px;bottom:78px;display:flex;gap:14px}
+.chips i{font-style:normal;font-size:22px;font-weight:700;padding:10px 22px;border-radius:999px;background:#232326;border:1px solid #3A3A3D}
+.chips i.n{border-color:#39FF14;color:#39FF14}
+iframe{position:absolute;border:0;width:960px;height:540px;left:330px;top:62px;transform:scale(1.18);transform-origin:520px 278px;background:transparent}
+.url{position:absolute;right:56px;bottom:40px;font-size:20px;color:#8E8E93;font-weight:600}
+</style></head><body><div class="b">
+<div class="glowp"></div>
+<iframe id="f" allowtransparency="true"></iframe>
+<div class="logo"><div class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A3A3C"/><stop offset="1" stop-color="#1C1C1E"/></linearGradient></defs><rect x="0" y="0" width="1024" height="1024" rx="230" fill="url(#bg)"/><path d="M795.47,327.91 A338,338 0 1 1 644.07,200.87 L628.44,237.69 A298,298 0 1 0 761.92,349.70 Z" fill="#FF2BD6"/><path d="M670.68,213.56 A338,338 0 0 1 778.35,303.91 L746.83,328.53 A298,298 0 0 0 651.90,248.88 Z" fill="#39FF14"/><circle cx="512" cy="512" r="226" fill="none" stroke="#C7C7CC" stroke-width="40"/><circle cx="512" cy="512" r="134" fill="none" stroke="#FFFFFF" stroke-width="40"/><circle cx="512" cy="512" r="46" fill="#FFFFFF"/></svg></div><span>Oneon</span></div>
+<h1 id="h"></h1><p id="p"></p>
+<div class="chips"><i>JPG</i><i>PDF</i><i>DOCX</i><i>HWPX</i><i class="n" id="c"></i></div>
+<div class="url">github.com/Noah7601/Oneon</div>
+</div>
+<script>
+const T={ko:{h:"끌어서 <em>놓으면</em>,<br>변환하고 <b>보내기</b>까지.",p:"macOS · Windows용 무료 오프라인 파일 변환기",c:"→ 클립보드"},
+en:{h:"Drag, <em>drop</em>,<br>convert and <b>send</b>.",p:"A free, offline file converter for macOS and Windows",c:"→ Clipboard"}};
+const lang=new URLSearchParams(location.search).get("l")||"ko";
+document.getElementById("h").innerHTML=T[lang].h;document.getElementById("p").textContent=T[lang].p;document.getElementById("c").textContent=T[lang].c;
+const f=document.getElementById("f");window.ready=new Promise(r=>{f.onload=()=>r();f.src="oneon-demo.html?banner&t=3.97&l="+lang;});
+</script></body></html>
