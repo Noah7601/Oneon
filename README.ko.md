@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/Noah7601/Oneon/releases/latest"><img src="docs/media/oneon-banner-ko.jpg" alt="Oneon: 끌어서 놓으면, 변환하고 보내기까지." width="100%"></a>
+  <a href="https://github.com/Noah7601/Oneon/releases/latest"><img src="docs/media/oneon-banner-en.jpg" alt="Oneon: Drag, drop, convert and send." width="100%"></a>
 </p>
 
 <p align="center">
