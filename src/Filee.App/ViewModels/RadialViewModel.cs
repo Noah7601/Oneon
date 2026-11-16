@@ -13,10 +13,14 @@ namespace Filee.App.ViewModels;
 
 public sealed partial class RadialViewModel(UserDataStore store, ILocalizer loc, PresetAvailability availability) : ObservableObject
 {
-    public const string AirDropAction = "airdrop";
+    /// <summary>Id of the "Original" slice: it converts nothing, and pausing on it sends the files as they are.</summary>
+    public const string OriginalId = "oneon.original";
     [ObservableProperty] private IReadOnlyList<DonutItem> _items = [];
 
-    /// <summary>Transfer zone slices (Settings → Transfers), shown beyond a preset slice on the conversion wheel only.</summary>
+    /// <summary>
+    /// Transfer zone slices (Settings → Transfers), shown beyond any enabled slice of the first ring, on the conversion
+    /// and the tools wheel.
+    /// </summary>
     [ObservableProperty] private IReadOnlyList<DonutItem>? _transferItems;
     [ObservableProperty] private string _centerTitle = "";
     [ObservableProperty] private string? _centerSubtitle;
@@ -56,28 +60,41 @@ public sealed partial class RadialViewModel(UserDataStore store, ILocalizer loc,
     public WheelMode Wheel => _wheel;
 
     /// <summary>
+    /// True when the conversion wheel starts with the "Original" slice (there is somewhere to send to). Slice 0 is then
+    /// that slice and slice <c>i</c> shows preset <c>i - 1</c>.
+    /// </summary>
+    private bool _hasOriginal;
+
+    /// <summary>True when slice <paramref name="index"/> is the "Original" slice (send the files without converting).</summary>
+    public bool IsOriginal(int index) => _hasOriginal && index == 0;
+
+    /// <summary>The position in <see cref="Presets"/> of slice <paramref name="index"/>.</summary>
+    private int PresetIndexOf(int index) => _hasOriginal ? index - 1 : index;
+
+    /// <summary>
     /// The preset that slice <paramref name="index"/> converts with, or slice <paramref name="sub"/> of its group's ring;
     /// null when there is none or it can't convert these files.
     /// </summary>
     public Preset? PresetAt(int index, int sub)
     {
-        if (_wheel == WheelMode.Actions || index < 0 || index >= Items.Count)
-            return null;
+        var preset = PresetIndexOf(index);
+        if (index < 0 || index >= Items.Count || preset < 0 || preset >= Presets.Count)
+            return null; // also the "Original" slice: it converts nothing
         if (sub < 0)
-            return Items[index] is { IsEnabled: true, IsGroup: false } ? Presets[index] : null;
+            return Items[index] is { IsEnabled: true, IsGroup: false } ? Presets[preset] : null;
         return Items[index].Children is { } children && sub < children.Count && children[sub].IsEnabled
-            ? _subPresets[index][sub]
+            ? _subPresets[preset][sub]
             : null;
     }
 
-    public string? ActionAt(int index, int sub) =>
-        _wheel == WheelMode.Actions && sub < 0 && index == 0 ? AirDropAction : null;
-
     /// <summary>The preset slice <paramref name="index"/> shows, or slice <paramref name="sub"/> of its group's ring (to edit it).</summary>
-    public Preset? PresetShownAt(int index, int sub) =>
-        index < 0 || index >= Presets.Count ? null
-        : sub < 0 ? Presets[index]
-        : sub < _subPresets[index].Count ? _subPresets[index][sub] : null;
+    public Preset? PresetShownAt(int index, int sub)
+    {
+        var preset = PresetIndexOf(index);
+        return preset < 0 || preset >= Presets.Count ? null
+            : sub < 0 ? Presets[preset]
+            : sub < _subPresets[preset].Count ? _subPresets[preset][sub] : null;
+    }
 
     /// <summary>True when opened with known files (keyboard, context menu, drop zone): slices are clicked.</summary>
     public bool IsClickMode { get; private set; }
@@ -88,6 +105,7 @@ public sealed partial class RadialViewModel(UserDataStore store, ILocalizer loc,
     public void ResetForDrag(WheelMode wheel = WheelMode.Convert)
     {
         _wheel = wheel;
+        _hasOriginal = false;
         IsClickMode = false;
         Files = [];
         Presets = [];
@@ -105,6 +123,7 @@ public sealed partial class RadialViewModel(UserDataStore store, ILocalizer loc,
     public void Load(IReadOnlyList<string> files, bool clickMode, WheelMode wheel = WheelMode.Convert)
     {
         _wheel = wheel;
+        _hasOriginal = false;
         IsClickMode = clickMode;
         Files = files;
         DonutOpacity = 1;
@@ -113,21 +132,9 @@ public sealed partial class RadialViewModel(UserDataStore store, ILocalizer loc,
 
         var profile = ProfileSelector.Select(store.Profiles, files);
         var formats = ProfileSelector.DetectFormats(files);
-        if (_wheel == WheelMode.Actions)
-        {
-            Presets = [];
-            _subPresets = [];
-            TransferItems = null;
-            Items = OperatingSystem.IsMacOS()
-                ? [new DonutItem { Id = AirDropAction, Label = loc["actions.airdrop"], Caption = loc["actions.share"] }]
-                : [];
-            CenterTitle = formats.Count == 1
-                ? loc.Format("donut.files_same", files.Count, formats[0].DisplayName)
-                : loc.Format("donut.files_mixed", files.Count);
-            CenterSubtitle = clickMode ? loc["donut.close_hint"] : null;
-            return;
-        }
-        TransferItems = _wheel == WheelMode.Convert ? LoadTransfers() : null;
+        // Any slice of the first ring fans out the transfer ring: what it makes is sent on. (The retired AirDrop wheel
+        // of 1.13.0 has no slices of its own any more; AirDrop is a place on this ring.)
+        TransferItems = _wheel is WheelMode.Convert or WheelMode.Tools ? LoadTransfers() : null;
         var toolIds = BuiltInData.ToolPresetIds.ToHashSet();
         var presetIds = _wheel == WheelMode.Tools ? BuiltInData.ToolPresetIds : (profile?.PresetIds ?? []).Where(id => !toolIds.Contains(id));
         Presets = presetIds
@@ -179,6 +186,14 @@ public sealed partial class RadialViewModel(UserDataStore store, ILocalizer loc,
             };
         }).ToList();
 
+        // The conversion wheel starts with "Original": pause on it and the transfer ring sends the files unconverted.
+        // Dropped on the slice itself it does nothing (a copy next to the original would be pointless).
+        if (_wheel == WheelMode.Convert && TransferItems is { Count: > 0 } && files.Count > 0)
+        {
+            Items = [new DonutItem { Id = OriginalId, Label = loc["donut.original"], Caption = loc["donut.original_caption"] }, .. Items];
+            _hasOriginal = true;
+        }
+
         CenterTitle = formats.Count == 1
             ? loc.Format("donut.files_same", files.Count, formats[0].DisplayName)
             : loc.Format("donut.files_mixed", files.Count);
@@ -190,6 +205,8 @@ public sealed partial class RadialViewModel(UserDataStore store, ILocalizer loc,
     {
         if (centerHot)
             CenterSubtitle = loc["donut.cancel"];
+        else if (IsOriginal(index) && sub < 0)
+            CenterSubtitle = loc["donut.original_hint"];
         else if (index >= 0 && index < Items.Count && !Items[index].IsGroup && sub >= 0 &&
                  TransferItems is { } transfers && sub < transfers.Count)
             CenterSubtitle = loc.Format("donut.send_to", Items[index].Label, transfers[sub].Label);

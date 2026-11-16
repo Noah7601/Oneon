@@ -13,6 +13,25 @@ one-line summaries in the user's language (`ko`, `en`, `zh`; a line per change, 
 - `recommended`: bug fixes. The card shows once per version.
 - `optional`: new features only. No card, the sidebar button only.
 
+## 1.13.1
+
+<!-- update
+level: optional
+ko: 아무 조각에서나 잠깐 멈추면 네온 링이 열려요. 도구 휠(ZIP 하나로, 크기 조절 등)도 결과를 바로 보낼 수 있어요
+ko: 변환 휠 맨 앞의 '원본' 조각: 멈췄다가 네온 링에 놓으면 변환 없이 원본 그대로 보내요
+ko: AirDrop 전용 휠(Command+Control 드래그)은 없어졌어요. AirDrop은 네온 링에서 골라요
+en: Pause on any slice to open the neon ring. The tools wheel (One ZIP, resize, …) can send its result too
+en: The new "Original" slice at the front of the conversion wheel sends files as they are
+en: The AirDrop wheel (Command + Control + drag) is gone; pick AirDrop on the neon ring
+zh: 在任意扇区上停留即可打开霓虹环，工具轮盘（打包为一个 ZIP、调整大小等）的结果也能直接发送
+zh: 转换轮盘最前面新增“原文件”扇区：停留后放到霓虹环上，不转换直接发送原文件
+zh: AirDrop 专用轮盘（Command + Control + 拖动）已移除，请在霓虹环中选择隔空投送
+-->
+
+- **네온 링을 어디서나:** 변환 휠뿐 아니라 도구 휠의 조각에서 잠깐 멈춰도 바깥 네온 링이 열립니다. 예를 들어 "ZIP 하나로"로 묶은 결과를 바로 구글 드라이브나 클립보드로 보낼 수 있습니다.
+- **원본 그대로 보내기:** 보낼 곳이 하나 이상 켜져 있으면 변환 휠 맨 앞에 **원본** 조각이 생깁니다. 그 위에서 멈췄다가 네온 링에 놓으면 변환하지 않고 원본 파일을 그대로 보냅니다. 원본 조각 자체에 놓으면 아무 일도 하지 않고 닫힙니다.
+- **AirDrop 전용 휠 정리:** 1.13.0의 Command + Control + 드래그(AirDrop 휠)는 없앴습니다. 업데이트하면 이 단축키도 설정에서 자동으로 빠지고, 다른 단축키는 그대로 남습니다. AirDrop은 네온 링에서 고릅니다.
+
 ## 1.13.0
 
 <!-- update

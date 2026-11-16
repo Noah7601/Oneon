@@ -255,8 +255,6 @@
   "triggers.wheel.Convert": "변환 휠",
   "triggers.wheel.Tools": "도구 휠",
   "triggers.wheel.Actions": "동작 휠",
-  "actions.airdrop": "AirDrop",
-  "actions.share": "공유",
   "triggers.scope.FileManager": "탐색기와 바탕화면",
   "triggers.scope.FileManager_macos": "Finder와 데스크탑",
   "triggers.scope.FileManager_linux": "파일 관리자와 바탕화면",
@@ -699,6 +697,9 @@
   "transfer.unsupported": "이 기기에서는 쓸 수 없는 전송 방식이에요.",
   "transfer.nothing": "보낼 파일이 없어요.",
   "donut.send_to": "놓으면 {0} → {1}(으)로 보내기",
+  "donut.original": "원본",
+  "donut.original_caption": "변환 없이",
+  "donut.original_hint": "멈추면 보낼 곳이 열려요",
   "theme.pick_from_screen": "스포이드",
   "theme.pick_from_screen_tip": "화면 어디서든 색을 집어옵니다 (색상 창 왼쪽 아래 돋보기)"
 }

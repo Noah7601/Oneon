@@ -51,6 +51,8 @@ public enum WheelMode
 {
     Convert,
     Tools,
+
+    /// <summary>The AirDrop wheel of 1.13.0, retired in 1.13.1 (AirDrop is on the transfer ring). Kept so old settings still read.</summary>
     Actions,
 }
 
@@ -90,10 +92,6 @@ public sealed class TriggerGesture
         [
             new() { Kind = TriggerKind.Drag, Modifiers = convertModifier, Button = TriggerMouseButton.Left },
             new() { Kind = TriggerKind.Drag, Modifiers = toolsModifier, Button = TriggerMouseButton.Left, Wheel = WheelMode.Tools },
-            .. OperatingSystem.IsMacOS()
-                ? [new TriggerGesture { Kind = TriggerKind.Drag, Modifiers = ModifierKeys.Ctrl | ModifierKeys.Meta,
-                    Button = TriggerMouseButton.Left, Wheel = WheelMode.Actions }]
-                : Array.Empty<TriggerGesture>(),
             new() { Kind = TriggerKind.KeyChord, Modifiers = ModifierKeys.Ctrl | ModifierKeys.Alt, Button = TriggerMouseButton.None, Key = "Space" },
         ];
     }

@@ -468,7 +468,7 @@ public class RenderTests
         window.DonutControl.SetExternalHighlight(1);
         Pump();
 
-        Assert.Equal(9, vm.Items.Count); // conversion targets only; resizing moved to the tools wheel
+        Assert.Equal(10, vm.Items.Count); // "Original" and the conversion targets; resizing moved to the tools wheel
         Assert.Equal("JPG 3개", vm.CenterTitle);
         Save(window, "donut-images-ko.png");
         window.Close();

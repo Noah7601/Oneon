@@ -235,23 +235,6 @@ public sealed class RadialController(
     /// <summary>Converts with slice <paramref name="index"/>, or with slice <paramref name="sub"/> of that group's ring.</summary>
     private void Convert(int index, int sub, IReadOnlyList<string> files)
     {
-        if (viewModel.ActionAt(index, sub) == RadialViewModel.AirDropAction && files.Count > 0)
-        {
-            var window = _window;
-            Close(animate: false);
-            try
-            {
-                if (!platform.ShareFilesViaAirDrop(files) && window is not null)
-                    _ = windows.MessageAsync(window, "AirDrop is unavailable for these files.");
-            }
-            catch (Exception ex) when (ex is InvalidOperationException or IOException)
-            {
-                log.LogWarning(ex, "Could not open AirDrop");
-                if (window is not null)
-                    _ = windows.MessageAsync(window, ex.Message);
-            }
-            return;
-        }
         if (viewModel.PresetAt(index, sub) is not { } preset || files.Count == 0)
         {
             Close();
@@ -275,6 +258,11 @@ public sealed class RadialController(
     /// </summary>
     private void ConvertAndSend(int index, int transfer, IReadOnlyList<string> files)
     {
+        if (viewModel.IsOriginal(index))
+        {
+            SendOriginals(transfer, files);
+            return;
+        }
         if (viewModel.TransferAt(transfer) is not { } target || viewModel.PresetAt(index, -1) is not { } preset || files.Count == 0)
         {
             Close();
@@ -293,6 +281,21 @@ public sealed class RadialController(
         else
             ShowProgress(job);
         _ = transfers.SendAfterAsync(job, target);
+    }
+
+    /// <summary>
+    /// "Original" slice: sends the files as they are to transfer slice <paramref name="transfer"/>, without converting.
+    /// The donut closes first, so a "send?" question or AirDrop sheet isn't hidden behind it.
+    /// </summary>
+    private void SendOriginals(int transfer, IReadOnlyList<string> files)
+    {
+        var target = viewModel.TransferAt(transfer);
+        var originals = files.ToList();
+        Close(animate: false);
+        if (target is null || originals.Count == 0)
+            return;
+        log.LogInformation("Sending {Count} original file(s) to {Kind}", originals.Count, target.Kind);
+        _ = transfers.SendAsync(target, originals);
     }
 
     // ───────── Progress ring ─────────

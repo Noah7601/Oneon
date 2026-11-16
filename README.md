@@ -35,13 +35,13 @@
 
 1. Hold a key while you drag files. A **format donut** opens at the cursor, showing only the formats that fit.
 2. Drop on a format and the converted file appears next to the original.
-3. **Pause** on a format slice and a green **neon ring** fans out around it. Drop there to convert and send in one go.
+3. **Pause** on any slice and a green **neon ring** fans out around it. Drop there to convert and send in one go.
+   The first slice, **Original**, sends the files as they are, without converting.
 
 | | macOS | Windows |
 |---|---|---|
 | Convert | <kbd>Shift</kbd> + drag | <kbd>Ctrl</kbd> + drag |
 | Tools (resize, merge, …) | <kbd>Command</kbd> + drag | <kbd>Alt</kbd> + drag |
-| AirDrop | <kbd>Command</kbd> + <kbd>Control</kbd> + drag | – |
 
 You can change the keys in Settings → Shortcuts. Nothing is uploaded.
 
@@ -95,7 +95,7 @@ Every file's SHA-256 hash is in `Oneon-<version>-SHA256SUMS.txt`.
 ## Features
 
 - **Format donut at the cursor**: only the formats that make sense for the files you drag.
-- **Neon transfer ring**: send the converted file to a folder, Google Drive, the clipboard or AirDrop.
+- **Neon transfer ring**: send the result, or the original as it is, to a folder, Google Drive, the clipboard or AirDrop.
 - **Many file types without other software**: images, PDF, Word, Excel, PowerPoint, HWP, e-books, archives,
   fonts, CAD and 3D models, with no Office, Hancom Office or LibreOffice needed.
 - **Optional engines** for more (FFmpeg for video and audio, LibreOffice, Pandoc, calibre, Ghostscript),
