@@ -104,7 +104,7 @@ public partial class App : Application
             if (justUpdated)
                 DispatcherTimer.RunOnce(async () =>
                 {
-                    if (!triggers.NeedsPermission)
+                    if (!OperatingSystem.IsMacOS() || !triggers.NeedsPermission)
                         return;
                     log.LogInformation("Updated from {Previous}; Accessibility needs to be given again", lastRun ?? "an older version");
                     var windows = AppHost.Get<WindowService>();
