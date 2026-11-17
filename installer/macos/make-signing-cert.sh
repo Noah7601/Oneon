@@ -38,10 +38,10 @@ EOF
 
 openssl req -x509 -newkey rsa:2048 -nodes -days 3650 -config "$out/cert.cnf" \
   -keyout "$out/key.pem" -out "$out/cert.pem" 2>/dev/null
-# -legacy: macOS's security tool cannot read the newer PKCS#12 encryption of OpenSSL 3.
-legacy=""
-if openssl version | grep -q "^OpenSSL 3"; then legacy="-legacy"; fi
-openssl pkcs12 -export $legacy -inkey "$out/key.pem" -in "$out/cert.pem" -name "$name" \
+# macOS's security tool only reads the older PKCS#12 encryption (3DES, SHA-1 MAC). Spelled out, so it is the same
+# with Apple's LibreSSL and with a Homebrew OpenSSL 3 (whose default it can't read: "MAC verification failed").
+openssl pkcs12 -export -inkey "$out/key.pem" -in "$out/cert.pem" -name "$name" \
+  -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -macalg sha1 \
   -out "$out/oneon-signing.p12" -passout "pass:$password"
 base64 < "$out/oneon-signing.p12" > "$out/oneon-signing.p12.base64"
 rm -f "$out/key.pem" "$out/cert.cnf"
