@@ -44,8 +44,15 @@ if [ -z "$expected" ] || [ "$expected" != "$actual" ]; then
 fi
 
 say "Installing Oneon ${version}… / 설치 중…"
-pkill -f "odrop.app/Contents/MacOS/Filee" 2>/dev/null || true
-pkill -f "Oneon.app/Contents/MacOS/Filee" 2>/dev/null || true
+# Oneon keeps running in the menu bar when asked to quit by a signal, so a running copy that is still there after a
+# moment is stopped for good: an old build left running beside the new one would keep writing its own data folder.
+for running in "odrop.app/Contents/MacOS/Filee" "Oneon.app/Contents/MacOS/Filee"; do
+  pkill -f "$running" 2>/dev/null || true
+done
+sleep 2
+for running in "odrop.app/Contents/MacOS/Filee" "Oneon.app/Contents/MacOS/Filee"; do
+  if pgrep -f "$running" >/dev/null 2>&1; then pkill -9 -f "$running" 2>/dev/null || true; fi
+done
 sleep 1
 for folder in /Applications "$HOME/Applications"; do
   for old in Oneon theOdrop TheoDrop; do
@@ -59,11 +66,17 @@ hdiutil attach -nobrowse -quiet -mountpoint "$work/mnt" "$work/$name"
 ditto "$work/mnt/Oneon.app" "$app"
 hdiutil detach -quiet "$work/mnt"
 
-# The new build has a new signature, so the old Accessibility entry no longer applies to it.
-tccutil reset Accessibility com.theo.drop >/dev/null 2>&1 || true
+# An ad-hoc signed build is a new identity to macOS, so the old Accessibility entry no longer applies and has to go.
+# A build signed with Oneon's own certificate stays the same app: its permission carries over and is left alone.
+adhoc=0
+if codesign -dv "$app" 2>&1 | grep -q "Signature=adhoc"; then
+  adhoc=1
+  tccutil reset Accessibility com.theo.drop >/dev/null 2>&1 || true
+fi
 open "$app"
 
 say "Done: Oneon $(defaults read "$app/Contents/Info.plist" CFBundleShortVersionString) / 완료"
+if [ "$adhoc" = 0 ]; then exit 0; fi
 echo "Allow Oneon again: System Settings > Privacy & Security > Accessibility (Device control & data access) > +"
 echo "Oneon을 다시 허용해 주세요: 시스템 설정 > 개인정보 보호 및 보안 > 손쉬운 사용(기기 제어 및 데이터 접근) > +"
 open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility" 2>/dev/null || true

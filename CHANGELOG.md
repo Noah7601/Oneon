@@ -20,16 +20,22 @@ level: optional
 ko: 아무 조각에서나 잠깐 멈추면 네온 링이 열려요. 도구 휠(ZIP 하나로, 크기 조절 등)도 결과를 바로 보낼 수 있어요
 ko: 변환 휠 맨 앞의 '원본' 조각: 멈췄다가 네온 링에 놓으면 변환 없이 원본 그대로 보내요
 ko: AirDrop 전용 휠(Command+Control 드래그)은 없어졌어요. AirDrop은 네온 링에서 골라요
+ko: 업데이트 후 드래그가 안 되면, Oneon이 손쉬운 사용을 다시 켜는 순서를 바로 안내해요
 en: Pause on any slice to open the neon ring. The tools wheel (One ZIP, resize, …) can send its result too
 en: The new "Original" slice at the front of the conversion wheel sends files as they are
 en: The AirDrop wheel (Command + Control + drag) is gone; pick AirDrop on the neon ring
+en: If dragging stops working after an update, Oneon now walks you through turning Accessibility back on
 zh: 在任意扇区上停留即可打开霓虹环，工具轮盘（打包为一个 ZIP、调整大小等）的结果也能直接发送
 zh: 转换轮盘最前面新增“原文件”扇区：停留后放到霓虹环上，不转换直接发送原文件
 zh: AirDrop 专用轮盘（Command + Control + 拖动）已移除，请在霓虹环中选择隔空投送
+zh: 更新后若拖动失效，Oneon 会直接引导你重新开启辅助功能权限
 -->
 
 - **네온 링을 어디서나:** 변환 휠뿐 아니라 도구 휠의 조각에서 잠깐 멈춰도 바깥 네온 링이 열립니다. 예를 들어 "ZIP 하나로"로 묶은 결과를 바로 구글 드라이브나 클립보드로 보낼 수 있습니다.
 - **원본 그대로 보내기:** 보낼 곳이 하나 이상 켜져 있으면 변환 휠 맨 앞에 **원본** 조각이 생깁니다. 그 위에서 멈췄다가 네온 링에 놓으면 변환하지 않고 원본 파일을 그대로 보냅니다. 원본 조각 자체에 놓으면 아무 일도 하지 않고 닫힙니다.
+- **업데이트 후 드래그 권한 안내:** macOS에서 업데이트 직후 손쉬운 사용 권한이 끊겨 있으면, Oneon이 창을 열고 다시 허용하는 순서(옛 항목 삭제 → 다시 추가 → 켜기)를 안내합니다. 안내를 확인하면 손쉬운 사용 설정이 바로 열립니다.
+- **권한 유지 준비:** Oneon 전용 인증서로 서명된 빌드부터는 업데이트해도 손쉬운 사용 권한이 유지됩니다. 업데이트 스크립트는 서명 없는(ad-hoc) 빌드일 때만 권한 기록을 초기화합니다.
+- **업데이트 스크립트:** 실행 중인 옛 theOdrop·Oneon이 종료 요청을 무시하고 남아 있으면 강제로 종료합니다. 옛 앱이 새 앱 옆에서 계속 돌던 문제를 고쳤습니다.
 - **AirDrop 전용 휠 정리:** 1.13.0의 Command + Control + 드래그(AirDrop 휠)는 없앴습니다. 업데이트하면 이 단축키도 설정에서 자동으로 빠지고, 다른 단축키는 그대로 남습니다. AirDrop은 네온 링에서 고릅니다.
 
 ## 1.13.0

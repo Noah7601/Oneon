@@ -74,10 +74,36 @@ jobs:
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           }
 
+      # Oneon's own (self-signed) code signing certificate, when the repository has it as a secret: every build then
+      # has the same signing identity, so macOS keeps the Accessibility permission across updates. Without the
+      # secret (forks, pull requests from forks) the build stays ad-hoc signed as before.
+      - name: Import signing certificate
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          P12: ${{ secrets.MACOS_SIGNING_P12 }}
+          P12_PASSWORD: ${{ secrets.MACOS_SIGNING_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "${P12:-}" ]; then echo "No signing certificate: ad-hoc signing"; exit 0; fi
+          keychain="$RUNNER_TEMP/oneon-signing.keychain-db"
+          keychain_password="$(uuidgen)"
+          echo "$P12" | base64 --decode > "$RUNNER_TEMP/oneon-signing.p12"
+          security create-keychain -p "$keychain_password" "$keychain"
+          security set-keychain-settings -lut 3600 "$keychain"
+          security unlock-keychain -p "$keychain_password" "$keychain"
+          security import "$RUNNER_TEMP/oneon-signing.p12" -k "$keychain" -P "$P12_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$keychain_password" "$keychain" >/dev/null
+          security list-keychains -d user -s "$keychain" $(security list-keychains -d user | tr -d '"')
+          rm -f "$RUNNER_TEMP/oneon-signing.p12"
+          echo "SIGNING_IDENTITY=Oneon Self-Signed" >> "$GITHUB_ENV"
+
       - name: Build portable package
         env:
           PACKAGE_VERSION: ${{ inputs.version }}
-        run: ./build/build-portable.ps1 -Runtime '${{ matrix.rid }}' -Version $env:PACKAGE_VERSION -SkipFonts
+        run: |
+          $identity = if ($env:SIGNING_IDENTITY) { $env:SIGNING_IDENTITY } else { '-' }
+          ./build/build-portable.ps1 -Runtime '${{ matrix.rid }}' -Version $env:PACKAGE_VERSION -SkipFonts -SigningIdentity $identity
 
       - name: Check archive and run native converters
         run: |

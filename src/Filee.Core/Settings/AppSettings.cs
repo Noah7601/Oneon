@@ -67,6 +67,9 @@ public sealed class AppSettings
     /// <summary>Record finished conversions in the history (home page). Off: nothing new is recorded.</summary>
     public bool KeepHistory { get; set; } = true;
 
+    /// <summary>Version of the last start. A different one means Oneon was just updated (macOS then re-checks Accessibility).</summary>
+    public string? LastRunVersion { get; set; }
+
     /// <summary>Newest version the user was already told about, so the update notice shows once per release.</summary>
     public string? NotifiedUpdateVersion { get; set; }
 

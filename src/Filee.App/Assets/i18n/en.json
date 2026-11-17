@@ -25,6 +25,7 @@
   "home.drop_hint_macos": "Or hold {0} while dragging files in Finder. The donut toolbar opens at your cursor.",
   "home.drop_hint_linux": "Or hold {0} while dragging files in your file manager. The donut toolbar opens at your cursor.",
   "home.accessibility_needed": "To open the donut by dragging with {0}, allow Oneon under Accessibility.\nIt works as soon as you switch it on.",
+  "accessibility.after_update": "Oneon was updated, so macOS checks the drag permission again.\n\n1. Open System Settings → Privacy & Security → Accessibility.\n2. If Oneon (or Filee, theOdrop) is listed, select it and remove it with [−], even if it is switched on.\n3. Add Oneon from Applications with [+] and switch it on.\n\nIt works as soon as it is on. Open the Accessibility settings now?",
   "home.recent": "Recent conversions",
   "home.recent_empty": "Your converted files will show up here.",
   "home.open_folder": "Open folder",

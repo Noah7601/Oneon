@@ -90,7 +90,10 @@ if ($Runtime.StartsWith('osx-')) {
     }
     $entitlements = Join-Path $root 'installer/macos/entitlements.plist'
     $signOptions = @('--force', '--sign', $SigningIdentity)
-    if ($SigningIdentity -ne '-') { $signOptions += @('--timestamp', '--options', 'runtime') }
+    # Developer ID builds get a secure timestamp and the hardened runtime (needed for notarization). Oneon's own
+    # self-signed certificate gets neither (Apple's timestamp server only stamps Apple-issued certificates); it is
+    # there so macOS keeps the Accessibility permission from one build to the next.
+    if ($SigningIdentity -like 'Developer ID*') { $signOptions += @('--timestamp', '--options', 'runtime') }
     # Every file in Contents/MacOS is code to codesign, the .NET assemblies too (their signature goes into extended
     # attributes): signing the main executable checks all of them. Deepest paths first, the main executable last.
     $mainExecutable = Join-Path $publish 'Filee'

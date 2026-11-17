@@ -52,9 +52,13 @@ public sealed class UserDataStore
     private string HistoryPath => Path.Combine(Directory, "history.json");
 
     /// <summary>Loads everything from disk, falling back to defaults for missing or corrupt files.</summary>
+    /// <summary>True when there were no settings yet at <see cref="Load"/>: a fresh install, not an update.</summary>
+    public bool IsFirstRun { get; private set; }
+
     public void Load()
     {
         System.IO.Directory.CreateDirectory(Directory);
+        IsFirstRun = !File.Exists(SettingsPath);
         Settings = Read(SettingsPath, FileeJsonContext.Default.AppSettings) ?? new AppSettings();
         Presets = Read(PresetsPath, FileeJsonContext.Default.ListPreset) ?? BuiltInData.CreatePresets();
         Profiles = Read(ProfilesPath, FileeJsonContext.Default.ListToolbarProfile) ?? BuiltInData.CreateProfiles();
