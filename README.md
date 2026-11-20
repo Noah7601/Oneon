@@ -30,7 +30,7 @@
 ## How it works
 
 <p align="center">
-  <img src="docs/media/oneon-demo-en.gif" alt="Holding Shift while dragging trip.jpg opens the format donut at the cursor. Pausing on the PNG slice fans out a green neon ring. Dropping on Clipboard fills the progress ring and copies trip.png to the clipboard." width="800">
+  <img src="docs/media/oneon-layers-en.gif" alt="Convert it, then send it: two chores. Oneon stacks them like an onion: the inner ring converts, the outer ring sends. Shift-dragging trip.jpg, pausing on PNG and dropping on Google Drive converts it and uploads trip.png in one drag." width="800">
 </p>
 
 1. Hold a key while you drag files. A **format donut** opens at the cursor, showing only the formats that fit.
