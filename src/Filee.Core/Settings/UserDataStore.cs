@@ -52,9 +52,13 @@ public sealed class UserDataStore
     private string HistoryPath => Path.Combine(Directory, "history.json");
 
     /// <summary>Loads everything from disk, falling back to defaults for missing or corrupt files.</summary>
+    /// <summary>True when there were no settings yet at <see cref="Load"/>: a fresh install, not an update.</summary>
+    public bool IsFirstRun { get; private set; }
+
     public void Load()
     {
         System.IO.Directory.CreateDirectory(Directory);
+        IsFirstRun = !File.Exists(SettingsPath);
         Settings = Read(SettingsPath, FileeJsonContext.Default.AppSettings) ?? new AppSettings();
         Presets = Read(PresetsPath, FileeJsonContext.Default.ListPreset) ?? BuiltInData.CreatePresets();
         Profiles = Read(ProfilesPath, FileeJsonContext.Default.ListToolbarProfile) ?? BuiltInData.CreateProfiles();
@@ -309,19 +313,10 @@ internal static class SettingsMigrations
             });
         }
 
-        // v19: AirDrop lives on its own actions wheel. It only exists on macOS; other platforms keep their current
-        // gestures until they have a native action to offer.
-        if (settings.SchemaVersion < 19 && OperatingSystem.IsMacOS() && settings.Triggers.Count > 0 &&
-            !settings.Triggers.Any(t => t.Wheel == WheelMode.Actions))
-        {
-            settings.Triggers.Add(new TriggerGesture
-            {
-                Kind = TriggerKind.Drag,
-                Modifiers = ModifierKeys.Ctrl | ModifierKeys.Meta,
-                Button = TriggerMouseButton.Left,
-                Wheel = WheelMode.Actions,
-            });
-        }
+        // v20: the AirDrop wheel (v19) is retired. AirDrop is a place on the transfer ring, which every first-ring
+        // slice opens, and the conversion wheel's "Original" slice sends files there unconverted.
+        if (settings.SchemaVersion < 20)
+            settings.Triggers.RemoveAll(t => t.Wheel == WheelMode.Actions);
 
         settings.SchemaVersion = AppSettings.CurrentSchemaVersion;
     }

@@ -34,7 +34,7 @@ public sealed partial class TriggerGestureViewModel : ObservableObject
         Scopes = Enum.GetValues<TriggerScope>()
             .Select(s => new Choice<TriggerScope>(s, loc[s == TriggerScope.FileManager ? $"triggers.scope.{s}{platform}" : $"triggers.scope.{s}"]))
             .ToList();
-        Wheels = Enum.GetValues<WheelMode>().Select(w => new Choice<WheelMode>(w, loc[$"triggers.wheel.{w}"])).ToList();
+        Wheels = Enum.GetValues<WheelMode>().Where(w => w != WheelMode.Actions).Select(w => new Choice<WheelMode>(w, loc[$"triggers.wheel.{w}"])).ToList();
         RecordLabel = loc["triggers.record"];
         RecordingLabel = loc["triggers.recording"];
         SystemLabel = loc["triggers.threshold_system"];

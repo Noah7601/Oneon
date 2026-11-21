@@ -13,6 +13,57 @@ one-line summaries in the user's language (`ko`, `en`, `zh`; a line per change, 
 - `recommended`: bug fixes. The card shows once per version.
 - `optional`: new features only. No card, the sidebar button only.
 
+## 1.13.1
+
+<!-- update
+level: optional
+ko: 아무 조각에서나 잠깐 멈추면 네온 링이 열려요. 도구 휠(ZIP 하나로, 크기 조절 등)도 결과를 바로 보낼 수 있어요
+ko: 변환 휠 맨 앞의 '원본' 조각: 멈췄다가 네온 링에 놓으면 변환 없이 원본 그대로 보내요
+ko: AirDrop 전용 휠(Command+Control 드래그)은 없어졌어요. AirDrop은 네온 링에서 골라요
+ko: 업데이트 후 드래그가 안 되면, Oneon이 손쉬운 사용을 다시 켜는 순서를 바로 안내해요
+en: Pause on any slice to open the neon ring. The tools wheel (One ZIP, resize, …) can send its result too
+en: The new "Original" slice at the front of the conversion wheel sends files as they are
+en: The AirDrop wheel (Command + Control + drag) is gone; pick AirDrop on the neon ring
+en: If dragging stops working after an update, Oneon now walks you through turning Accessibility back on
+zh: 在任意扇区上停留即可打开霓虹环，工具轮盘（打包为一个 ZIP、调整大小等）的结果也能直接发送
+zh: 转换轮盘最前面新增“原文件”扇区：停留后放到霓虹环上，不转换直接发送原文件
+zh: AirDrop 专用轮盘（Command + Control + 拖动）已移除，请在霓虹环中选择隔空投送
+zh: 更新后若拖动失效，Oneon 会直接引导你重新开启辅助功能权限
+-->
+
+- **네온 링을 어디서나:** 변환 휠뿐 아니라 도구 휠의 조각에서 잠깐 멈춰도 바깥 네온 링이 열립니다. 예를 들어 "ZIP 하나로"로 묶은 결과를 바로 구글 드라이브나 클립보드로 보낼 수 있습니다.
+- **원본 그대로 보내기:** 보낼 곳이 하나 이상 켜져 있으면 변환 휠 맨 앞에 **원본** 조각이 생깁니다. 그 위에서 멈췄다가 네온 링에 놓으면 변환하지 않고 원본 파일을 그대로 보냅니다. 원본 조각 자체에 놓으면 아무 일도 하지 않고 닫힙니다.
+- **업데이트 후 드래그 권한 안내:** macOS에서 업데이트 직후 손쉬운 사용 권한이 끊겨 있으면, Oneon이 창을 열고 다시 허용하는 순서(옛 항목 삭제 → 다시 추가 → 켜기)를 안내합니다. 안내를 확인하면 손쉬운 사용 설정이 바로 열립니다.
+- **권한 유지 준비:** Oneon 전용 인증서로 서명된 빌드부터는 업데이트해도 손쉬운 사용 권한이 유지됩니다. 업데이트 스크립트는 서명 없는(ad-hoc) 빌드일 때만 권한 기록을 초기화합니다.
+- **업데이트 스크립트:** 실행 중인 옛 theOdrop·Oneon이 종료 요청을 무시하고 남아 있으면 강제로 종료합니다. 옛 앱이 새 앱 옆에서 계속 돌던 문제를 고쳤습니다.
+- **AirDrop 전용 휠 정리:** 1.13.0의 Command + Control + 드래그(AirDrop 휠)는 없앴습니다. 업데이트하면 이 단축키도 설정에서 자동으로 빠지고, 다른 단축키는 그대로 남습니다. AirDrop은 네온 링에서 고릅니다.
+
+### 업데이트 방법
+
+- **Mac (Oneon 1.13.0, theOdrop 1.11.7 이상):** 앱의 **업데이트** 버튼을 누르세요. 또는 터미널에 아래 한 줄을 붙여넣으세요. 내 Mac에 맞는 파일을 받아 SHA-256을 확인하고, 실행 중인 옛 앱을 끈 뒤 휴지통으로 옮기고 새로 설치해 실행합니다.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Noah7601/Oneon/main/installer/macos/update.sh | bash
+```
+
+- **Mac (theOdrop 1.11.6 이하):** 앱 안의 업데이트 대신 위 터미널 한 줄을 쓰세요. 옛 theOdrop·TheoDrop 앱도 함께 정리합니다. **TheoDrop 1.11.0 범용(universal) 버전**은 앱에 업데이트 알림이 뜨지 않으니 꼭 이 방법으로 업데이트하세요.
+- **Windows:** 아래 Assets에서 `Oneon-1.13.1-win-Setup.exe`를 받아 그대로 설치하세요. 설정은 유지됩니다.
+- **손쉬운 사용 한 번 다시 허용 (Mac):** 1.13.1부터 Oneon 전용 인증서로 서명해서, macOS가 예전 버전과 다른 앱으로 봅니다. 업데이트 후 첫 실행에서 Oneon이 안내하는 순서대로 손쉬운 사용을 다시 켜 주세요. 다음 업데이트부터는 권한이 유지됩니다.
+- 설정·기록은 그대로 남습니다. theOdrop에서 오면 데이터 폴더가 처음 실행할 때 `Oneon`으로 자동으로 옮겨집니다.
+
+### How to update
+
+- **Mac (Oneon 1.13.0, theOdrop 1.11.7 or later):** click **Update** in the app, or paste this into Terminal. It downloads the right file for your Mac, checks its SHA-256, quits the old app, moves it to the Trash, then installs and opens the new one.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Noah7601/Oneon/main/installer/macos/update.sh | bash
+```
+
+- **Mac (theOdrop 1.11.6 or earlier):** use the Terminal line above instead of the in-app update. It cleans up old theOdrop and TheoDrop apps too. **TheoDrop 1.11.0 (universal build)** never shows an update notice, so update this way.
+- **Windows:** download `Oneon-1.13.1-win-Setup.exe` from the Assets below and run it. Your settings stay.
+- **Turn Accessibility on once more (Mac):** from 1.13.1, Oneon is signed with its own certificate, so macOS sees it as a different app from earlier versions. After updating, follow the steps Oneon shows on first launch. Later updates keep the permission.
+- Settings and history stay. Coming from theOdrop, the data folder moves to `Oneon` on first launch.
+
 ## 1.13.0
 
 <!-- update

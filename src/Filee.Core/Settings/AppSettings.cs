@@ -50,7 +50,7 @@ public sealed class DonutSettings
 public sealed class AppSettings
 {
     /// <summary>Current schema version. Increase when the format changes and add a migration.</summary>
-    public const int CurrentSchemaVersion = 19;
+    public const int CurrentSchemaVersion = 20;
 
     public int SchemaVersion { get; set; } = CurrentSchemaVersion;
 
@@ -66,6 +66,9 @@ public sealed class AppSettings
 
     /// <summary>Record finished conversions in the history (home page). Off: nothing new is recorded.</summary>
     public bool KeepHistory { get; set; } = true;
+
+    /// <summary>Version of the last start. A different one means Oneon was just updated (macOS then re-checks Accessibility).</summary>
+    public string? LastRunVersion { get; set; }
 
     /// <summary>Newest version the user was already told about, so the update notice shows once per release.</summary>
     public string? NotifiedUpdateVersion { get; set; }

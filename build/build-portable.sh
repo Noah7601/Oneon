@@ -94,7 +94,9 @@ done
 
 entitlements="$root/installer/macos/entitlements.plist"
 sign_options=(--force --sign "$identity")
-if [ "$identity" != "-" ]; then sign_options+=(--timestamp --options runtime); fi
+# Developer ID builds get a secure timestamp and the hardened runtime (needed for notarization). Oneon's own
+# self-signed certificate gets neither; it is there so macOS keeps the Accessibility permission between builds.
+case "$identity" in "Developer ID"*) sign_options+=(--timestamp --options runtime) ;; esac
 main_executable="$publish/Filee"
 # Deepest paths first so nested code is sealed before its container; the main executable signs last.
 order="$(python3 "$root/build/tools/sign-order.py" "$publish" Filee | tr '\0' '\n')"

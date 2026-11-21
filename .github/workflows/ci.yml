@@ -20,6 +20,7 @@ concurrency:
 jobs:
   portable:
     uses: ./.github/workflows/portable.yml
+    secrets: inherit
 
   build:
     runs-on: windows-latest

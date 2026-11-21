@@ -25,6 +25,7 @@
   "home.drop_hint_macos": "或在访达中按住 {0} 拖动文件，环形工具栏会在光标处打开。",
   "home.drop_hint_linux": "或在文件管理器中按住 {0} 拖动文件，环形工具栏会在光标处打开。",
   "home.accessibility_needed": "要按住 {0} 拖动打开环形工具栏，请在“辅助功能”中允许 Oneon。\n打开后立即生效。",
+  "accessibility.after_update": "Oneon 已更新，macOS 需要重新确认拖动权限。\n\n1. 打开“系统设置”→“隐私与安全性”→“辅助功能”。\n2. 如果列表中有 Oneon（或 Filee、theOdrop），请选中并用 [−] 移除，即使它已打开。\n3. 用 [+] 从“应用程序”中添加 Oneon 并打开。\n\n打开后立即生效。现在打开辅助功能设置吗？",
   "home.recent": "最近的转换",
   "home.recent_empty": "转换后的文件会显示在这里。",
   "home.open_folder": "打开文件夹",
@@ -255,8 +256,6 @@
   "triggers.wheel.Convert": "转换轮盘",
   "triggers.wheel.Tools": "工具轮盘",
   "triggers.wheel.Actions": "操作轮盘",
-  "actions.airdrop": "隔空投送",
-  "actions.share": "共享",
   "triggers.scope.FileManager": "资源管理器和桌面",
   "triggers.scope.FileManager_macos": "访达和桌面",
   "triggers.scope.FileManager_linux": "文件管理器和桌面",
@@ -699,6 +698,9 @@
   "transfer.unsupported": "此设备不支持这种传送。",
   "transfer.nothing": "没有可发送的文件。",
   "donut.send_to": "松开 → {0}，发送到 {1}",
+  "donut.original": "原文件",
+  "donut.original_caption": "不转换",
+  "donut.original_hint": "停留以选择发送位置",
   "theme.pick_from_screen": "取色器",
   "theme.pick_from_screen_tip": "从屏幕任意位置取色（“颜色”面板中的放大镜）"
 }

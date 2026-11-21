@@ -81,17 +81,44 @@ public partial class App : Application
         };
         triggers.Start();
         log.LogInformation("Filee {Version} started", UpdateService.CurrentVersion);
+
+        // An update replaces the app, and macOS ties Accessibility to the exact build: the old switch can look "on"
+        // and still not apply. Noticed by the version of the last start (never on a fresh install).
+        var lastRun = store.Settings.LastRunVersion;
+        var justUpdated = !store.IsFirstRun && lastRun != UpdateService.CurrentVersion;
+        if (lastRun != UpdateService.CurrentVersion)
+        {
+            store.Settings.LastRunVersion = UpdateService.CurrentVersion;
+            if (!store.IsFirstRun)
+                store.SaveSettings();
+        }
+
         // macOS: ask for Accessibility with the system's own alert when the user opened Filee (not at sign-in) and
         // a drag gesture is on. The home page keeps a reminder until it is given. Asked once the main window is up:
-        // asked earlier, the alert ends up behind it.
-        if (OperatingSystem.IsMacOS() && triggers.NeedsPermission && !Program.Options.Background
+        // asked earlier, the alert ends up behind it. Right after an update the steps are spelled out instead (also
+        // when the update relaunched Oneon in the background), since the stale entry has to go first.
+        if (OperatingSystem.IsMacOS() && triggers.NeedsPermission
             && platform is Filee.Platform.MacOS.MacOSPlatformServices mac
             && store.Settings.Triggers.Any(t => t.Enabled && t.Kind == TriggerKind.Drag))
-            DispatcherTimer.RunOnce(() =>
-            {
-                if (OperatingSystem.IsMacOS() && triggers.NeedsPermission)
-                    mac.RequestAccessibilityPermission();
-            }, TimeSpan.FromSeconds(1.5));
+        {
+            if (justUpdated)
+                DispatcherTimer.RunOnce(async () =>
+                {
+                    if (!OperatingSystem.IsMacOS() || !triggers.NeedsPermission)
+                        return;
+                    log.LogInformation("Updated from {Previous}; Accessibility needs to be given again", lastRun ?? "an older version");
+                    var windows = AppHost.Get<WindowService>();
+                    windows.ShowMain("home");
+                    if (await windows.AskAsync(windows.Main, loc["accessibility.after_update"]))
+                        mac.OpenAccessibilitySettings();
+                }, TimeSpan.FromSeconds(1.5));
+            else if (!Program.Options.Background)
+                DispatcherTimer.RunOnce(() =>
+                {
+                    if (OperatingSystem.IsMacOS() && triggers.NeedsPermission)
+                        mac.RequestAccessibilityPermission();
+                }, TimeSpan.FromSeconds(1.5));
+        }
 
         store.SettingsChanged += (_, _) => ApplySettings(store.Settings);
 

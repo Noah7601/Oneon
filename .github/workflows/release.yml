@@ -24,6 +24,7 @@ permissions:
 jobs:
   portable:
     uses: ./.github/workflows/portable.yml
+    secrets: inherit
     with:
       # A dry run (branch push) uses the version in Directory.Build.props.
       version: ${{ github.ref_type == 'tag' && github.ref_name || '' }}

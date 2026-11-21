@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<!-- README hook GIF: "layers like an onion" (inner ring converts, outer ring sends, one drag).
+     Render one frame: oneon-layers.html?t=<seconds>. Total length: T below. Colors match the app (#FF2BD6 / #39FF14). -->
+<style>
+html,body{margin:0;background:#131315;font-family:"Noto Sans","Helvetica Neue",sans-serif}
+svg{display:block}
+</style></head>
+<body>
+<svg id="s" xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"></svg>
+<script>
+const T=10.4;
+const PINK="#FF2BD6", NEON="#39FF14", INK="#F2F2F7", MUTED="#8E8E93";
+const slices=["Original","PNG","WEBP","PDF","JPG\n70%","ICO","TIFF","AVIF"];
+const targets=["Folder","Google Drive","Clipboard"];
+const HOT=1, TARGET=1;                       // PNG slice, Google Drive target
+const C={x:610,y:285}, R1=54, R2=124, R3=136, R4=200;
+const N=slices.length, SPAN=2*Math.PI/N, START=-Math.PI/2-SPAN/2;   // "Original" at 12 o'clock
+const TS=30*Math.PI/180, TN=targets.length;
+
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const seg=(t,a,b)=>clamp((t-a)/(b-a));
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const back=x=>{const c1=1.55,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const lerp=(a,b,k)=>a+(b-a)*k;
+const fade=(t,a,b,d=0.25)=>seg(t,a,a+d)*(1-seg(t,b-d,b));   // visible between a and b
+const pt=(c,r,a)=>[c.x+r*Math.cos(a),c.y+r*Math.sin(a)];
+
+function wedge(c,r1,r2,a0,a1,gap=3){
+  const o0=a0+gap/2/r2,o1=a1-gap/2/r2,i0=a0+gap/2/r1,i1=a1-gap/2/r1;
+  const [x1,y1]=pt(c,r2,o0),[x2,y2]=pt(c,r2,o1),[x3,y3]=pt(c,r1,i1),[x4,y4]=pt(c,r1,i0);
+  const lg=(o1-o0)>Math.PI?1:0;
+  return `M${x1},${y1}A${r2},${r2} 0 ${lg} 1 ${x2},${y2}L${x3},${y3}A${r1},${r1} 0 ${lg} 0 ${x4},${y4}Z`;
+}
+function arc(c,r,a0,a1){const [x0,y0]=pt(c,r,a0),[x1,y1]=pt(c,r,a1);
+  return `M${x0},${y0}A${r},${r} 0 ${(a1-a0)>Math.PI?1:0} 1 ${x1},${y1}`;}
+const sliceMid=i=>START+SPAN*i+SPAN/2;
+const tMid=j=>sliceMid(HOT)+(j-(TN-1)/2)*TS;
+const text=(x,y,s,size,fill,o={})=>`<text x="${x}" y="${y}" font-size="${size}" font-weight="${o.w||700}" fill="${fill}" text-anchor="${o.a||"middle"}" opacity="${o.op??1}" ${o.ls?`letter-spacing="${o.ls}"`:""}>${s}</text>`;
+
+function cursor(x,y){
+  return `<g transform="translate(${x},${y})"><path d="M0,0 L0,22 L6,17 L10,27 L14,25 L10,15 L18,15 Z" fill="#fff" stroke="#000" stroke-width="1.4" stroke-linejoin="round"/></g>`;
+}
+function fileIcon(x,y,label,alpha=1,scale=1,tag="JPG",tagFill="#E8833A"){
+  return `<g transform="translate(${x},${y}) scale(${scale})" opacity="${alpha}">
+    <rect x="-22" y="-28" width="44" height="54" rx="6" fill="#E9F3FF"/>
+    <path d="M10,-28 L22,-16 L10,-16 Z" fill="#B9D3F2"/>
+    <rect x="-16" y="-10" width="32" height="24" rx="3" fill="#4A9E6B"/>
+    <circle cx="-6" cy="-3" r="4" fill="#FFD25A"/>
+    <path d="M-16,14 L-4,2 L4,9 L10,4 L16,10 L16,14 Z" fill="#2F7A4E"/>
+    <rect x="-24" y="12" width="22" height="11" rx="2" fill="${tagFill}"/>
+    <text x="-13" y="20.5" font-size="7.5" font-weight="700" fill="#fff" text-anchor="middle">${tag}</text>
+    ${label?`<text x="0" y="44" font-size="12" fill="#E5E5EA" text-anchor="middle">${label}</text>`:""}
+  </g>`;
+}
+
+// ---- scene 1: the hook (two chores) ----
+function hook(t){
+  const out=1-seg(t,1.75,2.05);
+  if(out<=0) return "";
+  const l1=ease(seg(t,0.1,0.45)), l2=ease(seg(t,0.55,0.9)), l3=seg(t,1.0,1.3);
+  return `<g opacity="${out}">
+    <g opacity="${l1}" transform="translate(0,${(1-l1)*14})">${text(480,222,`<tspan fill="${PINK}">Convert</tspan> it.`,62,INK)}</g>
+    <g opacity="${l2}" transform="translate(0,${(1-l2)*14})">${text(480,300,`Then <tspan fill="${NEON}">send</tspan> it.`,62,INK)}</g>
+    ${text(480,368,"Two apps. Two steps. Every single time.",22,MUTED,{w:400,op:l3})}
+  </g>`;
+}
+
+// ---- scene 2: the onion ----
+function onion(t){
+  const vis=fade(t,1.95,4.25,0.3);
+  if(vis<=0) return "";
+  const O={x:300,y:300};
+  const core=back(seg(t,2.0,2.35)), r1=back(seg(t,2.3,2.7)), r2=back(seg(t,2.75,3.15));
+  const lb1=seg(t,2.55,2.85), lb2=seg(t,3.0,3.3), title=seg(t,2.0,2.3);
+  let g=`<g opacity="${vis}">`;
+  g+=text(480,78,"So Oneon stacks them, like an onion.",30,INK,{op:title});
+  // outer layer: send
+  if(r2>0){g+=`<g opacity="${clamp(r2)}">`;
+    for(let j=0;j<3;j++){const a0=-Math.PI/2+j*2*Math.PI/3+0.12, a1=a0+2*Math.PI/3-0.24;
+      g+=`<path d="${wedge(O,118,118+48*clamp(r2,0,1.2),a0,a1,4)}" fill="rgba(57,255,20,.12)" stroke="${NEON}" stroke-width="2"/>`;}
+    g+=`</g>`;}
+  // inner layer: convert
+  if(r1>0){g+=`<g opacity="${clamp(r1)}">`;
+    for(let i=0;i<8;i++){const a0=START+SPAN*i, a1=a0+SPAN;
+      g+=`<path d="${wedge(O,58,58+52*clamp(r1,0,1.2),a0,a1,4)}" fill="${i===HOT?PINK:"rgba(255,43,214,.22)"}" stroke="${PINK}" stroke-width="1.5"/>`;}
+    g+=`</g>`;}
+  // core: your file
+  if(core>0) g+=`<g opacity="${clamp(core)}"><circle cx="${O.x}" cy="${O.y}" r="${50*clamp(core,0,1.1)}" fill="#1C1C1E" stroke="#3A3A3D"/>${fileIcon(O.x,O.y-2,"",1,0.75*clamp(core,0,1.1))}</g>`;
+  // labels
+  const lx=520;
+  g+=`<g opacity="${lb1}" transform="translate(${(1-lb1)*16},0)">
+    <path d="M${O.x+86},${O.y-30} L${lx-14},${O.y-58}" stroke="${PINK}" stroke-width="1.5" opacity=".7"/>
+    ${text(lx,O.y-72,"INNER RING",15,PINK,{a:"start",ls:2})}
+    ${text(lx,O.y-40,"Convert",34,INK,{a:"start"})}
+    ${text(lx,O.y-14,"PNG · WebP · PDF · JPG · ICO · AVIF …",17,MUTED,{a:"start",w:400})}</g>`;
+  g+=`<g opacity="${lb2}" transform="translate(${(1-lb2)*16},0)">
+    <path d="M${O.x+150},${O.y+58} L${lx-14},${O.y+70}" stroke="${NEON}" stroke-width="1.5" opacity=".7"/>
+    ${text(lx,O.y+56,"OUTER RING",15,NEON,{a:"start",ls:2})}
+    ${text(lx,O.y+88,"Send",34,INK,{a:"start"})}
+    ${text(lx,O.y+114,"Folder · Google Drive · Clipboard",17,MUTED,{a:"start",w:400})}</g>`;
+  return g+`</g>`;
+}
+
+// ---- scene 3: the real gesture ----
+function demo(t){
+  const vis=fade(t,4.15,8.55,0.3);
+  if(vis<=0) return "";
+  let g=`<g opacity="${vis}">`;
+  // finder window
+  g+=`<g filter="url(#sh)"><rect x="40" y="80" width="250" height="280" rx="12" fill="#1E1E20" stroke="#3A3A3C"/></g>
+    <rect x="40" y="80" width="250" height="36" rx="12" fill="#2A2A2D"/><rect x="40" y="104" width="250" height="12" fill="#2A2A2D"/>
+    <circle cx="60" cy="98" r="5.5" fill="#FF5F57"/><circle cx="78" cy="98" r="5.5" fill="#FEBC2E"/><circle cx="96" cy="98" r="5.5" fill="#28C840"/>
+    ${text(165,103,"Photos",13,"#C7C7CC",{w:600})}`;
+  const fileX=110,fileY=180;
+  const p1=[fileX+6,fileY+2], p2=[C.x-12,C.y+18];
+  const hotP=pt(C,(R1+R2)/2+6,sliceMid(HOT)), tgtP=pt(C,(R3+R4)/2,tMid(TARGET));
+  let cx,cy;
+  if(t<4.9){const k=ease(seg(t,4.45,4.9));cx=lerp(p1[0],p2[0],k);cy=lerp(p1[1],p2[1],k);}
+  else if(t<5.6){const k=ease(seg(t,5.2,5.55));cx=lerp(p2[0],hotP[0],k);cy=lerp(p2[1],hotP[1],k);}
+  else if(t<6.8){const k=ease(seg(t,6.35,6.75));cx=lerp(hotP[0],tgtP[0],k);cy=lerp(hotP[1],tgtP[1],k);}
+  else {cx=tgtP[0];cy=tgtP[1];}
+  const dragging=t>=4.4&&t<6.85;
+  g+=fileIcon(fileX,fileY,"trip.jpg",dragging?0.45:1);
+
+  // shift badge
+  const shiftA=fade(t,4.35,7.0,0.2);
+  if(shiftA>0) g+=`<g opacity="${shiftA}"><rect x="40" y="384" width="104" height="40" rx="9" fill="#2C2C2E" stroke="#48484A"/>${text(92,410,"⇧ Shift",17,"#fff")}</g>`;
+
+  // donut (layer 1)
+  const open=seg(t,4.8,5.2), close=seg(t,7.55,7.9);
+  if(t>=4.8&&t<7.9){
+    const k=back(open)*(1-ease(close)), alpha=clamp(open*1.6)*(1-close);
+    g+=`<g opacity="${alpha}" transform="translate(${C.x},${C.y}) scale(${0.55+0.45*k}) rotate(${(1-open)*-26}) translate(${-C.x},${-C.y})">`;
+    g+=`<circle cx="${C.x}" cy="${C.y+5}" r="${R2+12}" fill="#000" opacity=".28" filter="url(#glow)"/>`;
+    const hot=t>=5.45&&t<6.95;
+    for(let i=0;i<N;i++){
+      const a0=START+SPAN*i,a1=a0+SPAN,m=(a0+a1)/2, isHot=i===HOT&&hot, pop=isHot?7:0;
+      g+=`<g transform="translate(${pop*Math.cos(m)},${pop*Math.sin(m)})"><path d="${wedge(C,R1,R2,a0,a1)}" fill="${isHot?PINK:"#2C2C2F"}" stroke="${isHot?PINK:"#3A3A3D"}"/>`;
+      const [lx,ly]=pt(C,(R1+R2)/2+2,m), lines=slices[i].split("\n");
+      lines.forEach((ln,j)=>{g+=text(lx,ly+5+(j-(lines.length-1)/2)*15,ln,j?11:(ln.length>4?12:14),isHot?"#fff":(j?"#A1A1A6":INK),{w:j?400:700})});
+      g+=`</g>`;
+    }
+    g+=`<circle cx="${C.x}" cy="${C.y}" r="${R1-6}" fill="#1C1C1E" stroke="#3A3A3D"/>`;
+    const prog=seg(t,6.9,7.45);
+    if(t>=6.85){
+      const r=R1-10, a=prog*2*Math.PI-1e-4;
+      g+=`<circle cx="${C.x}" cy="${C.y}" r="${r}" fill="none" stroke="#3A3A3D" stroke-width="5"/>`;
+      g+=`<path d="M${C.x},${C.y-r}A${r},${r} 0 ${a>Math.PI?1:0} 1 ${C.x+r*Math.sin(a)},${C.y-r*Math.cos(a)}" fill="none" stroke="${prog<1?PINK:NEON}" stroke-width="5" stroke-linecap="round"/>`;
+      g+=text(C.x,C.y+5,prog<1?Math.round(prog*100)+"%":"Done",13,"#fff");
+    } else {
+      g+=text(C.x,C.y-1,"1 JPG",13,"#fff");
+      g+=text(C.x,C.y+16,"Esc to close",9.5,MUTED,{w:400});
+    }
+    // neon ring (layer 2)
+    if(t>=5.95&&t<6.95){
+      for(let j=0;j<TN;j++){
+        const f=back(seg(t,5.95+j*0.06,6.3+j*0.06)), fo=1-seg(t,6.85,6.95);
+        if(f<=0) continue;
+        const m=tMid(j), a0=m-TS/2, a1=m+TS/2, r4=R3+(R4-R3)*clamp(f,0,1.2), lit=j===TARGET&&t>=6.7;
+        g+=`<g opacity="${clamp(f)*fo}">`;
+        g+=lit?`<path d="${wedge(C,R3,r4,a0,a1)}" fill="${NEON}" filter="url(#glow)"/>`
+              :`<path d="${wedge(C,R3,r4,a0,a1)}" fill="rgba(22,22,26,.92)" stroke="${NEON}" stroke-opacity=".85" stroke-width="1.5"/>`;
+        const [lx,ly]=pt(C,(R3+r4)/2,m);
+        g+=text(lx,ly+4,targets[j],11.5,lit?"#0B1A07":"#E8FFE0")+`</g>`;
+      }
+    }
+    g+=`</g>`;
+  }
+  // dwell ring at the cursor
+  if(t>=5.55&&t<6.0){const k=seg(t,5.55,5.95), r=13, a=k*2*Math.PI-1e-4;
+    g+=`<path d="M${cx},${cy-r}A${r},${r} 0 ${a>Math.PI?1:0} 1 ${cx+r*Math.sin(a)},${cy-r*Math.cos(a)}" fill="none" stroke="${NEON}" stroke-width="3" stroke-linecap="round"/>`;}
+  if(dragging) g+=fileIcon(cx+34,cy+44,"",0.85,0.6);
+  g+=cursor(cx,cy);
+
+  // toast
+  const ta=fade(t,7.45,8.55,0.3);
+  if(ta>0){const y=lerp(C.y-24,C.y-40,ease(seg(t,7.45,7.75))), x=C.x-170;
+    g+=`<g opacity="${ta}" filter="url(#sh)"><rect x="${x}" y="${y}" width="340" height="80" rx="16" fill="#232325" stroke="${NEON}" stroke-opacity=".5"/></g>
+      <g opacity="${ta}">${fileIcon(x+44,y+38,"",1,0.8,"PNG",PINK)}
+      ${text(x+84,y+34,"trip.png",18,"#fff",{a:"start"})}
+      ${text(x+84,y+58,"✓ Uploaded to Google Drive",15,NEON,{a:"start",w:600})}</g>`;}
+
+  // captions
+  const caps=[[4.3,5.45,`Shift + drag a file`],
+              [5.45,6.65,`<tspan fill="${PINK}">Layer 1</tspan> · pause on PNG to convert`],
+              [6.65,7.55,`<tspan fill="${NEON}">Layer 2</tspan> · drop on Google Drive to send`],
+              [7.55,8.5,`Converted <tspan fill="${MUTED}">and</tspan> sent.`]];
+  caps.forEach(([a,b,s])=>{const al=fade(t,a,b,0.18); if(al>0) g+=text(480,508,s,22,INK,{op:al});});
+  return g+`</g>`;
+}
+
+// ---- scene 4: end card ----
+function endCard(t){
+  const a=seg(t,8.45,8.8);
+  if(a<=0) return "";
+  const O={x:480,y:178}, k=back(seg(t,8.5,8.95));
+  // the app icon idea: pink outer ring broken at the top right, green piece in the gap, grey inner ring and dot
+  const gap0=-Math.PI/2+0.55, gap1=-Math.PI/2+1.25;
+  let g=`<g opacity="${a}"><g transform="translate(${O.x},${O.y}) scale(${0.7+0.3*k}) translate(${-O.x},${-O.y})">
+    <path d="${arc(O,62,gap1+0.12,gap0+2*Math.PI-0.12)}" fill="none" stroke="${PINK}" stroke-width="12" stroke-linecap="round" filter="url(#glow)"/>
+    <path d="${arc(O,62,gap0+0.1,gap1-0.1)}" fill="none" stroke="${NEON}" stroke-width="12" stroke-linecap="round" filter="url(#glow)"/>
+    <circle cx="${O.x}" cy="${O.y}" r="36" fill="none" stroke="#C7C7CC" stroke-width="8"/>
+    <circle cx="${O.x}" cy="${O.y}" r="10" fill="#fff"/></g>`;
+  const t1=ease(seg(t,8.7,9.0)), t2=ease(seg(t,8.9,9.2)), t3=seg(t,9.15,9.45);
+  g+=`<g opacity="${t1}" transform="translate(0,${(1-t1)*12})">${text(480,322,"One drag.",60,INK)}</g>`;
+  g+=`<g opacity="${t2}" transform="translate(0,${(1-t2)*12})">${text(480,378,`<tspan fill="${PINK}">Converted</tspan> and <tspan fill="${NEON}">sent.</tspan>`,38,INK)}</g>`;
+  g+=text(480,440,"Oneon  ·  free &amp; open source  ·  macOS · Windows",18,MUTED,{w:400,op:t3});
+  return g+`</g>`;
+}
+
+function render(t){
+  let g=`<defs>
+    <radialGradient id="bg" cx="70%" cy="40%" r="80%"><stop offset="0" stop-color="#2A2A2E"/><stop offset="1" stop-color="#131315"/></radialGradient>
+    <filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity=".45"/></filter>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs><rect width="960" height="540" fill="url(#bg)"/>`;
+  g+=hook(t)+onion(t)+demo(t)+endCard(t);
+  document.getElementById("s").innerHTML=g;
+}
+window.render=render;
+render(parseFloat(new URLSearchParams(location.search).get("t")||"6.8"));
+</script>
+</body></html>

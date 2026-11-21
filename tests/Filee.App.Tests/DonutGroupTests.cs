@@ -340,13 +340,14 @@ public class DonutGroupTests
             radial.ShowForFiles(400, 400, ["/photos/a.jpg"]);
             Dispatcher.UIThread.RunJobs();
             var donut = radial.Window!.DonutControl;
-            var onGroup = DonutGeometry.PointAt(Center(donut), donut.OuterRadius * 0.6, DonutGeometry.MidAngle(0, donut.Items!.Count));
+            var groupIndex = donut.Items!.ToList().FindIndex(item => item.Id == group.Id); // after "Original", if shown
+            var onGroup = DonutGeometry.PointAt(Center(donut), donut.OuterRadius * 0.6, DonutGeometry.MidAngle(groupIndex, donut.Items!.Count));
             donut.SetExternalHit(donut.HitTest(onGroup), onGroup); // resting on it: the dwell timer runs
 
             radial.Close(animate: false); // Esc, or a click elsewhere
             donut.ExpandPendingGroup(); // what the timer would do, had it outlived the donut
             Assert.Equal(-1, donut.ActiveSubIndex);
-            Assert.NotEqual(DonutHitKind.SubSegment, donut.HitTest(donut.SubSliceCenter(0, 1)).Kind);
+            Assert.NotEqual(DonutHitKind.SubSegment, donut.HitTest(donut.SubSliceCenter(groupIndex, 1)).Kind);
         }
         finally
         {
@@ -454,17 +455,45 @@ public class DonutGroupTests
     }
 
     [AvaloniaFact]
-    public void Actions_wheel_offers_AirDrop_on_macos()
+    public void Conversion_wheel_starts_with_Original_when_there_is_a_place_to_send_to()
     {
         TestServices.EnsureInitialized("en");
+        var store = AppHost.Get<UserDataStore>();
+        var transfers = store.Settings.Transfers.ToList();
         var vm = AppHost.Get<RadialViewModel>();
+        try
+        {
+            store.Settings.Transfers.Clear();
+            store.Settings.Transfers.Add(new Filee.Core.Settings.TransferTarget { Kind = Filee.Core.Settings.TransferKind.Clipboard });
 
-        vm.Load([@"C:\photos\a.jpg"], clickMode: true, WheelMode.Actions);
+            vm.Load([@"C:\photos\a.jpg"], clickMode: true, WheelMode.Convert);
+            Assert.Equal(RadialViewModel.OriginalId, vm.Items[0].Id);
+            Assert.True(vm.IsOriginal(0));
+            Assert.Null(vm.PresetAt(0, -1)); // dropped on "Original" itself: nothing to convert
+            Assert.Same(vm.Presets[0], vm.PresetShownAt(1, -1)); // the presets follow it
+            Assert.Null(vm.PresetShownAt(0, -1));
+            Assert.Equal(vm.Presets.Count + 1, vm.Items.Count);
+            vm.ShowHint(0, -1, centerHot: false);
+            Assert.Equal("Pause to choose where to send it", vm.CenterSubtitle);
 
-        Assert.Equal(OperatingSystem.IsMacOS() ? [RadialViewModel.AirDropAction] : [], vm.Items.Select(i => i.Id));
-        if (OperatingSystem.IsMacOS())
-            Assert.Equal(RadialViewModel.AirDropAction, vm.ActionAt(0, -1));
-        Assert.Null(vm.PresetAt(0, -1));
+            // The tools wheel has a transfer ring too, but no "Original" slice.
+            vm.Load([@"C:\photos\a.jpg"], clickMode: true, WheelMode.Tools);
+            Assert.NotNull(vm.TransferItems);
+            Assert.False(vm.IsOriginal(0));
+            Assert.Same(vm.Presets[0], vm.PresetShownAt(0, -1));
+
+            // Nowhere to send to: no transfer ring and no "Original" slice.
+            store.Settings.Transfers.Clear();
+            vm.Load([@"C:\photos\a.jpg"], clickMode: true, WheelMode.Convert);
+            Assert.Null(vm.TransferItems);
+            Assert.False(vm.IsOriginal(0));
+            Assert.Equal(vm.Presets.Count, vm.Items.Count);
+        }
+        finally
+        {
+            store.Settings.Transfers.Clear();
+            store.Settings.Transfers.AddRange(transfers);
+        }
     }
 
     [AvaloniaFact]
