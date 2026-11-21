@@ -46,7 +46,7 @@ zh: 更新后若拖动失效，Oneon 会直接引导你重新开启辅助功能�
 curl -fsSL https://raw.githubusercontent.com/Noah7601/Oneon/main/installer/macos/update.sh | bash
 ```
 
-- **Mac (theOdrop 1.11.6 이하):** 앱 안의 업데이트 대신 위 터미널 한 줄을 쓰세요. 옛 theOdrop·TheoDrop 앱도 함께 정리합니다.
+- **Mac (theOdrop 1.11.6 이하):** 앱 안의 업데이트 대신 위 터미널 한 줄을 쓰세요. 옛 theOdrop·TheoDrop 앱도 함께 정리합니다. **TheoDrop 1.11.0 범용(universal) 버전**은 앱에 업데이트 알림이 뜨지 않으니 꼭 이 방법으로 업데이트하세요.
 - **Windows:** 아래 Assets에서 `Oneon-1.13.1-win-Setup.exe`를 받아 그대로 설치하세요. 설정은 유지됩니다.
 - **손쉬운 사용 한 번 다시 허용 (Mac):** 1.13.1부터 Oneon 전용 인증서로 서명해서, macOS가 예전 버전과 다른 앱으로 봅니다. 업데이트 후 첫 실행에서 Oneon이 안내하는 순서대로 손쉬운 사용을 다시 켜 주세요. 다음 업데이트부터는 권한이 유지됩니다.
 - 설정·기록은 그대로 남습니다. theOdrop에서 오면 데이터 폴더가 처음 실행할 때 `Oneon`으로 자동으로 옮겨집니다.
@@ -59,7 +59,7 @@ curl -fsSL https://raw.githubusercontent.com/Noah7601/Oneon/main/installer/macos
 curl -fsSL https://raw.githubusercontent.com/Noah7601/Oneon/main/installer/macos/update.sh | bash
 ```
 
-- **Mac (theOdrop 1.11.6 or earlier):** use the Terminal line above instead of the in-app update. It cleans up old theOdrop and TheoDrop apps too.
+- **Mac (theOdrop 1.11.6 or earlier):** use the Terminal line above instead of the in-app update. It cleans up old theOdrop and TheoDrop apps too. **TheoDrop 1.11.0 (universal build)** never shows an update notice, so update this way.
 - **Windows:** download `Oneon-1.13.1-win-Setup.exe` from the Assets below and run it. Your settings stay.
 - **Turn Accessibility on once more (Mac):** from 1.13.1, Oneon is signed with its own certificate, so macOS sees it as a different app from earlier versions. After updating, follow the steps Oneon shows on first launch. Later updates keep the permission.
 - Settings and history stay. Coming from theOdrop, the data folder moves to `Oneon` on first launch.
